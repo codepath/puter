@@ -22,7 +22,7 @@ import UIWindowChangeEmail from './UIWindowChangeEmail.js';
 import UIWindowChangeUsername from '../UIWindowChangeUsername.js';
 import UIWindowConfirmUserDeletion from './UIWindowConfirmUserDeletion.js';
 import UIWindowManageSessions from '../UIWindowManageSessions.js';
-import UIWindow from '../UIWindow.js';
+import UIWindow from '../UIWindow.js'
 
 // About
 export default {
