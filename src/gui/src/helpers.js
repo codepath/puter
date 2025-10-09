@@ -731,6 +731,76 @@ window.show_save_account_notice_if_needed = function(message){
     });
 }
 
+/**
+ * Shows a temporary success or error message for account-related operations.
+ * 
+ * This function displays a styled notification message that automatically fades out after a few seconds.
+ * It's specifically designed for account operations like profile picture changes, password updates, etc.
+ * 
+ * @param {string} message - The message to display to the user
+ * @param {string} [type='success'] - The type of message ('success' or 'error')
+ * @global
+ * @function window.show_save_account_notice_message
+ */
+window.show_save_account_notice_message = function(message, type = 'success') {
+    // Remove any existing notice
+    $('.account-notice-message').remove();
+    
+    // Create the notice element
+    const noticeClass = type === 'error' ? 'account-notice-error' : 'account-notice-success';
+    const iconSrc = type === 'error' ? window.icons['warning-sign.svg'] : window.icons['c-check.svg'];
+    
+    const noticeHtml = `
+        <div class="account-notice-message ${noticeClass}" style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'error' ? '#f8d7da' : '#d4edda'};
+            color: ${type === 'error' ? '#721c24' : '#155724'};
+            border: 1px solid ${type === 'error' ? '#f5c6cb' : '#c3e6cb'};
+            border-radius: 6px;
+            padding: 12px 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 999999;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease-in-out;
+        ">
+            <img src="${iconSrc}" style="width: 16px; height: 16px; flex-shrink: 0;">
+            <span>${html_encode(message)}</span>
+        </div>
+    `;
+    
+    // Add to DOM
+    $('body').append(noticeHtml);
+    
+    // Animate in
+    setTimeout(() => {
+        $('.account-notice-message').css({
+            opacity: '1',
+            transform: 'translateX(0)'
+        });
+    }, 10);
+    
+    // Auto-hide after 4 seconds
+    setTimeout(() => {
+        $('.account-notice-message').css({
+            opacity: '0',
+            transform: 'translateX(100%)'
+        });
+        
+        // Remove from DOM after animation
+        setTimeout(() => {
+            $('.account-notice-message').remove();
+        }, 300);
+    }, 4000);
+}
+
 window.onpopstate = (event) => {
     if(event.state !== null && event.state.window_id !== null){
         $(`.window[data-id="${event.state.window_id}"]`).focusWindow();
@@ -2626,30 +2696,67 @@ window.detectHostOS = function(){
     }
 }
 
-window.update_profile = function(username, key_vals){
-    puter.fs.read('/'+username+'/Public/.profile').then((blob)=>{
-        blob.text()
-        .then(text => {
-            const profile = JSON.parse(text);
+window.update_profile = function(username, key_vals, options = {}){
+    return new Promise((resolve, reject) => {
+        puter.fs.read('/'+username+'/Public/.profile').then((blob)=>{
+            blob.text()
+            .then(text => {
+                try {
+                    const profile = JSON.parse(text);
 
-            for (const key in key_vals) {
-                profile[key] = key_vals[key];
-                // update window.user.profile
-                window.user.profile[key] = key_vals[key];
+                    for (const key in key_vals) {
+                        if (key_vals[key] === undefined && options.deleteUndefined) {
+                            // Delete the property if value is undefined and deleteUndefined is true
+                            delete profile[key];
+                            if (window.user && window.user.profile) {
+                                delete window.user.profile[key];
+                            }
+                        } else {
+                            profile[key] = key_vals[key];
+                            // update window.user.profile
+                            if (window.user && window.user.profile) {
+                                window.user.profile[key] = key_vals[key];
+                            }
+                        }
+                    }
+
+                    puter.fs.write('/'+username+'/Public/.profile', JSON.stringify(profile))
+                        .then(() => resolve())
+                        .catch(error => {
+                            console.error('Error writing profile file:', error);
+                            reject(error);
+                        });
+                } catch (parseError) {
+                    console.error('Error parsing profile JSON:', parseError);
+                    reject(parseError);
+                }
+            })
+            .catch(error => {
+                console.error('Error converting Blob to JSON:', error);
+                reject(error);
+            });
+        }).catch((e)=>{
+            if(e?.code === "subject_does_not_exist"){
+                // create .profile file
+                puter.fs.write('/'+username+'/Public/.profile', JSON.stringify(key_vals))
+                    .then(() => {
+                        // update window.user.profile
+                        if (window.user && window.user.profile) {
+                            for (const key in key_vals) {
+                                window.user.profile[key] = key_vals[key];
+                            }
+                        }
+                        resolve();
+                    })
+                    .catch(error => {
+                        console.error('Error creating profile file:', error);
+                        reject(error);
+                    });
+            } else {
+                console.log(e);
+                reject(e);
             }
-
-            puter.fs.write('/'+username+'/Public/.profile', JSON.stringify(profile));
-        })
-        .catch(error => {
-            console.error('Error converting Blob to JSON:', error);
         });
-    }).catch((e)=>{
-        if(e?.code === "subject_does_not_exist"){
-            // create .profile file
-            puter.fs.write('/'+username+'/Public/.profile', JSON.stringify({}));
-        }
-        // Ignored
-        console.log(e);
     });
 }
 
@@ -2681,3 +2788,231 @@ window.get_profile_picture = async function(username){
 
     return icon;
 }
+
+window.removeProfilePicture = function(username) {
+    return new Promise((resolve, reject) => {
+        // Store original profile state for rollback
+        let originalProfile = null;
+        let originalUserProfile = null;
+        
+        // Handle edge case where window.user doesn't exist
+        if (!window.user) {
+            reject(new Error('User not authenticated'));
+            return;
+        }
+        
+        // Ensure window.user.profile exists
+        if (!window.user.profile) {
+            window.user.profile = {};
+        }
+        
+        puter.fs.read('/' + username + '/Public/.profile')
+            .then((blob) => {
+                blob.text()
+                    .then(text => {
+                        try {
+                            originalProfile = JSON.parse(text);
+                            
+                            // Check if profile picture exists
+                            if (!originalProfile.picture) {
+                                reject(new Error('No profile picture to remove'));
+                                return;
+                            }
+                            
+                            // Store original user profile state for rollback
+                            originalUserProfile = { ...window.user.profile };
+                            
+                            // Create updated profile without picture
+                            const updatedProfile = { ...originalProfile };
+                            delete updatedProfile.picture;
+                            
+                            // Update window.user.profile immediately for synchronization
+                            delete window.user.profile.picture;
+                            
+                            // Update the profile file
+                            puter.fs.write('/' + username + '/Public/.profile', JSON.stringify(updatedProfile))
+                                .then(() => {
+                                    try {
+                                        // Ensure profile state is synchronized across all components
+                                        // Use the centralized profile picture update function
+                                        window.updateAllProfilePictures();
+                                        
+                                        // Trigger any profile update listeners
+                                        if (typeof window.onProfileUpdated === 'function') {
+                                            window.onProfileUpdated(window.user.profile);
+                                        }
+                                        
+                                        // Dispatch custom event for profile picture removal
+                                        window.dispatchEvent(new CustomEvent('profile-picture-removed', {
+                                            detail: { username: username }
+                                        }));
+                                        
+                                        resolve();
+                                    } catch (updateError) {
+                                        console.error('Error updating user profile state:', updateError);
+                                        // Rollback user profile state
+                                        if (originalUserProfile) {
+                                            window.user.profile = originalUserProfile;
+                                        }
+                                        // Rollback file changes
+                                        puter.fs.write('/' + username + '/Public/.profile', JSON.stringify(originalProfile))
+                                            .then(() => {
+                                                reject(new Error('Failed to update profile state, changes rolled back'));
+                                            })
+                                            .catch(rollbackError => {
+                                                console.error('Error during rollback:', rollbackError);
+                                                reject(new Error('Failed to update profile and rollback failed'));
+                                            });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error writing profile file:', error);
+                                    // Rollback user profile state
+                                    if (originalUserProfile) {
+                                        window.user.profile = originalUserProfile;
+                                    }
+                                    reject(new Error('Failed to update profile file'));
+                                });
+                        } catch (parseError) {
+                            console.error('Error parsing profile JSON:', parseError);
+                            reject(new Error('Invalid profile data'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error converting Blob to text:', error);
+                        reject(new Error('Failed to read profile data'));
+                    });
+            })
+            .catch((e) => {
+                console.error('Error reading profile file:', e);
+                if (e?.code === "subject_does_not_exist") {
+                    // Handle case where profile file doesn't exist
+                    // Reset to default avatar and ensure user profile is clean
+                    window.resetToDefaultAvatar();
+                    
+                    // Create empty profile file
+                    puter.fs.write('/' + username + '/Public/.profile', JSON.stringify({}))
+                        .then(() => {
+                            // Update all profile pictures to show default avatar
+                            window.updateAllProfilePictures();
+                            resolve();
+                        })
+                        .catch(createError => {
+                            console.error('Error creating profile file:', createError);
+                            reject(new Error('Profile file does not exist and could not be created'));
+                        });
+                } else {
+                    reject(new Error('Failed to access profile file'));
+                }
+            });
+    });
+}
+/**
+ * U
+pdates all profile picture displays across the application with proper fallback logic
+ * Ensures consistent profile picture display and handles default avatar fallback
+ */
+window.updateAllProfilePictures = function() {
+    const defaultAvatar = window.icons['profile.svg'];
+    const hasProfilePicture = window.user?.profile?.picture;
+    const profileImageUrl = hasProfilePicture ? window.user.profile.picture : defaultAvatar;
+    
+    // Update all profile picture elements with proper fallback
+    $('.profile-picture').css('background-image', 'url(' + html_encode(profileImageUrl) + ')');
+    $('.profile-image').css('background-image', 'url(' + html_encode(profileImageUrl) + ')');
+    
+    // Handle profile-image-has-picture class for custom styling
+    if (hasProfilePicture) {
+        $('.profile-image').addClass('profile-image-has-picture');
+        $('.profile-picture').addClass('profile-image-has-picture');
+    } else {
+        $('.profile-image').removeClass('profile-image-has-picture');
+        $('.profile-picture').removeClass('profile-image-has-picture');
+        
+        // Reset to standard sizing for default avatar
+        $('.profile-image, .profile-picture').css({
+            'background-size': 'cover', // Standard size for consistency
+            'background-position': 'center',
+            'background-repeat': 'no-repeat'
+        });
+    }
+    
+    // Update any other profile-related elements that might exist
+    $('[data-profile-image]').each(function() {
+        $(this).css('background-image', 'url(' + html_encode(profileImageUrl) + ')');
+        if (hasProfilePicture) {
+            $(this).addClass('profile-image-has-picture');
+        } else {
+            $(this).removeClass('profile-image-has-picture');
+        }
+    });
+    
+    // Update img elements that show profile pictures
+    $('img[src*="profile"]').each(function() {
+        if ($(this).attr('data-is-profile-image') === 'true') {
+            $(this).attr('src', profileImageUrl);
+        }
+    });
+    
+    // Dispatch event for other components that might need to update
+    window.dispatchEvent(new CustomEvent('profile-pictures-updated', {
+        detail: { 
+            hasProfilePicture: hasProfilePicture,
+            profileImageUrl: profileImageUrl,
+            defaultAvatar: defaultAvatar
+        }
+    }));
+};
+
+/**
+ * Ensures proper default avatar fallback when profile picture is removed
+ * Removes any custom styling that was applied to uploaded pictures
+ */
+window.resetToDefaultAvatar = function() {
+    const defaultAvatar = window.icons['profile.svg'];
+    
+    // Remove profile picture from user object if it exists
+    if (window.user?.profile?.picture) {
+        delete window.user.profile.picture;
+    }
+    
+    // Update all profile displays to show default avatar
+    $('.profile-picture, .profile-image').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+    $('.profile-picture, .profile-image').removeClass('profile-image-has-picture');
+    
+    // Remove any custom styling that might have been applied to uploaded pictures
+    $('.profile-picture, .profile-image').css({
+        'border-radius': '', // Reset to default
+        'border': '', // Reset to default
+        'box-shadow': '', // Reset to default
+        'background-size': 'cover', // Standard size for consistency
+        'background-position': 'center',
+        'background-repeat': 'no-repeat'
+    });
+    
+    // Update all profile-related elements
+    $('[data-profile-image]').each(function() {
+        $(this).css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+        $(this).removeClass('profile-image-has-picture');
+    });
+    
+    // Update img elements
+    $('img[data-is-profile-image="true"]').attr('src', defaultAvatar);
+    
+    // Dispatch event
+    window.dispatchEvent(new CustomEvent('profile-reset-to-default', {
+        detail: { defaultAvatar: defaultAvatar }
+    }));
+};
+
+// Global event listener for profile picture removal to ensure all components update
+window.addEventListener('profile-picture-removed', function(event) {
+    // Update all profile pictures across the application
+    window.updateAllProfilePictures();
+});
+
+// Global event listener for profile reset to default
+window.addEventListener('profile-reset-to-default', function(event) {
+    // Ensure all profile displays show the default avatar
+    window.resetToDefaultAvatar();
+});
