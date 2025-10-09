@@ -44,7 +44,7 @@ export default {
         h += `<div class="profile-picture-actions" style="display: flex; gap: 10px; margin-top: 10px;">`;
         // Only show remove button if user has a profile picture
         if (window.user?.profile?.picture) {
-            h += `<button class="button button-danger remove-profile-picture">${i18n('Remove Profile Picture')}</button>`;
+            h += `<button class="button button-danger remove-profile-picture">${i18n('remove_profile_picture')}</button>`;
         }
         h += `</div>`;
         h += `</div>`;
