@@ -22,7 +22,7 @@ import UIWindowChangeEmail from './UIWindowChangeEmail.js';
 import UIWindowChangeUsername from '../UIWindowChangeUsername.js';
 import UIWindowConfirmUserDeletion from './UIWindowConfirmUserDeletion.js';
 import UIWindowManageSessions from '../UIWindowManageSessions.js';
-import UIWindow from '../UIWindow.js';
+import UIWindow from '../UIWindow.js'
 
 // About
 export default {
@@ -37,6 +37,7 @@ export default {
         h += `<div style="overflow: hidden; display: flex; margin-bottom: 20px; flex-direction: column; align-items: center;">`;
             h += `<div class="profile-picture change-profile-picture" style="background-image: url('${html_encode(window.user?.profile?.picture ?? window.icons['profile.svg'])}');">`;
             h += `</div>`;
+            h += `<button class="button remove-profile-picture" style="margin-top: 10px;">${i18n('remove_profile_picture')}</button>`;
         h += `</div>`;
 
         // change password button
@@ -177,5 +178,13 @@ export default {
                 }
             }
         })
+
+        // Add event listener for the "Remove Profile Picture" button
+        document.querySelector('.remove-profile-picture').addEventListener('click', () => {
+            update_profile(window.user.username, { picture: null }); // Clear the profile picture
+            document.querySelector('.profile-picture').style.backgroundImage = `url('${window.icons['profile.svg']}')`; // Revert to default avatar
+            $('.profile-image').css('background-image', `url('${window.icons['profile.svg']}')`); // Update other UI elements
+            $('.profile-image').removeClass('profile-image-has-picture');
+        });
     },
 };
