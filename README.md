@@ -166,3 +166,19 @@ This repository, including all its contents, sub-projects, modules, and componen
 - [Ukrainian / Українська](https://github.com/HeyPuter/puter/blob/main/doc/i18n/README.ua.md)
 - [Urdu / اردو](https://github.com/HeyPuter/puter/blob/main/doc/i18n/README.ur.md)
 - [Vietnamese / Tiếng Việt](https://github.com/HeyPuter/puter/blob/main/doc/i18n/README.vi.md)
+
+## 📘 CodePath Setup & Troubleshooting Log
+
+This section documents the technical resolution for the first course assignment.
+
+### Getting Started Issue #1: Profile Picture Removal (Solved)
+
+**Goal:** Implement a **"Remove Profile Picture"** button that clears the avatar and allows for immediate re-upload without page refresh.
+
+**Target File:** `gui/src/UI/Settings/UITabAccount.js`
+
+| Bug Encountered | Technical Root Cause | Final Solution | 
+| :--- | :--- | :--- |
+| **Button Missing** | The button's HTML was conditionally excluded when no custom picture was set. | The button's wrapper (`<div class="remove-picture-wrapper">`) was **always rendered**, and its visibility (`display: none`) was controlled purely by inline CSS determined at render time. Button text was set to **"Remove"**. |
+| **UI Not Updating** | Profile picture remained visible after removal until a page refresh. | **Manual UI update** implemented: Cleared the `background-image` CSS property on the required DOM elements and reset it to the default icon path. |
+| **Stale Event Listener** | The cycle **Upload** → **Remove** → **Upload** failed because the click handler was not re-registering correctly after state change. | Implemented a helper function, **`attachProfilePictureHandler`**, using **`.off('click')`** to detach the old listener, followed by a **zero-delay `setTimeout`** wrapper in the removal handler to force a clean re-attachment in the browser's event loop. |

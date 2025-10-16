@@ -39,6 +39,23 @@ export default {
             h += `</div>`;
         h += `</div>`;
 
+        // --- START NEW CODE BLOCK: REMOVE PICTURE BUTTON ---
+        const currentPicture = window.user?.profile?.picture;
+        const defaultIconPath = window.icons['profile.svg'];
+        
+        // Determine if the button should be hidden initially
+        // It should be hidden if the current picture is null/undefined OR if it's the default icon path.
+        const isCurrentlyDefault = !currentPicture || currentPicture === defaultIconPath;
+
+        // Set the initial inline style to hide the button if no custom picture is set
+        const initialDisplayStyle = isCurrentlyDefault ? 'display: none;' : '';
+
+        // Render the button's HTML, using the inline style for visibility
+        h += `<div class="remove-picture-wrapper" style="text-align: center; margin-top: -10px; margin-bottom: 20px; ${initialDisplayStyle}">`;
+            h += `<button class="button button-danger remove-profile-picture">${i18n('Remove') || 'Remove Profile Picture'}</button>`;
+        h += `</div>`;
+        // --- END NEW CODE BLOCK ---
+
         // change password button
         if(!window.user.is_temp){
             h += `<div class="settings-card">`;
@@ -134,21 +151,62 @@ export default {
             });
         });
 
-        $el_window.find('.change-profile-picture').on('click', async function (e) {
-            // open dialog
-            UIWindow({
-                path: '/' + window.user.username + '/Desktop',
-                // this is the uuid of the window to which this dialog will return
-                parent_uuid: $el_window.attr('data-element_uuid'),
-                allowed_file_types: ['.png', '.jpg', '.jpeg'],
-                show_maximize_button: false,
-                show_minimize_button: false,
-                title: 'Open',
-                is_dir: true,
-                is_openFileDialog: true,
-                selectable_body: false,
-            });    
-        })
+        // --- START NEW CODE BLOCK: REMOVE PICTURE HANDLER ---
+        $el_window.find('.remove-profile-picture').on('click', async function (e) {
+            e.preventDefault();
+            
+            try {
+                // 1. Send the API call to clear the profile picture field (set to null)
+                await update_profile(window.user.username, { picture: null });
+
+                // 2. Optimistically update the UI to show the default picture
+                const defaultIconUrl = window.icons['profile.svg'];
+                $el_window.find('.profile-picture').css('background-image', `url(${html_encode(defaultIconUrl)})`);
+                $('.profile-image').css('background-image', `url(${html_encode(defaultIconUrl)})`);
+                $('.profile-image').removeClass('profile-image-has-picture');
+                
+                $el_window.find('.remove-picture-wrapper').hide();
+                
+                // 🚩 Re-attach the click handler with a timeout to refresh the logic!
+                setTimeout(() => {
+                    attachProfilePictureHandler($el_window); // Give the browser a moment to detach the old handler
+                }, 0); 
+
+                alert('Profile picture removed successfully. UI updated.');
+                
+            } catch (error) {
+                    // If the network call itself failed (e.g., server down), show a real error
+                    console.error("Error removing profile picture:", error);
+                    alert('Connection Error: Could not reach the server to remove the picture.');
+                }
+        });
+        // --- END NEW CODE BLOCK ---
+        
+        // Helper function to attach the profile picture upload logic
+        const attachProfilePictureHandler = ($el_window) => {
+            // 1. Detach any existing click handler to prevent duplicates
+            $el_window.find('.change-profile-picture').off('click');
+            
+            // 2. Attach the click handler logic (THE ORIGINAL LOGIC IS MOVED HERE)
+            $el_window.find('.change-profile-picture').on('click', async function (e) {
+                UIWindow({
+                    path: '/' + window.user.username + '/Desktop',
+                    parent_uuid: $el_window.attr('data-element_uuid'),
+                    allowed_file_types: ['.png', '.jpg', '.jpeg'],
+                    show_maximize_button: false,
+                    show_minimize_button: false,
+                    title: 'Open',
+                    is_dir: true,
+                    is_openFileDialog: true,
+                    selectable_body: false,
+                });
+            });
+        }
+        
+        // -------------------------------------------------------------
+        // Call the function on initial load
+        // -------------------------------------------------------------
+        attachProfilePictureHandler($el_window); // This initializes the handler!
 
         $el_window.on('file_opened', async function(e){
             let selected_file = Array.isArray(e.detail) ? e.detail[0] : e.detail;
@@ -174,6 +232,10 @@ export default {
                     $('.profile-image').addClass('profile-image-has-picture');
                     // update profile picture
                     update_profile(window.user.username, {picture: base64data})
+                    
+                    // 🚩 NEW CODE: Manually show the button using the wrapper class
+                    $el_window.find('.remove-picture-wrapper').show();
+
                 }
             }
         })
