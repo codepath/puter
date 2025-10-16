@@ -171,9 +171,9 @@ This repository, including all its contents, sub-projects, modules, and componen
 
 This section documents the technical resolution for the first course assignment.
 
-### Getting Started Issue #1: Profile Picture Removal (Solved)
+### Issue #1: Profile Picture Removal (Solved)
 
-**Goal:** Implement a **"Remove Profile Picture"** button that clears the avatar and allows for immediate re-upload without page refresh.
+**Goal:** Implement a **"Remove"** button that clears the avatar and allows for immediate re-upload without page refresh.
 
 **Target File:** `gui/src/UI/Settings/UITabAccount.js`
 
