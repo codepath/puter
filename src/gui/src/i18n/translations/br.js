@@ -235,6 +235,7 @@ const br = {
     "refresh": "Atualizar",
     "release_address_confirmation": "Tem certeza de que deseja liberar este endereço?",
     "remove_from_taskbar": "Remover da Barra de Tarefas",
+    "remove_profile_picture": "Remover",
     "rename": "Renomear",
     "repeat": "Repetir",
     "replace": "Substituir",

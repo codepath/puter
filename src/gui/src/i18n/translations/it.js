@@ -258,6 +258,7 @@ const it = {
     refresh: "Ricarica",
     release_address_confirmation: `Sei sicuro di voler liberare questo indirizzo?`,
     remove_from_taskbar: "Sblocca dalla barra delle applicazioni",
+    remove_profile_picture: "Rimuovi",
     rename: "Rinomina",
     repeat: "Ripeti",
     replace: "Sostituisci",

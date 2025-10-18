@@ -237,6 +237,7 @@ const bn = {
     refresh: "রিফ্রেশ",
     release_address_confirmation: `আপনি কি নিশ্চিত যে আপনি এই ঠিকানা রিলিজ করতে চান?`,
     remove_from_taskbar: "টাস্কবার থেকে সরান",
+    remove_profile_picture: "সরান",
     rename: "পুনঃনামকরণ",
     repeat: "পুনরাবৃত্তি",
     replace: "বদলান",

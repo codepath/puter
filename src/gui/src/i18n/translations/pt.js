@@ -238,6 +238,7 @@ const pt = {
         refresh: 'Atualizar',
         release_address_confirmation: `Queres libertar este endereço?`,
         remove_from_taskbar:'Remover da Barra de Tarefas',
+        remove_profile_picture: 'Remover',
         rename: 'Renomear',
         repeat: 'Repetir',
         replace: 'Substituir',

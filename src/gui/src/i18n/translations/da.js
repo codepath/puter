@@ -234,6 +234,7 @@ const da = {
 		refresh: 'Opdater',
 		release_address_confirmation: `Er du sikker på, at du vil frigive denne adresse?`,
 		remove_from_taskbar: 'Fjern fra proceslinje',
+		remove_profile_picture: 'Fjerne',
 		rename: 'Omdøb',
 		repeat: 'Gentag',
 		replace: 'Erstat',

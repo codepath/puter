@@ -136,6 +136,7 @@ const emoji = {
         refresh: '🔄🔄',
         release_address_confirmation: `❓🆓`,
         remove_from_taskbar:'📌❌📁',
+        remove_profile_picture: '❌',
         rename: '🔄📛',
         repeat: '🔂',
         replace: '🔄🔄',

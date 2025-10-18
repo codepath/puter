@@ -230,6 +230,7 @@ const hu = {
         refresh: "Frissítés",
         release_address_confirmation: "Biztosan felszabadítod ezt a címet?",
         remove_from_taskbar: "Eltávolítás a tálcáról",
+        remove_profile_picture: "Távolítsa el",
         rename: "Átnevezés",
         repeat: "Ismétlés",
         replace: "Csere",

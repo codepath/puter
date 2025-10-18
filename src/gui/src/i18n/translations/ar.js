@@ -252,6 +252,7 @@ const ar = {
       refresh: "تحديث",
       release_address_confirmation: "هل أنت متأكد أنك تريد تحرير هذا العنوان؟",
       remove_from_taskbar: "إزالة من شريط المهام",
+      remove_profile_picture: "يزيل",
       rename: "إعادة تسمية",
       repeat: "تكرار",
       replace: "استبدال",

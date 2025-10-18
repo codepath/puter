@@ -39,7 +39,7 @@ export default {
             h += `</div>`;
         h += `</div>`;
         h += `<div style="text-align: center; margin-bottom: 20px;">`;
-            h += `<button class="button button-small button-danger remove-profile-picture" style="display: ${window.user?.profile?.picture ? 'inline-block' : 'none'};">Remove</button>`;
+            h += `<button class="button button-small button-danger remove-profile-picture" style="display: ${window.user?.profile?.picture ? 'inline-block' : 'none'};">${i18n('remove_profile_picture')}</button>`;
         h += `</div>`;
 
         // change password button

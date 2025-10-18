@@ -250,6 +250,7 @@ const en = {
     refresh: "רענן",
     release_address_confirmation: `האם אתה בטוח שברצונך לשחרר כתובת זו?`,
     remove_from_taskbar: "הסרה משורת המשימות",
+    remove_profile_picture: "הסר",
     rename: "שנה שם",
     repeat: "חזור",
     replace: "החלף",

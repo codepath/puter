@@ -124,6 +124,7 @@ const nn = {
         refresh: "Oppdater",
         release_address_confirmation: "Er du sikker på at du vil sleppe denne adressa?",
         remove_from_taskbar: "Fjern frå oppgåvelinja",
+        remove_profile_picture: "Fjerne",
         rename: "Gje nytt namn",
         repeat: "Gjenta",
         resend_confirmation_code: "Send stadfestingskoden på nytt",

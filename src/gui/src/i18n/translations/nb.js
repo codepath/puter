@@ -136,6 +136,7 @@ const nb = {
         refresh: "Oppdater",
         release_address_confirmation: "Er du sikker på at du vil frigi denne adressen?",
         remove_from_taskbar: "Fjern fra oppgavelinjen",
+        remove_profile_picture: "Fjerne",
         rename: "Gi nytt navn",
         repeat: "Gjenta",
         replace: 'Erstatt',
@@ -182,9 +183,9 @@ const nb = {
         you_have_been_referred_to_puter_by_a_friend: "Du har blitt henvist til Puter av en venn!",
         zip: "Zip",
 
-		// ***********************************
-		// Missing translations
-		// ***********************************
+        // ***********************************
+        // Missing translations
+        // ***********************************
         "about": undefined, // In English: "About"
         "account": undefined, // In English: "Account"
         "account_password": undefined, // In English: "Verify Account Password"
@@ -327,18 +328,18 @@ const nb = {
         "zipping": undefined, // In English: "Zipping %strong%"
         "setup2fa_1_step_heading": undefined, // In English: "Open your authenticator app"
         "setup2fa_1_instructions": undefined, // In English: "
-                //     You can use any authenticator app that supports the Time-based One-Time Password (TOTP) protocol.
-                //     There are many to choose from, but if you're unsure
-                //     <a target="_blank" href="https://authy.com/download">Authy</a>
-                //     is a solid choice for Android and iOS.
-                // "
+        //     You can use any authenticator app that supports the Time-based One-Time Password (TOTP) protocol.
+        //     There are many to choose from, but if you're unsure
+        //     <a target="_blank" href="https://authy.com/download">Authy</a>
+        //     is a solid choice for Android and iOS.
+        // "
         "setup2fa_2_step_heading": undefined, // In English: "Scan the QR code"
         "setup2fa_3_step_heading": undefined, // In English: "Enter the 6-digit code"
         "setup2fa_4_step_heading": undefined, // In English: "Copy your recovery codes"
         "setup2fa_4_instructions": undefined, // In English: "
-                //     These recovery codes are the only way to access your account if you lose your phone or can't use your authenticator app.
-                //     Make sure to store them in a safe place.
-                // "
+        //     These recovery codes are the only way to access your account if you lose your phone or can't use your authenticator app.
+        //     Make sure to store them in a safe place.
+        // "
         "setup2fa_5_step_heading": undefined, // In English: "Confirm 2FA setup"
         "setup2fa_5_confirmation_1": undefined, // In English: "I have saved my recovery codes in a secure location"
         "setup2fa_5_confirmation_2": undefined, // In English: "I am ready to enable 2FA"

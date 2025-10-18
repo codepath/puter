@@ -234,6 +234,7 @@ const hy = {
         refresh: "Թարմացնել",
         release_address_confirmation: "Իսկապե՞ս ուզում եք թողարկել այս հասցեն:",
         remove_from_taskbar: "Հանել խնդրագոտուց",
+        remove_profile_picture: "Հեռացնել",
         rename: "Վերանվանել",
         repeat: "Կրկնել",
         replace: "Փոխարինել",

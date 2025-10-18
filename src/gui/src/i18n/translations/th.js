@@ -232,6 +232,7 @@ const th = {
         refresh: "รีเฟรช",
         release_address_confirmation: "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกที่อยู่นี้?",
         remove_from_taskbar: "นำออกจากทาสก์บาร์",
+        remove_profile_picture: "ลบ",
         rename: "เปลี่ยนชื่อ",
         repeat: "ทำซ้ำ",
         replace: "แทนที่",

@@ -234,6 +234,7 @@ const de = {
         refresh: 'Aktualisieren',
         release_address_confirmation: `Möchten Sie diese Adresse wirklich freigeben?`,
         remove_from_taskbar:'Von Taskleiste entfernen',
+        remove_profile_picture: 'Entfernen',
         rename: 'Umbenennen',
         repeat: 'Wiederholen',
         replace: 'Ersetzen',

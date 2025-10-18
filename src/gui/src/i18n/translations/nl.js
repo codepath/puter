@@ -235,6 +235,7 @@ const nl = {
 		refresh: 'Vernieuwen',
 		release_address_confirmation: `Weet je zeker dat je dit adres wilt vrijgeven?`,
 		remove_from_taskbar: 'Verwijderen van taakbalk',
+		remove_profile_picture: 'Verwijderen',
 		rename: 'Hernoemen',
 		repeat: 'Herhalen',
 		replace: 'Vervangen',

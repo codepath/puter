@@ -306,6 +306,7 @@ const fi = {
     // "publish" => "Oletko varma, että haluat julkaista tämän osoitteen?"
 
     remove_from_taskbar: "Poista tehtäväpalkista",
+    remove_profile_picture: "Poistaa",
     rename: "Nimeä uudelleen",
     repeat: "Toista",
     replace: "Replace",

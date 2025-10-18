@@ -242,6 +242,7 @@ const ur = {
     refresh: "تازہ کریں ",
     release_address_confirmation: "ایڈریس کی تصدیق جاری ",
     remove_from_taskbar: "ٹاسک بار سے ہٹائیں ",
+    remove_profile_picture: "ہٹائیں",
     rename: "دوبارہ نام دیں",
     repeat: "دہرایؐں",
     replace: "بدل دیں۔",

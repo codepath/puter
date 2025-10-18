@@ -235,6 +235,7 @@ const vi = {
         refresh: 'Làm mới',
         release_address_confirmation: `Bạn có chắc chắn muốn giải phóng địa chỉ này không?`,
         remove_from_taskbar: 'Xóa khỏi thanh tác vụ',
+        remove_profile_picture: 'Xóa',
         rename: 'Đổi tên',
         repeat: 'Lặp lại',
         replace: 'Thay thế',

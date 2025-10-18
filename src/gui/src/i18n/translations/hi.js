@@ -234,6 +234,7 @@ const hi = {
         refresh: 'ताजा करना ',
         release_address_confirmation: "क्या आप वाकई यह पता जारी करना चाहते हैं?",
         remove_from_taskbar:'टास्कबार से हटाएँ',
+        remove_profile_picture: 'हटाएं',
         rename: 'नाम बदलें',
         repeat: 'दोहराना',
         replace: 'प्रतिस्थापित करें',

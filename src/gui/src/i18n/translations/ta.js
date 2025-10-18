@@ -233,6 +233,7 @@ const ta = {
         refresh: 'புதுப்பிப்பு',
         release_address_confirmation: `இந்த முகவரியை நிச்சயமாக வெளியிட விரும்புகிறீர்களா?`,
         remove_from_taskbar: 'பணிப்பட்டியில் இருந்து அகற்று',
+        remove_profile_picture: 'அகற்று',
         rename: 'மறுபெயரிடவும்',
         repeat: 'மீண்டும் செய்யவும்',
         replace: 'மாற்றவும்',

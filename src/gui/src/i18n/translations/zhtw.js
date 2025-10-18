@@ -234,6 +234,7 @@ const zhtw = {
         refresh: '重新整理',
         release_address_confirmation: `您確定要釋放此地址嗎？`,
         remove_from_taskbar: '從工作列移除',
+        remove_profile_picture: '移除',
         rename: '重新命名',
         repeat: '重複',
         replace: '取代',

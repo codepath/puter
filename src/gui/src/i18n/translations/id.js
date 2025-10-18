@@ -251,6 +251,7 @@ const id = {
     refresh: "Memuat Ulang",
     release_address_confirmation: "Apakah Anda yakin ingin melepaskan alamat ini?",
     remove_from_taskbar: "Hapus dari Bilah Tugas",
+    remove_profile_picture: "Menghapus",
     rename: "Ganti Nama",
     repeat: "Ulangi",
     replace: "Ganti",

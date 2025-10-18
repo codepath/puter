@@ -258,6 +258,7 @@ const ru = {
     refresh: 'Обновить',
     release_address_confirmation: `Вы уверены, что хотите освободить этот адрес?`,
     remove_from_taskbar: 'Удалить из панели задач',
+    remove_profile_picture: 'Удалить',
     rename: 'Переименовать',
     repeat: 'Повторить',
     replace: 'Заменить',

@@ -235,6 +235,7 @@ const zh = {
         refresh: '刷新',
         release_address_confirmation: `您确定要释放此地址吗？`,
         remove_from_taskbar:'从任务栏中删除',
+        remove_profile_picture: '删除',
         rename: '重命名',
         repeat: '重复',
         replace: '替换',

@@ -234,6 +234,7 @@ const fr = {
         refresh: 'Actualiser',
         release_address_confirmation: `Etes-vous sûr de vouloir libérer cette adresse ?`,
         remove_from_taskbar: 'Retirer de la barre des tâches',
+        remove_profile_picture: 'Retirer',
         rename: 'Renommer',
         repeat: 'Répéter',
         replace: 'Remplacer',
