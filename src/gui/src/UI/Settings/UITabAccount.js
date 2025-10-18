@@ -38,6 +38,9 @@ export default {
             h += `<div class="profile-picture change-profile-picture" style="background-image: url('${html_encode(window.user?.profile?.picture ?? window.icons['profile.svg'])}');">`;
             h += `</div>`;
         h += `</div>`;
+        h += `<div style="text-align: center; margin-bottom: 20px;">`;
+            h += `<button class="button button-small button-danger remove-profile-picture" style="display: ${window.user?.profile?.picture ? 'inline-block' : 'none'};">Remove</button>`;
+        h += `</div>`;
 
         // change password button
         if(!window.user.is_temp){
@@ -150,6 +153,21 @@ export default {
             });    
         })
 
+        $el_window.find('.remove-profile-picture').on('click', async function (e) {
+            // Update profile by setting picture to null or empty
+            update_profile(window.user.username, {picture: null});
+            
+            // Reset profile picture to default in the settings window
+            $el_window.find('.profile-picture').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
+            
+            // Reset profile picture in the toolbar
+            $('.profile-image').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
+            $('.profile-image').removeClass('profile-image-has-picture');
+            
+            // Hide the remove button
+            $(this).hide();
+        })
+
         $el_window.on('file_opened', async function(e){
             let selected_file = Array.isArray(e.detail) ? e.detail[0] : e.detail;
             // set profile picture
@@ -174,6 +192,8 @@ export default {
                     $('.profile-image').addClass('profile-image-has-picture');
                     // update profile picture
                     update_profile(window.user.username, {picture: base64data})
+                    // Show the remove button
+                    $el_window.find('.remove-profile-picture').show();
                 }
             }
         })

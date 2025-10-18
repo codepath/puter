@@ -2633,9 +2633,14 @@ window.update_profile = function(username, key_vals){
             const profile = JSON.parse(text);
 
             for (const key in key_vals) {
-                profile[key] = key_vals[key];
-                // update window.user.profile
-                window.user.profile[key] = key_vals[key];
+                if (key_vals[key] === null || key_vals[key] === undefined || key_vals[key] === '') {
+                    delete profile[key];
+                    delete window.user.profile[key];
+                } else {
+                    profile[key] = key_vals[key];
+                    // update window.user.profile
+                    window.user.profile[key] = key_vals[key];
+                }
             }
 
             puter.fs.write('/'+username+'/Public/.profile', JSON.stringify(profile));
