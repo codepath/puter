@@ -105,7 +105,25 @@ export class ThemeService extends Service {
         this.save_();
     }
 
-    get (key) { return this.state[key]; }
+    get(key) { return this.state[key]; }
+
+    /**
+     * Calculate appropriate text color based on background lightness
+     * Uses simple luminance-based contrast calculation with threshold logic
+     * @param {number} lightness - Background lightness percentage (0-100)
+     * @param {number} saturation - Background saturation percentage (0-100)
+     * @returns {string} - 'white' for dark backgrounds, '#373e44' for light backgrounds
+     */
+    calculateSidebarTextColor(lightness, saturation) {
+        // Simple threshold-based approach for determining text color
+        // Lower lightness values need light text, higher values need dark text
+        // Adjust threshold slightly based on saturation for better contrast
+        const baseThreshold = 50;
+        const saturationAdjustment = (saturation - 50) * 0.1; // Slight adjustment based on saturation
+        const adjustedThreshold = baseThreshold + saturationAdjustment;
+
+        return lightness < adjustedThreshold ? 'white' : '#373e44';
+    }
 
     reload_() {
         // debugger;
@@ -121,6 +139,14 @@ export class ThemeService extends Service {
         this.root.style.setProperty('--primary-lightness', s.lig + '%');
         this.root.style.setProperty('--primary-alpha', s.alpha);
         this.root.style.setProperty('--primary-color', s.light_text ? 'white' : '#373e44');
+
+        // Calculate appropriate sidebar text color based on background lightness
+        const sidebarTextColor = this.calculateSidebarTextColor(s.lig, s.sat);
+        const sidebarTextContrast = sidebarTextColor === 'white' ? '#ffffff' : '#373e44';
+
+        // Set CSS custom properties for sidebar text colors
+        this.root.style.setProperty('--sidebar-text-color', sidebarTextColor);
+        this.root.style.setProperty('--sidebar-text-contrast', sidebarTextContrast);
 
         // TODO: Should we debounce this to reduce traffic?
         this.#broadcastService.sendBroadcast('themeChanged', {

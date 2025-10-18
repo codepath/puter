@@ -1258,6 +1258,7 @@ span.header-sort-icon img {
     var(--window-sidebar-lightness),
     calc(0.5 + 0.5 * var(--window-sidebar-alpha))
   );
+  color: var(--sidebar-text-color, inherit);
   overflow-y: scroll;
   margin-top: 1px;
   box-shadow: inset -4px 0 8px -8px rgba(0, 0, 0, 0.3);
@@ -1302,7 +1303,7 @@ span.header-sort-icon img {
   margin: 0;
   font-weight: bold;
   font-size: 13px;
-  color: #8f96a3;
+  color: var(--sidebar-text-color, #8f96a3);
   text-shadow: 1px 1px rgb(247 247 247 / 15%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1329,7 +1330,7 @@ span.header-sort-icon img {
   margin-top: 2px;
   padding: 4px;
   border-radius: 3px;
-  color: #444444;
+  color: var(--sidebar-text-color, #444444);
   font-size: 13px;
   cursor: pointer;
   transition: 0.15s background-color;
@@ -3805,13 +3806,11 @@ fieldset[name="number-code"] {
 
 .puter-auth-dialog .button-action {
   border-color: #08bf4e;
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(#29d55d),
-    to(#1ccd60)
-  );
+  background: -webkit-gradient(linear,
+      left top,
+      left bottom,
+      from(#29d55d),
+      to(#1ccd60));
   background: linear-gradient(#29d55d, #1ccd60);
   color: white;
 }
@@ -4717,6 +4716,7 @@ fieldset[name="number-code"] {
   height: initial !important;
   max-width: calc(100% - 30px);
 }
+
 .device-phone .window.window-refer-friend {
   left: 50% !important;
   transform: translate(-50%) !important;
@@ -4827,6 +4827,7 @@ fieldset[name="number-code"] {
   align-items: center;
   justify-content: center;
 }
+
 .device-phone .popover-launcher,
 .device-phone .launch-popover {
   border-radius: 0;
@@ -4879,6 +4880,7 @@ fieldset[name="number-code"] {
   background: rgba(231, 238, 245);
   padding-top: 7px;
 }
+
 .device-phone .launch-search-wrapper {
   top: 0;
 }
@@ -4896,6 +4898,7 @@ fieldset[name="number-code"] {
 .device-phone .start-app-card {
   width: 25%;
 }
+
 .device-phone .start-app-icon {
   width: 50px;
   height: 50px;
@@ -4952,6 +4955,7 @@ fieldset[name="number-code"] {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .device-phone .window-body.item-container * {
   touch-action: pan-y;
 }
