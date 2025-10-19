@@ -235,6 +235,7 @@ const fr = {
         release_address_confirmation: `Etes-vous sûr de vouloir libérer cette adresse ?`,
         remove_from_taskbar: 'Retirer de la barre des tâches',
         remove_profile_picture: 'Retirer',
+        confirm_remove_profile_picture: 'Êtes-vous sûr de vouloir supprimer votre photo de profil?',
         rename: 'Renommer',
         repeat: 'Répéter',
         replace: 'Remplacer',

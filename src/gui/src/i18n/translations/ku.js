@@ -260,6 +260,7 @@ const ku = {
     release_address_confirmation: `دڵنیایت کە ئەتەوێت ئەم ناونیشانە بۆ هەڵگرتن؟`,
     remove_from_taskbar: "لابردن لە تاکسبار",
     remove_profile_picture: "لابردن",
+    confirm_remove_profile_picture: "دڵنیای کە دەتەوێت وێنەی پرۆفایلەکەت لاببەیت؟",
     rename: "ناونانەوە",
     repeat: "دووبارەکردنەوە",
     replace: "لە نوێکردنەوە",

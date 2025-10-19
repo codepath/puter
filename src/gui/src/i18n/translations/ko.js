@@ -254,6 +254,7 @@ const ko = {
     release_address_confirmation: `이 주소를 해제하시겠습니까?`,
     remove_from_taskbar: "작업 표시줄에서 제거",
     remove_profile_picture: "제거하다",
+    confirm_remove_profile_picture: "프로필 사진을 삭제하시겠습니까?",
     rename: "이름 변경",
     repeat: "반복",
     replace: "교체",

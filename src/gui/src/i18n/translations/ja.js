@@ -236,6 +236,7 @@ const ja = {
         release_address_confirmation: `このアドレスを解放してもよろしいですか？`,
         remove_from_taskbar: 'タスクバーから削除',
         remove_profile_picture: '取り除く',
+        confirm_remove_profile_picture: 'プロフィール画像を削除してもよろしいですか？',
         rename: '名前を変更',
         repeat: '繰り返す',
         replace: '置換',

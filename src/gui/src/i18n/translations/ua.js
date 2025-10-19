@@ -239,6 +239,7 @@ const ua = {
         release_address_confirmation: "Ви впевнені, що хочете звільнити цю адресу?",
         remove_from_taskbar: "Видалити з Панелі Завдань",
         remove_profile_picture: "Видалити",
+        confirm_remove_profile_picture: "Ви впевнені, що хочете видалити своє фото профілю?",
         rename: "Перейменувати",
         repeat: "Повторити",
         replace: "Замінити",

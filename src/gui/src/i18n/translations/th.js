@@ -233,6 +233,7 @@ const th = {
         release_address_confirmation: "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกที่อยู่นี้?",
         remove_from_taskbar: "นำออกจากทาสก์บาร์",
         remove_profile_picture: "ลบ",
+        confirm_remove_profile_picture: "คุณแน่ใจหรือไม่ว่าต้องการลบรูปโปรไฟล์ของคุณ?",
         rename: "เปลี่ยนชื่อ",
         repeat: "ทำซ้ำ",
         replace: "แทนที่",

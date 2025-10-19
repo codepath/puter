@@ -137,6 +137,7 @@ const nb = {
         release_address_confirmation: "Er du sikker på at du vil frigi denne adressen?",
         remove_from_taskbar: "Fjern fra oppgavelinjen",
         remove_profile_picture: "Fjerne",
+        confirm_remove_profile_picture: "Er du sikker på at du vil fjerne profilbildet ditt?",
         rename: "Gi nytt navn",
         repeat: "Gjenta",
         replace: 'Erstatt',

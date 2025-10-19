@@ -235,6 +235,7 @@ const hy = {
         release_address_confirmation: "Իսկապե՞ս ուզում եք թողարկել այս հասցեն:",
         remove_from_taskbar: "Հանել խնդրագոտուց",
         remove_profile_picture: "Հեռացնել",
+        confirm_remove_profile_picture: "Վստա՞հ եք, որ ցանկանում եք հեռացնել ձեր պրոֆիլի նկարը:",
         rename: "Վերանվանել",
         repeat: "Կրկնել",
         replace: "Փոխարինել",

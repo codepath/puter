@@ -231,6 +231,7 @@ const hu = {
         release_address_confirmation: "Biztosan felszabadítod ezt a címet?",
         remove_from_taskbar: "Eltávolítás a tálcáról",
         remove_profile_picture: "Távolítsa el",
+        confirm_remove_profile_picture: "Biztosan eltávolítja profilképét?",
         rename: "Átnevezés",
         repeat: "Ismétlés",
         replace: "Csere",

@@ -235,6 +235,7 @@ const tr = {
         release_address_confirmation: "Bu adresi bırakmak istediğinize emin misiniz?",
         remove_from_taskbar: "Görev Çubuğundan Kaldır",
         remove_profile_picture: "Kaldır",
+        confirm_remove_profile_picture: "Profil resminizi kaldırmak istediğinizden emin misiniz?",
         rename: "Yeniden Adlandır",
         repeat: "Tekrarla",
         replace: "Değiştir",

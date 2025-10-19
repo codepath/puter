@@ -239,6 +239,7 @@ const en = {
         release_address_confirmation: `Are you sure you want to release this address?`,
         remove_from_taskbar:'Remove from Taskbar',
         remove_profile_picture: 'Remove',
+        confirm_remove_profile_picture: 'Are you sure you want to remove your profile picture?',
         rename: 'Rename',
         repeat: 'Repeat',
         replace: 'Replace',

@@ -251,6 +251,7 @@ const en = {
     release_address_confirmation: `האם אתה בטוח שברצונך לשחרר כתובת זו?`,
     remove_from_taskbar: "הסרה משורת המשימות",
     remove_profile_picture: "הסר",
+    confirm_remove_profile_picture: "האם אתה בטוח שברצונך להסיר את תמונת הפרופיל שלך?",
     rename: "שנה שם",
     repeat: "חזור",
     replace: "החלף",

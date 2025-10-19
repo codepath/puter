@@ -235,6 +235,7 @@ const de = {
         release_address_confirmation: `Möchten Sie diese Adresse wirklich freigeben?`,
         remove_from_taskbar:'Von Taskleiste entfernen',
         remove_profile_picture: 'Entfernen',
+        confirm_remove_profile_picture: 'Sind Sie sicher, dass Sie Ihr Profilbild entfernen möchten?',
         rename: 'Umbenennen',
         repeat: 'Wiederholen',
         replace: 'Ersetzen',

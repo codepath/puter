@@ -256,6 +256,7 @@ const ig = {
     release_address_confirmation: `O doro gị anya na ịchọrọ wepụtara adreesị a?`,
     remove_from_taskbar: "Wepu na Taskbar",
     remove_profile_picture: "Wepu",
+    confirm_remove_profile_picture: "Ị ji n'aka na ị chọrọ iwepụ foto profaịlụ gị?",
     rename: "Nyegharịa aha",
     repeat: "megharịa",
     replace: "Dochie",

@@ -307,6 +307,7 @@ const fi = {
 
     remove_from_taskbar: "Poista tehtäväpalkista",
     remove_profile_picture: "Poistaa",
+    confirm_remove_profile_picture: "Haluatko varmasti poistaa profiilikuvasi?",
     rename: "Nimeä uudelleen",
     repeat: "Toista",
     replace: "Replace",

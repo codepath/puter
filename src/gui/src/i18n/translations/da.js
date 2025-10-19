@@ -235,6 +235,7 @@ const da = {
 		release_address_confirmation: `Er du sikker på, at du vil frigive denne adresse?`,
 		remove_from_taskbar: 'Fjern fra proceslinje',
 		remove_profile_picture: 'Fjerne',
+		confirm_remove_profile_picture: 'Er du sikker på, at du vil fjerne dit profilbillede?',
 		rename: 'Omdøb',
 		repeat: 'Gentag',
 		replace: 'Erstat',

@@ -136,6 +136,7 @@ const fa = {
     release_address_confirmation: `آیا مطمئن هستید که می خواهید این آدرس را آزاد کنید؟`,
     remove_from_taskbar: "از نوار وظایف حذف کن",
     remove_profile_picture: "حذف",
+    confirm_remove_profile_picture: "آیا مطمئن هستید که می خواهید تصویر نمایه خود را حذف کنید؟",
     rename: "تغییر نام",
     repeat: "تکرار",
     resend_confirmation_code: "ارسال مجدد کد تأیید",

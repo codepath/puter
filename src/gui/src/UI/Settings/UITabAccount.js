@@ -23,6 +23,7 @@ import UIWindowChangeUsername from '../UIWindowChangeUsername.js';
 import UIWindowConfirmUserDeletion from './UIWindowConfirmUserDeletion.js';
 import UIWindowManageSessions from '../UIWindowManageSessions.js';
 import UIWindow from '../UIWindow.js';
+import UIAlert from '../UIAlert.js';
 
 // About
 export default {
@@ -87,6 +88,9 @@ export default {
         return h;
     },
     init: ($el_window) => {
+        // Flag to prevent multiple simultaneous removal operations
+        let is_removing_profile_picture = false;
+
         $el_window.find('.change-password').on('click', function (e) {
             UIWindowChangePassword({
                 window_options:{
@@ -154,18 +158,53 @@ export default {
         })
 
         $el_window.find('.remove-profile-picture').on('click', async function (e) {
-            // Update profile by setting picture to null or empty
-            update_profile(window.user.username, {picture: null});
+            // Prevent multiple simultaneous operations
+            if(is_removing_profile_picture)
+                return;
             
-            // Reset profile picture to default in the settings window
-            $el_window.find('.profile-picture').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
+            is_removing_profile_picture = true;
             
-            // Reset profile picture in the toolbar
-            $('.profile-image').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
-            $('.profile-image').removeClass('profile-image-has-picture');
-            
-            // Hide the remove button
-            $(this).hide();
+            try {
+                // Show confirmation dialog
+                const alert_resp = await UIAlert({
+                    message: i18n('confirm_remove_profile_picture'),
+                    buttons:[
+                        {
+                            label: i18n('remove_profile_picture'),
+                            value: 'remove',
+                            type: 'danger',
+                        },
+                        {
+                            label: i18n('cancel')
+                        },
+                    ],
+                    window_options: {
+                        backdrop: true,
+                        close_on_backdrop_click: false,
+                    }
+                });
+                
+                // Only proceed if user confirmed
+                if(alert_resp !== 'remove'){
+                    return;
+                }
+                
+                // Update profile by setting picture to null or empty
+                update_profile(window.user.username, {picture: null});
+                
+                // Reset profile picture to default in the settings window
+                $el_window.find('.profile-picture').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
+                
+                // Reset profile picture in the toolbar
+                $('.profile-image').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
+                $('.profile-image').removeClass('profile-image-has-picture');
+                
+                // Hide the remove button
+                $(this).hide();
+            } finally {
+                // Always reset the flag, even if an error occurred
+                is_removing_profile_picture = false;
+            }
         })
 
         $el_window.on('file_opened', async function(e){

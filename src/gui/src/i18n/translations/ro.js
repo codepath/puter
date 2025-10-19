@@ -236,6 +236,7 @@ const ro = {
         release_address_confirmation: `Sigur doriți să eliberați această adresă?`,
         remove_from_taskbar:'Eliminați din bara de activități',
         remove_profile_picture: 'Elimină',
+        confirm_remove_profile_picture: 'Sigur doriți să eliminați fotografia de profil?',
         rename: 'Redenumește',
         repeat: 'Repetă',
         replace: "Înlocuiește",

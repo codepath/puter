@@ -259,6 +259,7 @@ const ru = {
     release_address_confirmation: `Вы уверены, что хотите освободить этот адрес?`,
     remove_from_taskbar: 'Удалить из панели задач',
     remove_profile_picture: 'Удалить',
+    confirm_remove_profile_picture: 'Вы уверены, что хотите удалить свою фотографию профиля?',
     rename: 'Переименовать',
     repeat: 'Повторить',
     replace: 'Заменить',

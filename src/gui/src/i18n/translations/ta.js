@@ -234,6 +234,7 @@ const ta = {
         release_address_confirmation: `இந்த முகவரியை நிச்சயமாக வெளியிட விரும்புகிறீர்களா?`,
         remove_from_taskbar: 'பணிப்பட்டியில் இருந்து அகற்று',
         remove_profile_picture: 'அகற்று',
+        confirm_remove_profile_picture: 'உங்கள் சுயவிவரப் படத்தை அகற்ற விரும்புகிறீர்களா?',
         rename: 'மறுபெயரிடவும்',
         repeat: 'மீண்டும் செய்யவும்',
         replace: 'மாற்றவும்',

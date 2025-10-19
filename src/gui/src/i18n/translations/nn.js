@@ -125,6 +125,7 @@ const nn = {
         release_address_confirmation: "Er du sikker på at du vil sleppe denne adressa?",
         remove_from_taskbar: "Fjern frå oppgåvelinja",
         remove_profile_picture: "Fjerne",
+        confirm_remove_profile_picture: "Er du sikker på at du vil fjerne profilbildet ditt?",
         rename: "Gje nytt namn",
         repeat: "Gjenta",
         resend_confirmation_code: "Send stadfestingskoden på nytt",

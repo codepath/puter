@@ -236,6 +236,7 @@ const sv = {
         release_address_confirmation: "Är du säker på att du vill frigöra denna adress?",
         remove_from_taskbar: "Ta bort från aktivitetsfältet",
         remove_profile_picture: "Ta bort",
+        confirm_remove_profile_picture: "Är du säker på att du vill ta bort din profilbild?",
         rename: "Byt namn",
         repeat: "Upprepa",
         replace: "Ersätt",

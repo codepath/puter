@@ -259,6 +259,7 @@ const it = {
     release_address_confirmation: `Sei sicuro di voler liberare questo indirizzo?`,
     remove_from_taskbar: "Sblocca dalla barra delle applicazioni",
     remove_profile_picture: "Rimuovi",
+    confirm_remove_profile_picture: "Sei sicuro di voler rimuovere la tua immagine del profilo?",
     rename: "Rinomina",
     repeat: "Ripeti",
     replace: "Sostituisci",

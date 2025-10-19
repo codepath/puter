@@ -243,6 +243,7 @@ const ur = {
     release_address_confirmation: "ایڈریس کی تصدیق جاری ",
     remove_from_taskbar: "ٹاسک بار سے ہٹائیں ",
     remove_profile_picture: "ہٹائیں",
+    confirm_remove_profile_picture: "کیا آپ واقعی اپنی پروفائل تصویر ہٹانا چاہتے ہیں؟",
     rename: "دوبارہ نام دیں",
     repeat: "دہرایؐں",
     replace: "بدل دیں۔",

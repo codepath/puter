@@ -268,6 +268,7 @@ const es = {
     release_address_confirmation: `¿Estás seguro de que quieres liberar esta dirección?`,
     remove_from_taskbar: 'Eliminar de la barra de tareas',
     remove_profile_picture: 'Eliminar',
+    confirm_remove_profile_picture: '¿Estás seguro de que quieres eliminar tu foto de perfil?',
     rename: 'Renombrar',
     repeat: 'Repetir',
     replace: 'Remplazar',
