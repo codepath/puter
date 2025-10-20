@@ -70,6 +70,11 @@ async function UIWindowDesktopBGSettings(options){
                     background-position: center;"><input type="color" style="width:25px; height: 25px; opacity:0;"></div>`;
                 h += `</div>`;
             h += `</div>`;
+            // Toolbar auto-hide toggle
+            h += `<div style="margin-top:16px;">`;
+                h += `<label style="display:block; margin-bottom:6px;">${i18n('ui_colors') ? i18n('ui_colors') : 'UI Colors'}</label>`;
+                h += `<label style="display:flex; align-items:center; gap:10px;"><input type="checkbox" class="toolbar-autohide-checkbox" checked> ${i18n('auto_hide_toolbar') ? i18n('auto_hide_toolbar') : 'Auto-hide top toolbar'}</label>`;
+            h += `</div>`;
 
             h += `<div style="padding-top: 5px; overflow:hidden; margin-top: 25px; border-top: 1px solid #CCC;">`
                 h += `<button class="button button-primary apply" style="float:right;">${i18n('apply')}</button>`;
@@ -183,12 +188,36 @@ async function UIWindowDesktopBGSettings(options){
                         },
                     },
                 })
+                // Save toolbar auto-hide preference
+                const autoHide = $(el_window).find('.toolbar-autohide-checkbox').is(':checked');
+                try{
+                    await puter.kv.set('ui:toolbar:auto_hide', autoHide === true ? 'true' : 'false');
+                }catch(err){
+                    console.error('Failed to save toolbar auto-hide setting', err);
+                }
+
+                // Notify running UI to update behavior if UIDesktop is present
+                try{
+                    if(window.updateToolbarAutoHideSetting)
+                        window.updateToolbarAutoHideSetting(autoHide === true);
+                }catch(err){}
+
                 $(el_window).close();
                 resolve(true);    
             }catch(err){
                 // Ignore
             }
         })
+
+        // Initialize checkbox from persisted value
+        try{
+            puter.kv.get('ui:toolbar:auto_hide').then((val) => {
+                const checked = (val === undefined || val === null) ? true : (String(val) === 'true');
+                $(el_window).find('.toolbar-autohide-checkbox').prop('checked', checked);
+            })
+        }catch(err){
+            // ignore
+        }
 
         $(el_window).find('.browse').on('click', function(){
             // open dialog
