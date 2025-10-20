@@ -87,6 +87,9 @@ export class ThemeService extends Service {
                 ...data.colors,
             };
             this.reload_();
+        } else {
+            // Initialize CSS variables with default values
+            this.reload_();
         }
     }
 
@@ -122,6 +125,7 @@ export class ThemeService extends Service {
         this.root.style.setProperty('--primary-alpha', s.alpha);
         this.root.style.setProperty('--primary-color', s.light_text ? 'white' : '#373e44');
         this.root.style.setProperty('--primary-color-sidebar-item', s.light_text ? '#5a5d61aa' : '#fefeff');
+        this.root.style.setProperty('--window-action-btn-filter', s.light_text ? 'invert(1) brightness(2)' : 'none');
 
         // TODO: Should we debounce this to reduce traffic?
         this.#broadcastService.sendBroadcast('themeChanged', {

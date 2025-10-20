@@ -104,6 +104,7 @@ pre {
     --window-sidebar-alpha: calc(min(1, 0.11 + var(--primary-alpha)));
     --window-sidebar-color: var(--primary-color);
     --window-sidebar-active-bg: var(--primary-color-sidebar-item);
+    --window-action-btn-filter: none;
     
 
     --taskbar-hue: var(--primary-hue);
@@ -1402,6 +1403,7 @@ span.header-sort-icon img {
     margin-right: 4px;
     margin-left: 4px;
     opacity: 0.5;
+    filter: var(--window-action-btn-filter);
     -webkit-user-drag: none;
     user-select: none;
     -moz-user-select: none;
@@ -1416,7 +1418,8 @@ span.header-sort-icon img {
 .window-scale-btn>img {
     width: 15px;
     height: 15px;
-    margin-top: 7px
+    margin-top: 7px;
+    filter: var(--window-action-btn-filter);
 }
 
 .window-app-iframe {
