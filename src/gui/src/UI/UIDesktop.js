@@ -1151,6 +1151,98 @@ async function UIDesktop(options){
     // adjust window container to take into account the toolbar height
     $('.window-container').css('top', window.toolbar_height);
 
+    // ============================================
+    // Toolbar auto-hide functionality (respect user setting)
+    // ============================================
+    (function() {
+        let toolbarHideTimeout;
+        const HIDE_DELAY = 2000; // 2 seconds
+        const SHOW_TRIGGER_ZONE = 50; // top 50px of screen
+        
+        const toolbar = $('.toolbar');
+        let isToolbarHidden = false;
+        let autoHideEnabled = true; // default
+
+        // Expose runtime updater so settings UI can toggle behavior immediately
+        window.updateToolbarAutoHideSetting = function(enabled){
+            autoHideEnabled = !!enabled;
+            if(!autoHideEnabled){
+                // ensure toolbar visible and cancel timers
+                clearTimeout(toolbarHideTimeout);
+                toolbar.removeClass('hidden');
+                isToolbarHidden = false;
+            }else{
+                // start hide timer
+                resetHideTimer();
+            }
+        }
+
+        function hideToolbar() {
+            if (!isToolbarHidden && autoHideEnabled) {
+                toolbar.addClass('hidden');
+                isToolbarHidden = true;
+            }
+        }
+
+        function showToolbar() {
+            if (isToolbarHidden) {
+                toolbar.removeClass('hidden');
+                isToolbarHidden = false;
+            }
+            resetHideTimer();
+        }
+
+        function resetHideTimer() {
+            clearTimeout(toolbarHideTimeout);
+            if(autoHideEnabled)
+                toolbarHideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+        }
+
+        // Show toolbar when mouse moves near the top of the screen
+        $(document).on('mousemove', function(e) {
+            if (!autoHideEnabled) return;
+            if (e.clientY <= SHOW_TRIGGER_ZONE) {
+                showToolbar();
+            } else if (!isToolbarHidden) {
+                resetHideTimer();
+            }
+        });
+
+        // Keep toolbar visible when hovering over it
+        toolbar.on('mouseenter', function() {
+            clearTimeout(toolbarHideTimeout);
+            showToolbar();
+        });
+
+        // Reset timer when leaving the toolbar
+        toolbar.on('mouseleave', function() {
+            resetHideTimer();
+        });
+
+        // Don't hide toolbar when it has open context menus or popovers
+        toolbar.on('mousedown', function(e) {
+            if ($(e.target).closest('.has-open-contextmenu, .has-open-popover').length > 0) {
+                clearTimeout(toolbarHideTimeout);
+            }
+        });
+
+        // Initialize autoHideEnabled from persisted setting
+        try{
+            puter.kv.get('ui:toolbar:auto_hide').then((val) => {
+                // default to true when unset
+                const enabled = (val === undefined || val === null) ? true : (String(val) === 'true');
+                window.updateToolbarAutoHideSetting(enabled);
+            }).catch(() => {
+                window.updateToolbarAutoHideSetting(true);
+            });
+        }catch(err){
+            window.updateToolbarAutoHideSetting(true);
+        }
+
+        // Start the initial hide timer (only if enabled)
+        resetHideTimer();
+    })();
+
     // track: checkpoint
     //-----------------------------
     // GUI is ready to launch apps!

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@font-face {
+ @font-face {
     font-family: 'Inter';
     src: url('/fonts/Inter-Thin.ttf') format('truetype');
     font-weight: 100;
@@ -1748,7 +1748,16 @@ label {
     justify-content: flex-end;
     align-content: center;
     flex-wrap: wrap;
-    padding-right: 10px
+    padding-right: 10px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toolbar.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .show-desktop-btn {
