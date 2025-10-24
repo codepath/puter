@@ -1258,7 +1258,7 @@ span.header-sort-icon img {
     var(--window-sidebar-lightness),
     calc(0.5 + 0.5 * var(--window-sidebar-alpha))
   );
-  color: var(--sidebar-text-color, inherit);
+  color: var(--sidebar-text-color, #444444);
   overflow-y: scroll;
   margin-top: 1px;
   box-shadow: inset -4px 0 8px -8px rgba(0, 0, 0, 0.3);
@@ -1320,8 +1320,9 @@ span.header-sort-icon img {
 
 .window-sidebar-item:hover,
 .window-sidebar-item.has-open-contextmenu {
-  background-color: rgba(243, 243, 243, 0.8);
+  background-color: rgba(255, 255, 255, 0.15);
   cursor: pointer;
+  color: var(--sidebar-text-color, #444444);
 }
 
 .window-sidebar-item,
@@ -1344,7 +1345,9 @@ span.header-sort-icon img {
 .window-sidebar-item-active,
 .window-sidebar-item-drag-active,
 .window-sidebar-item-active:hover {
-  background-color: #fefeff;
+  background-color: rgba(255, 255, 255, 0.25);
+  color: var(--sidebar-text-color, #444444);
+  font-weight: 500;
 }
 
 .window-sidebar-item-placeholder {
@@ -1365,9 +1368,10 @@ span.header-sort-icon img {
 }
 
 .window-sidebar-item-dragging {
-  background-color: #f5f5f5 !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
   opacity: 0.8;
   cursor: grabbing;
+  color: var(--sidebar-text-color, #444444);
 }
 
 .ui-sortable-helper {

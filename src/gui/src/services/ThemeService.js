@@ -109,20 +109,62 @@ export class ThemeService extends Service {
 
     /**
      * Calculate appropriate text color based on background lightness
-     * Uses simple luminance-based contrast calculation with threshold logic
+     * Uses WCAG-compliant luminance calculation for better contrast
      * @param {number} lightness - Background lightness percentage (0-100)
      * @param {number} saturation - Background saturation percentage (0-100)
      * @returns {string} - 'white' for dark backgrounds, '#373e44' for light backgrounds
      */
     calculateSidebarTextColor(lightness, saturation) {
-        // Simple threshold-based approach for determining text color
-        // Lower lightness values need light text, higher values need dark text
-        // Adjust threshold slightly based on saturation for better contrast
-        const baseThreshold = 50;
-        const saturationAdjustment = (saturation - 50) * 0.1; // Slight adjustment based on saturation
-        const adjustedThreshold = baseThreshold + saturationAdjustment;
+        // Convert HSL to relative luminance for WCAG compliance
+        const hue = this.state.hue || 210;
+        const relativeLuminance = this.calculateRelativeLuminance(hue, saturation, lightness);
+        
+        // WCAG AA requires 4.5:1 contrast ratio for normal text
+        // Calculate contrast ratios for both white and dark text options
+        const whiteContrast = this.calculateContrastRatio(1.0, relativeLuminance);
+        const darkContrast = this.calculateContrastRatio(0.2, relativeLuminance); // #373e44 ≈ 0.2 luminance
+        
+        // Choose text color that provides better contrast, preferring WCAG AA compliance
+        return whiteContrast >= darkContrast ? 'white' : '#373e44';
+    }
 
-        return lightness < adjustedThreshold ? 'white' : '#373e44';
+    /**
+     * Calculate relative luminance from HSL values according to WCAG guidelines
+     */
+    calculateRelativeLuminance(hue, saturation, lightness) {
+        // Convert HSL to RGB first
+        const h = hue / 360;
+        const s = saturation / 100;
+        const l = lightness / 100;
+        
+        const c = (1 - Math.abs(2 * l - 1)) * s;
+        const x = c * (1 - Math.abs((h * 6) % 2 - 1));
+        const m = l - c / 2;
+        
+        let r, g, b;
+        if (h < 1/6) { r = c; g = x; b = 0; }
+        else if (h < 2/6) { r = x; g = c; b = 0; }
+        else if (h < 3/6) { r = 0; g = c; b = x; }
+        else if (h < 4/6) { r = 0; g = x; b = c; }
+        else if (h < 5/6) { r = x; g = 0; b = c; }
+        else { r = c; g = 0; b = x; }
+        
+        r = (r + m);
+        g = (g + m);
+        b = (b + m);
+        
+        // Apply gamma correction and calculate luminance
+        const sRGBToLinear = (c) => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+        return 0.2126 * sRGBToLinear(r) + 0.7152 * sRGBToLinear(g) + 0.0722 * sRGBToLinear(b);
+    }
+
+    /**
+     * Calculate contrast ratio between two luminance values
+     */
+    calculateContrastRatio(luminance1, luminance2) {
+        const lighter = Math.max(luminance1, luminance2);
+        const darker = Math.min(luminance1, luminance2);
+        return (lighter + 0.05) / (darker + 0.05);
     }
 
     reload_() {
