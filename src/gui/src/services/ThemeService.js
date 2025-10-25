@@ -86,11 +86,8 @@ export class ThemeService extends Service {
                 ...this.state,
                 ...data.colors,
             };
+        } 
             this.reload_();
-        } else {
-            // Initialize CSS variables with default values
-            this.reload_();
-        }
     }
 
     reset () {
