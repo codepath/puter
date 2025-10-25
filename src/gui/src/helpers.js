@@ -2633,7 +2633,7 @@ window.update_profile = function(username, key_vals){
             const profile = JSON.parse(text);
 
             for (const key in key_vals) {
-                if (key_vals[key] === null || key_vals[key] === undefined || key_vals[key] === '') {
+                if (!key_vals[key]) {
                     delete profile[key];
                     delete window.user.profile[key];
                 } else {

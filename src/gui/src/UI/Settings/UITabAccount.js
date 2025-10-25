@@ -36,53 +36,53 @@ export default {
 
         // profile picture
         h += `<div style="overflow: hidden; display: flex; margin-bottom: 20px; flex-direction: column; align-items: center;">`;
-            h += `<div class="profile-picture change-profile-picture" style="background-image: url('${html_encode(window.user?.profile?.picture ?? window.icons['profile.svg'])}');">`;
-            h += `</div>`;
+        h += `<div class="profile-picture change-profile-picture" style="background-image: url('${html_encode(window.user?.profile?.picture ?? window.icons['profile.svg'])}');">`;
+        h += `</div>`;
         h += `</div>`;
         h += `<div style="text-align: center; margin-bottom: 20px;">`;
-            h += `<button class="button button-small button-danger remove-profile-picture" style="display: ${window.user?.profile?.picture ? 'inline-block' : 'none'};">${i18n('remove_profile_picture')}</button>`;
+        h += `<button class="button button-small button-danger remove-profile-picture" style="display: ${window.user?.profile?.picture ? 'inline-block' : 'none'};">${i18n('remove_profile_picture')}</button>`;
         h += `</div>`;
 
         // change password button
-        if(!window.user.is_temp){
+        if (!window.user.is_temp) {
             h += `<div class="settings-card">`;
-                h += `<strong>${i18n('password')}</strong>`;
-                h += `<div style="flex-grow:1;">`;
-                    h += `<button class="button change-password" style="float:right;">${i18n('change_password')}</button>`;
-                h += `</div>`;
+            h += `<strong>${i18n('password')}</strong>`;
+            h += `<div style="flex-grow:1;">`;
+            h += `<button class="button change-password" style="float:right;">${i18n('change_password')}</button>`;
+            h += `</div>`;
             h += `</div>`;
         }
 
         // change username button
         h += `<div class="settings-card">`;
-            h += `<div>`;
-                h += `<strong style="display:block;">${i18n('username')}</strong>`;
-                h += `<span class="username" style="display:block; margin-top:5px;">${html_encode(window.user.username)}</span>`;
-            h += `</div>`;
-            h += `<div style="flex-grow:1;">`;
-                h += `<button class="button change-username" style="float:right;">${i18n('change_username')}</button>`;
-            h += `</div>`
+        h += `<div>`;
+        h += `<strong style="display:block;">${i18n('username')}</strong>`;
+        h += `<span class="username" style="display:block; margin-top:5px;">${html_encode(window.user.username)}</span>`;
+        h += `</div>`;
+        h += `<div style="flex-grow:1;">`;
+        h += `<button class="button change-username" style="float:right;">${i18n('change_username')}</button>`;
+        h += `</div>`
         h += `</div>`;
 
         // change email button
-        if(window.user.email){
+        if (window.user.email) {
             h += `<div class="settings-card">`;
-                h += `<div>`;
-                    h += `<strong style="display:block;">${i18n('email')}</strong>`;
-                    h += `<span class="user-email" style="display:block; margin-top:5px;">${html_encode(window.user.email)}</span>`;
-                h += `</div>`;
-                h += `<div style="flex-grow:1;">`;
-                    h += `<button class="button change-email" style="float:right;">${i18n('change_email')}</button>`;
-                h += `</div>`;
+            h += `<div>`;
+            h += `<strong style="display:block;">${i18n('email')}</strong>`;
+            h += `<span class="user-email" style="display:block; margin-top:5px;">${html_encode(window.user.email)}</span>`;
+            h += `</div>`;
+            h += `<div style="flex-grow:1;">`;
+            h += `<button class="button change-email" style="float:right;">${i18n('change_email')}</button>`;
+            h += `</div>`;
             h += `</div>`;
         }
 
         // 'Delete Account' button
         h += `<div class="settings-card settings-card-danger">`;
-            h += `<strong style="display: inline-block;">${i18n("delete_account")}</strong>`;
-            h += `<div style="flex-grow:1;">`;
-                h += `<button class="button button-danger delete-account" style="float:right;">${i18n("delete_account")}</button>`;
-            h += `</div>`;
+        h += `<strong style="display: inline-block;">${i18n("delete_account")}</strong>`;
+        h += `<div style="flex-grow:1;">`;
+        h += `<button class="button button-danger delete-account" style="float:right;">${i18n("delete_account")}</button>`;
+        h += `</div>`;
         h += `</div>`;
 
         return h;
@@ -93,7 +93,7 @@ export default {
 
         $el_window.find('.change-password').on('click', function (e) {
             UIWindowChangePassword({
-                window_options:{
+                window_options: {
                     parent_uuid: $el_window.attr('data-element_uuid'),
                     disable_parent_window: true,
                     parent_center: true,
@@ -103,7 +103,7 @@ export default {
 
         $el_window.find('.change-username').on('click', function (e) {
             UIWindowChangeUsername({
-                window_options:{
+                window_options: {
                     parent_uuid: $el_window.attr('data-element_uuid'),
                     disable_parent_window: true,
                     parent_center: true,
@@ -113,7 +113,7 @@ export default {
 
         $el_window.find('.change-email').on('click', function (e) {
             UIWindowChangeEmail({
-                window_options:{
+                window_options: {
                     parent_uuid: $el_window.attr('data-element_uuid'),
                     disable_parent_window: true,
                     parent_center: true,
@@ -123,7 +123,7 @@ export default {
 
         $el_window.find('.manage-sessions').on('click', function (e) {
             UIWindowManageSessions({
-                window_options:{
+                window_options: {
                     parent_uuid: $el_window.attr('data-element_uuid'),
                     disable_parent_window: true,
                     parent_center: true,
@@ -133,7 +133,7 @@ export default {
 
         $el_window.find('.delete-account').on('click', function (e) {
             UIWindowConfirmUserDeletion({
-                window_options:{
+                window_options: {
                     parent_uuid: $el_window.attr('data-element_uuid'),
                     disable_parent_window: true,
                     parent_center: true,
@@ -154,21 +154,20 @@ export default {
                 is_dir: true,
                 is_openFileDialog: true,
                 selectable_body: false,
-            });    
+            });
         })
 
         $el_window.find('.remove-profile-picture').on('click', async function (e) {
-            // Prevent multiple simultaneous operations
-            if(is_removing_profile_picture)
-                return;
-            
-            is_removing_profile_picture = true;
-            
+            const $button = $(this);
+
+            // Disable the button to prevent multiple clicks
+            $button.prop('disabled', true);
+
             try {
                 // Show confirmation dialog
                 const alert_resp = await UIAlert({
                     message: i18n('confirm_remove_profile_picture'),
-                    buttons:[
+                    buttons: [
                         {
                             label: i18n('remove_profile_picture'),
                             value: 'remove',
@@ -183,42 +182,44 @@ export default {
                         close_on_backdrop_click: false,
                     }
                 });
-                
+
                 // Only proceed if user confirmed
-                if(alert_resp !== 'remove'){
+                if (alert_resp !== 'remove') {
                     return;
                 }
-                
+
                 // Update profile by setting picture to null or empty
-                update_profile(window.user.username, {picture: null});
-                
+                update_profile(window.user.username, { picture: null });
+
                 // Reset profile picture to default in the settings window
                 $el_window.find('.profile-picture').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
-                
+
                 // Reset profile picture in the toolbar
                 $('.profile-image').css('background-image', 'url(' + window.icons['profile.svg'] + ')');
                 $('.profile-image').removeClass('profile-image-has-picture');
-                
-                // Hide the remove button
-                $(this).hide();
+
+                // Hide the remove button (no need to re-enable since it's hidden)
+                $button.hide();
             } finally {
-                // Always reset the flag, even if an error occurred
-                is_removing_profile_picture = false;
+                // Re-enable the button if it's still visible (in case of error or cancellation)
+                if ($button.is(':visible')) {
+                    $button.prop('disabled', false);
+                }
             }
         })
 
-        $el_window.on('file_opened', async function(e){
+        $el_window.on('file_opened', async function (e) {
             let selected_file = Array.isArray(e.detail) ? e.detail[0] : e.detail;
             // set profile picture
             const profile_pic = await puter.fs.read(selected_file.path)
             // blob to base64
             const reader = new FileReader();
             reader.readAsDataURL(profile_pic);
-            reader.onloadend = function() {
+            reader.onloadend = function () {
                 // resizes the image to 150x150
                 const img = new Image();
                 img.src = reader.result;
-                img.onload = function() {
+                img.onload = function () {
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     canvas.width = 150;
@@ -230,9 +231,11 @@ export default {
                     $('.profile-image').css('background-image', 'url(' + html_encode(base64data) + ')');
                     $('.profile-image').addClass('profile-image-has-picture');
                     // update profile picture
-                    update_profile(window.user.username, {picture: base64data})
-                    // Show the remove button
-                    $el_window.find('.remove-profile-picture').show();
+                    update_profile(window.user.username, { picture: base64data })
+                    // Show and enable the remove button
+                    const $removeButton = $el_window.find('.remove-profile-picture');
+                    $removeButton.show();
+                    $removeButton.prop('disabled', false);
                 }
             }
         })
