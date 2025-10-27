@@ -681,9 +681,10 @@ window.show_save_account_notice_if_needed = function(message){
             // Show the notice
             setTimeout(async () => {
                 const alert_resp = await UIAlert({
+                    type: 'info',
                     message: message ?? `<strong>Congrats on storing data!</strong><p>Don't forget to save your session! You are in a temporary session. Save session to avoid accidentally losing your work.</p>`,
-                    body_icon: window.icons['reminder.svg'],
-                    buttons:[
+                    icon: 'reminder.svg',
+                    buttons: [
                         {
                             label: i18n('save_session'),
                             value: 'save-session',
@@ -1020,9 +1021,12 @@ window.copy_clipboard_items = async function(dest_path, dest_container_element){
                             item_with_same_name_already_exists = false;
                         }
                     }
-                    else{
-                        if(err.message){
-                            UIAlert(err.message)
+                    else {
+                        if (err.message) {
+                            UIAlert({
+                                type: 'error',
+                                message: err.message
+                            })
                         }
                         item_with_same_name_already_exists = false;
                     }
@@ -1129,12 +1133,18 @@ window.copy_items = function(el_items, dest_path){
                             item_with_same_name_already_exists = false;
                         }
                     }
-                    else{
-                        if(err.message){
-                            UIAlert(err.message)
+                    else {
+                        if (err.message) {
+                            UIAlert({
+                                type: 'error',
+                                message: err.message
+                            })
                         }
-                        else if(err){
-                            UIAlert(err)
+                        else if (err) {
+                            UIAlert({
+                                type: 'error',
+                                message: err
+                            })
                         }
                         item_with_same_name_already_exists = false;
                     }
@@ -1206,8 +1216,11 @@ window.delete_item = async function(el_item, descendants_only = false){
             // update all shortcuts to this item
             $(`.item[data-shortcut_to_path="${html_encode($(el_item).attr('data-path'))}" i]`).attr(`data-shortcut_to_path`, '');
         });
-    }catch(err){
-        UIAlert(err.responseText);
+    } catch (err) {
+        UIAlert({
+            type: 'error',
+            message: err.responseText
+        });
     }
 }
 
@@ -1418,7 +1431,10 @@ window.move_items = async function(el_items, dest_path, is_undo = false){
                 // moving an item into a trashed directory? deny.
                 else if(dest_path.startsWith(window.trash_path)){
                     progwin?.close();
-                    UIAlert('Cannot move items into a deleted folder.');
+                    UIAlert({
+                        type: 'error',
+                        message: 'Cannot move items into a deleted folder.'
+                    });
                     return;
                 }
 
@@ -1706,7 +1722,7 @@ window.update_sites_cache = function(){
  * @param {*} target_path 
  */
 
-window.init_upload_using_dialog = function(el_target_container, target_path = null){
+window.init_upload_using_dialog = function (el_target_container, target_path = null) {
     $("#upload-file-dialog").unbind('onchange');
     $("#upload-file-dialog").unbind('change');
     $("#upload-file-dialog").unbind('onChange');
@@ -1736,8 +1752,11 @@ window.upload_items = async function(items, dest_path){
     let upload_progress_window;
     let opid;
 
-    if(dest_path == window.trash_path){
-        UIAlert('Uploading to trash is not allowed!');
+    if (dest_path == window.trash_path) {
+        UIAlert({
+            type: 'error',
+            message: 'Uploading to trash is not allowed!'
+        });
         return;
     }
 
@@ -1917,7 +1936,7 @@ window.getUsage = () => {
         console.error('There has been a problem with your fetch operation:', error);
     });
 
-}  
+}
 
 window.getAppUIDFromOrigin = async function(origin) {
     try {
@@ -2223,8 +2242,11 @@ window.unzipItem = async function(itemPath) {
     terminateOp = fflate.unzip(file, async (err, unzipped) => {
         currentProgress += window.zippingProgressConfig.ZIPPING;
         progwin?.set_progress(currentProgress.toPrecision(2));
-        if(err) {
-            UIAlert(e.message);
+        if (err) {
+            UIAlert({
+                type: 'error',
+                message: err.message
+            });
             // close progress window
             clearTimeout(progwin_timeout);
             setTimeout(() => {
@@ -2242,7 +2264,10 @@ window.unzipItem = async function(itemPath) {
                     currentProgress += perItemProgress;
                     progwin?.set_progress(currentProgress.toPrecision(2));
                 } catch (e) {
-                    UIAlert(e.message);
+                    UIAlert({
+                        type: 'error',
+                        message: e.message
+                    });
                 }
             });
             queuedFileWrites.length && puter.fs.upload(
@@ -2375,7 +2400,7 @@ window.rename_file = async(options, new_name, old_name, old_path, el_item, el_it
             $(el_item_name_editor).val(html_encode($(el_item).attr('data-name')));
 
             //show error
-            if(err.message){
+            if (err.message) {
                 UIAlert(err.message)
             }
         },
@@ -2395,8 +2420,11 @@ window.delete_item_with_path = async function(path){
             descendantsOnly: false,
             recursive: true,
         });
-    }catch(err){
-        UIAlert(err.responseText);
+    } catch (err) {
+        UIAlert({
+            type: 'error',
+            message: err.responseText
+        });
     }
 }
 
