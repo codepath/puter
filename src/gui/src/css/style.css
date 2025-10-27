@@ -112,6 +112,7 @@ pre {
     --select-saturation: 74.22%;
     --select-lightness: 55.88%;
     --select-color: hsl(var(--select-hue), var(--select-saturation), var(--select-lightness));
+    --sidebar-header-text-color: hsl(210, 41.18%, 90%); /* Default to light color */
 }
 
 html, body {
@@ -1188,7 +1189,7 @@ span.header-sort-icon img {
     height: calc(100% - 30px);
 }
 
-.window-cover-page.window-filedialog .window-body {
+.window-cover-page .window-body {
     height: calc(100% - 109px) !important;
 }
 
@@ -1218,7 +1219,7 @@ span.header-sort-icon img {
     margin: 0;
     font-weight: bold;
     font-size: 13px;
-    color: #8f96a3;
+    color: var(--sidebar-header-text-color);
     text-shadow: 1px 1px rgb(247 247 247 / 15%);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
