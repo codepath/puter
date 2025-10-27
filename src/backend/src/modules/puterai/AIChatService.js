@@ -336,7 +336,7 @@ class AIChatService extends BaseService {
                         model,
                         error: e,
                     });
-                    while ( !! error ) {
+                    while ( error ) {
                         const fallback = this.get_fallback_model({
                             model, tried,
                         });

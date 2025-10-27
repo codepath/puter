@@ -927,8 +927,9 @@ span.header-sort-icon img {
 }
 
 .device-phone .window-alert, .device-tablet .window-alert {
-    min-width: 90%;
-    max-width: 300px;
+    min-width: 160px !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: calc(100vh - 40px) !important;
     position: absolute;
     left: 50% !important;
     top: 50% !important;
@@ -1457,13 +1458,85 @@ span.header-sort-icon img {
 }
 
 .window-alert-message, .window-prompt-message {
-    font-size: 15px;
+    font-size: 13px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #414650;
     text-shadow: 1px 1px #ffffff52;
-    margin-top: 10px;
+    margin-top: 8px;
     word-break: break-word;
+}
+
+/* Alert sizing with resize constraints */
+.window-alert {
+    min-width: 200px !important;
+    max-width: 500px !important;
+    min-height: 120px !important;
+    max-height: 400px !important;
+}
+
+/* Compact alert window header */
+.window-alert .window-head {
+    height: 24px !important;
+    min-height: 24px !important;
+    padding: 2px 6px !important;
+}
+
+.window-alert .window-head .window-title {
+    font-size: 11px !important;
+    line-height: 20px !important;
+}
+
+.window-alert .window-head .window-close-btn {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 10px !important;
+    line-height: 14px !important;
+}
+
+/* Compact alert body */
+.window-alert .window-body {
+    min-height: auto !important;
+}
+
+/* Compact button styling for alerts */
+.window-alert-buttons-compact {
+    flex-wrap: wrap !important;
+    min-height: 28px !important;
+}
+
+.window-alert-buttons-compact .button {
+    margin: 0 !important;
+    font-weight: 500 !important;
+    height: 28px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+}
+
+.window-alert-buttons-compact .button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Responsive button layout for resized alerts */
+.window-alert .window-alert-buttons-compact {
+    margin-top: auto !important;
+}
+
+/* Content area flexibility */
+.window-alert .window-body {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+.window-alert-message-compact {
+    overflow-y: auto !important;
+    max-height: 200px !important;
 }
 
 .window-alert-message {
@@ -1471,14 +1544,343 @@ span.header-sort-icon img {
 }
 
 .window-alert-icon {
-    width: 64px;
-    margin: 10px auto 20px;
+    width: 32px;
+    margin: 6px auto 10px;
     display: block;
+}
+
+/* Alert type-specific styling */
+.window-alert-info {
+    /* Info alert styling - blue theme */
+    border-left: 4px solid #2196f3;
+}
+
+.window-alert-info .window-alert-message {
+    color: #1976d2;
+}
+
+.window-alert-info .window-alert-icon {
+    filter: hue-rotate(200deg) saturate(1.2);
+}
+
+.window-alert-success {
+    /* Success alert styling - green theme */
+    border-left: 4px solid #4caf50;
+}
+
+.window-alert-success .window-alert-message {
+    color: #388e3c;
+}
+
+.window-alert-success .window-alert-icon {
+    filter: hue-rotate(120deg) saturate(1.1);
+}
+
+.window-alert-warning {
+    /* Warning alert styling - orange theme (default) */
+    border-left: 4px solid #ff9800;
+}
+
+.window-alert-warning .window-alert-message {
+    color: #f57c00;
+}
+
+.window-alert-warning .window-alert-icon {
+    filter: hue-rotate(30deg) saturate(1.1);
+}
+
+.window-alert-error {
+    /* Error alert styling - red theme */
+    border-left: 4px solid #f44336;
+}
+
+.window-alert-error .window-alert-message {
+    color: #d32f2f;
+}
+
+.window-alert-error .window-alert-icon {
+    filter: hue-rotate(0deg) saturate(1.3);
+}
+
+.window-alert-question {
+    /* Question alert styling - purple theme */
+    border-left: 4px solid #9c27b0;
+}
+
+.window-alert-question .window-alert-message {
+    color: #7b1fa2;
+}
+
+.window-alert-question .window-alert-icon {
+    filter: hue-rotate(280deg) saturate(1.2);
+}
+
+/* Enhanced alert type styling with backgrounds and shadows */
+.window-alert-info {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 150, 243, 0.02) 100%);
+    box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+}
+
+.window-alert-success {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(76, 175, 80, 0.02) 100%);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
+}
+
+.window-alert-warning {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, rgba(255, 152, 0, 0.02) 100%);
+    box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
+}
+
+.window-alert-error {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.05) 0%, rgba(244, 67, 54, 0.02) 100%);
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.15);
+}
+
+.window-alert-question {
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.05) 0%, rgba(156, 39, 176, 0.02) 100%);
+    box-shadow: 0 2px 8px rgba(156, 39, 176, 0.15);
+}
+
+/* Enhanced icon styling for better visual hierarchy */
+.window-alert-icon {
+    transition: transform 0.2s ease-in-out;
+    border-radius: 50%;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.window-alert-icon:hover {
+    transform: scale(1.05);
+}
+
+/* Message styling enhancements */
+.window-alert-message {
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+/* Responsive design considerations */
+@media (max-width: 480px) {
+    .window-alert {
+        margin: 6px;
+        min-width: 160px !important;
+        max-width: calc(100vw - 20px) !important;
+        max-height: calc(100vh - 40px) !important;
+    }
+    
+    .window-alert-icon-compact {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    
+    .window-alert-message-compact {
+        font-size: 12px !important;
+    }
+    
+    .window-alert-buttons-compact .button {
+        padding: 5px 10px !important;
+        font-size: 11px !important;
+        min-width: 50px !important;
+        height: 26px !important;
+    }
+    
+    /* Stack buttons vertically on very small screens when resized */
+    @media (max-width: 320px) {
+        .window-alert-buttons-compact {
+            flex-direction: column !important;
+            gap: 4px !important;
+        }
+        
+        .window-alert-buttons-compact .button {
+            width: 100% !important;
+        }
+    }
+}
+
+@media (max-width: 320px) {
+    .window-alert-icon {
+        width: 40px;
+        margin: 6px auto 12px;
+    }
+    
+    .window-alert-message {
+        font-size: 13px;
+        margin: 10px 0;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .window-alert-info {
+        border-left-width: 6px;
+        background: rgba(33, 150, 243, 0.1);
+    }
+    
+    .window-alert-success {
+        border-left-width: 6px;
+        background: rgba(76, 175, 80, 0.1);
+    }
+    
+    .window-alert-warning {
+        border-left-width: 6px;
+        background: rgba(255, 152, 0, 0.1);
+    }
+    
+    .window-alert-error {
+        border-left-width: 6px;
+        background: rgba(244, 67, 54, 0.1);
+    }
+    
+    .window-alert-question {
+        border-left-width: 6px;
+        background: rgba(156, 39, 176, 0.1);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .window-alert-icon {
+        transition: none;
+    }
+    
+    .window-alert-icon:hover {
+        transform: none;
+    }
+}
+
+/* Custom UI content styling */
+.window-alert-custom-content {
+    width: 100%;
+    min-height: 50px;
+}
+
+.window-alert-custom-content * {
+    box-sizing: border-box;
+}
+
+/* Button container styling */
+.window-alert-buttons {
+    overflow: hidden;
+    margin-top: 20px;
 }
 
 .alert-resp-button {
     width: 100%;
     margin-top: 10px;
+    transition: all 0.2s ease-in-out;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* Alert type-specific button styling */
+.window-alert-info .alert-resp-button.button-primary {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    border-color: #1976d2;
+}
+
+.window-alert-info .alert-resp-button.button-primary:hover {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    border-color: #1565c0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(33, 150, 243, 0.3);
+}
+
+.window-alert-success .alert-resp-button.button-primary {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+    border-color: #388e3c;
+}
+
+.window-alert-success .alert-resp-button.button-primary:hover {
+    background: linear-gradient(135deg, #388e3c 0%, #2e7d32 100%);
+    border-color: #2e7d32;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.window-alert-warning .alert-resp-button.button-primary {
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    border-color: #f57c00;
+}
+
+.window-alert-warning .alert-resp-button.button-primary:hover {
+    background: linear-gradient(135deg, #f57c00 0%, #ef6c00 100%);
+    border-color: #ef6c00;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
+.window-alert-error .alert-resp-button.button-primary {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    border-color: #d32f2f;
+}
+
+.window-alert-error .alert-resp-button.button-primary:hover {
+    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+    border-color: #c62828;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+.window-alert-question .alert-resp-button.button-primary {
+    background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+    border-color: #7b1fa2;
+}
+
+.window-alert-question .alert-resp-button.button-primary:hover {
+    background: linear-gradient(135deg, #7b1fa2 0%, #6a1b9a 100%);
+    border-color: #6a1b9a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(156, 39, 176, 0.3);
+}
+
+/* Secondary button styling for alerts */
+.window-alert .alert-resp-button.button-secondary {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: #666;
+}
+
+.window-alert .alert-resp-button.button-secondary:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Danger button styling for alerts */
+.window-alert .alert-resp-button.button-danger {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    border-color: #d32f2f;
+}
+
+.window-alert .alert-resp-button.button-danger:hover {
+    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+    border-color: #c62828;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Responsive button styling */
+@media (max-width: 480px) {
+    .alert-resp-button {
+        margin-top: 8px;
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Reduced motion support for buttons */
+@media (prefers-reduced-motion: reduce) {
+    .alert-resp-button {
+        transition: none;
+    }
+    
+    .alert-resp-button:hover {
+        transform: none;
+    }
 }
 
 .prompt-resp-button {

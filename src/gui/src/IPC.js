@@ -1261,7 +1261,10 @@ const ipc_listener = async (event, handled) => {
                             success: function(res){
                             },
                             error: function(err){
-                                UIAlert(err && err.message ? err.message : "Download failed.");
+                                UIAlert({
+                                    type: 'error',
+                                    message: err && err.message ? err.message : "Download failed."
+                                });
                             }
                         });
                         item_with_same_name_already_exists = false;
