@@ -52,6 +52,28 @@ async function UIDesktop(options){
     }
 
 
+
+    window.toolbar_auto_hide_enabled = true;
+
+    // Load persisted preference from puter.kv if available, otherwise localStorage
+    (async () => {
+    try {
+        if (typeof puter !== 'undefined' && puter?.kv) {
+            const val = await puter.kv.get('toolbar_auto_hide_enabled');
+            if (val === 'false' || val === false) {
+                window.toolbar_auto_hide_enabled = false;
+            }
+        } else {
+            const stored = localStorage.getItem('toolbar_auto_hide_enabled');
+            if (stored === 'false') window.toolbar_auto_hide_enabled = false;
+        }
+    } catch (e) {
+        console.error('Failed to load toolbar_auto_hide preference', e);
+    }
+    })();
+
+
+
     // Give Camera and Recorder write permissions to Desktop
     puter.kv.get('has_set_default_app_user_permissions').then(async (user_permissions) => {
         if(!user_permissions){
@@ -1144,6 +1166,194 @@ async function UIDesktop(options){
 
     // prepend toolbar to desktop
     $(ht).insertBefore(el_desktop);
+
+    /* ===== Toolbar show/hide helpers and auto-hide logic (feature/toolbar-autohide) ===== */
+
+const TOOLBAR_SAFE_ZONE = 30;
+const TOOLBAR_HIDE_DELAY = 100; // ms
+const TOOLBAR_QUICK_HIDE_DELAY = 50;
+
+window.toolbarHideTimeout = null;
+window.has_seen_toolbar_animation = window.has_seen_toolbar_animation ?? false;
+let isMouseNearToolbar = false;
+window.mouseMoveThrottle = null;
+
+// Show toolbar (undo hidden state)
+window.show_toolbar = () => {
+    const $toolbar = $('.toolbar');
+    if (!$toolbar.length) return;
+    if (!$toolbar.hasClass('toolbar-hidden')) return;
+
+    $toolbar.removeClass('toolbar-hidden');
+    $toolbar.stop(true, true).animate({ top: 0 }, 100).css('width', 'max-content');
+    $('.toolbar-btn, #clock, .user-options-menu-btn').stop(true, true).animate({ opacity: 0.8 }, 50);
+
+    if (!window.has_seen_toolbar_animation) {
+        try {
+            if (puter?.kv) puter.kv.set({ key: 'has_seen_toolbar_animation', value: true });
+        } catch (e) { /* ignore */ }
+        window.has_seen_toolbar_animation = true;
+    }
+};
+
+// Hide toolbar (apply hidden state)
+window.hide_toolbar = (animate = true) => {
+    // Respect mobile/tablet and user preference
+    if (isMobile.phone || isMobile.tablet) return;
+    if (!window.toolbar_auto_hide_enabled) return;
+
+    const $toolbar = $('.toolbar');
+    if (!$toolbar.length) return;
+    if ($toolbar.hasClass('toolbar-hidden')) return;
+
+    $toolbar.addClass('toolbar-hidden');
+    if (animate) {
+        $toolbar.stop(true, true).animate({ top: '-20px', width: '40px' }, 100);
+        $('.toolbar-btn, #clock, .user-options-menu-btn').stop(true, true).animate({ opacity: 0 }, 10);
+    } else {
+        $toolbar.css({ top: '-20px', width: '40px' });
+        $('.toolbar-btn, #clock, .user-options-menu-btn').css({ opacity: 0 });
+    }
+};
+
+// Check if mouse within safe zone around toolbar
+window.isMouseInToolbarSafeZone = (mouseX, mouseY) => {
+    const toolbar = document.querySelector('.toolbar');
+    if (!toolbar) return false;
+    const rect = toolbar.getBoundingClientRect();
+    const safeZone = {
+        top: rect.top - TOOLBAR_SAFE_ZONE,
+        bottom: rect.bottom + TOOLBAR_SAFE_ZONE,
+        left: rect.left - TOOLBAR_SAFE_ZONE,
+        right: rect.right + TOOLBAR_SAFE_ZONE
+    };
+    return mouseX >= safeZone.left && mouseX <= safeZone.right && mouseY >= safeZone.top && mouseY <= safeZone.bottom;
+};
+
+// Core handler to decide about hiding toolbar based on mouse position
+window.handleToolbarHiding = (mouseX, mouseY) => {
+    if (isMobile.phone || isMobile.tablet) return;
+    if (!window.toolbar_auto_hide_enabled) return;
+
+    if (window.toolbarHideTimeout) {
+        clearTimeout(window.toolbarHideTimeout);
+        window.toolbarHideTimeout = null;
+    }
+
+    if ($('.toolbar').hasClass('toolbar-hidden')) return;
+
+    const wasNearToolbar = isMouseNearToolbar;
+    isMouseNearToolbar = window.isMouseInToolbarSafeZone(mouseX, mouseY);
+
+    if (isMouseNearToolbar) {
+        return;
+    }
+
+    let hideDelay = TOOLBAR_HIDE_DELAY;
+
+    if (wasNearToolbar && !isMouseNearToolbar) {
+        const toolbar = $('.toolbar')[0];
+        if (toolbar) {
+            const rect = toolbar.getBoundingClientRect();
+            const distanceFromToolbar = Math.min(Math.abs(mouseY - rect.bottom), Math.abs(mouseY - rect.top));
+            if (distanceFromToolbar > TOOLBAR_SAFE_ZONE * 2) {
+                hideDelay = TOOLBAR_QUICK_HIDE_DELAY;
+            }
+        }
+    }
+
+    window.toolbarHideTimeout = setTimeout(() => {
+        if (!window.isMouseInToolbarSafeZone(window.mouseX, window.mouseY)) {
+            window.hide_toolbar();
+        }
+        window.toolbarHideTimeout = null;
+    }, hideDelay);
+};
+
+/* ===== Event bindings ===== */
+
+// Hovering a hidden toolbar shows it
+$(document).on('mouseenter', '.toolbar-hidden', function () {
+    if (window.a_window_is_being_dragged) return;
+    if (window.desktop_selectable_is_active) return;
+    if (window.an_item_is_being_dragged) return;
+    if (window.is_fullpage_mode) $('.window-app-iframe').css('pointer-events', 'none');
+
+    window.show_toolbar();
+    if (window.toolbarHideTimeout) {
+        clearTimeout(window.toolbarHideTimeout);
+        window.toolbarHideTimeout = null;
+    }
+});
+
+// Entering visible toolbar cancels hide timeout
+$(document).on('mouseenter', '.toolbar:not(.toolbar-hidden)', function () {
+    if (window.toolbarHideTimeout) {
+        clearTimeout(window.toolbarHideTimeout);
+        window.toolbarHideTimeout = null;
+    }
+    isMouseNearToolbar = true;
+});
+
+// Mouse leaving toolbar should start hide logic
+$(document).on('mouseleave', '.toolbar', function () {
+    if (isMobile.phone || isMobile.tablet) return;
+    if (!window.toolbar_auto_hide_enabled) return;
+
+    window.has_left_toolbar_at_least_once = true;
+    if ($('.context-menu[data-id="user-options-menu"]').length > 0) return;
+
+    window.handleToolbarHiding(window.mouseX, window.mouseY);
+});
+
+// Throttled global mousemove to control hide behavior
+$(document).on('mousemove', function (e) {
+    if (isMobile.phone || isMobile.tablet) return;
+    if (!window.toolbar_auto_hide_enabled) return;
+
+    if (!window.has_seen_toolbar_animation && !window.has_left_toolbar_at_least_once) return;
+    if ($('.context-menu[data-id="user-options-menu"]').length > 0) return;
+
+    if (!$('.toolbar').hasClass('toolbar-hidden')) {
+        if (!window.mouseMoveThrottle) {
+            window.mouseMoveThrottle = setTimeout(() => {
+                window.handleToolbarHiding(e.clientX, e.clientY);
+                window.mouseMoveThrottle = null;
+            }, 100);
+        }
+    }
+});
+
+// Any click hides toolbar unless click was on toolbar or allowed controls
+$(document).on('click', function (e) {
+    if (isMobile.phone || isMobile.tablet) return;
+    if (!window.toolbar_auto_hide_enabled) return;
+
+    if (!$(e.target).hasClass('toolbar') &&
+        !$(e.target).hasClass('user-options-menu-btn') &&
+        $('.context-menu[data-id="user-options-menu"]').length === 0) {
+        window.hide_toolbar(false);
+    }
+});
+
+/* Helper to persist preference (call from settings/context menu) */
+function setToolbarAutoHide(enabled) {
+    window.toolbar_auto_hide_enabled = enabled;
+    try {
+        if (puter?.kv) puter.kv.set('toolbar_auto_hide_enabled', enabled.toString());
+        else localStorage.setItem('toolbar_auto_hide_enabled', enabled.toString());
+    } catch (e) {
+        localStorage.setItem('toolbar_auto_hide_enabled', enabled.toString());
+    }
+
+    if (!enabled && $('.toolbar').hasClass('toolbar-hidden')) {
+        window.show_toolbar();
+    }
+    if (window.toolbarHideTimeout) {
+        clearTimeout(window.toolbarHideTimeout);
+        window.toolbarHideTimeout = null;
+    }
+}
 
     // notification container
     $('body').append(`<div class="notification-container"><div class="notifications-close-all">${i18n('close_all')}</div></div>`);
