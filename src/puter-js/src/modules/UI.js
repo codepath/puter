@@ -622,7 +622,38 @@ class UI extends EventListener {
 
     alert = function(message, buttons, options, callback) {
         return new Promise((resolve) => {
-            this.#postMessageWithCallback('ALERT', resolve, { message, buttons, options });
+            let messagePayload;
+            
+            // Support object-based API: alert({ type, message, buttons, ... })
+            if (typeof message === 'object' && message !== null && !Array.isArray(message)) {
+                // New API - first argument is an options object
+                messagePayload = {
+                    message: message.message,
+                    type: message.type,
+                    buttons: message.buttons,
+                    customUI: message.customUI,
+                    body_icon: message.body_icon,
+                    backdrop: message.backdrop,
+                    stay_on_top: message.stay_on_top,
+                    draggable_body: message.draggable_body,
+                    window_options: message.window_options
+                };
+            } else {
+                // Legacy API: alert(message, buttons, options)
+                messagePayload = {
+                    message: message,
+                    buttons: buttons,
+                    type: options?.type,
+                    customUI: options?.customUI,
+                    body_icon: options?.body_icon,
+                    backdrop: options?.backdrop,
+                    stay_on_top: options?.stay_on_top,
+                    draggable_body: options?.draggable_body,
+                    window_options: options?.window_options
+                };
+            }
+            
+            this.#postMessageWithCallback('ALERT', resolve, { message: messagePayload });
         })
     }
 

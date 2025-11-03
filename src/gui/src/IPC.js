@@ -160,14 +160,24 @@ const ipc_listener = async (event, handled) => {
     // ALERT
     //--------------------------------------------------------
     else if(event.data.msg === 'ALERT' && event.data.message !== undefined){
+        if (event.data.message === undefined || event.data.message === null) {
+            console.error('Alert message is undefined or null', event.data);
+            event.data.message = 'Alert'; // Provide a default message
+        }
+        // Normalize message format - handle both string and object
+        const msgData = typeof event.data.message === 'string' 
+        ? { message: event.data.message } 
+        : event.data.message;
+
         const alert_resp = await UIAlert({
-            message: event.data.message,
-            buttons: event.data.buttons,
-            type: event.data.options?.type,
-            window_options: {
-                parent_uuid: event.data.appInstanceID,
-                disable_parent_window: true,
-            }
+        message: msgData.message,
+        buttons: msgData.buttons,
+        type: msgData.type,
+        customUI: msgData.customUI,
+        window_options: {
+            parent_uuid: event.data.appInstanceID,
+            disable_parent_window: true,
+        }
         })
 
         target_iframe.contentWindow.postMessage({

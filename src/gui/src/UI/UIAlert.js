@@ -34,33 +34,89 @@ function UIAlert(options){
     }
 
     return new Promise(async (resolve) => {
-        // provide an 'OK' button if no buttons are provided
+        // Provide type-specific default buttons if no buttons are provided
         if(!options.buttons || options.buttons.length === 0){
-            options.buttons = [
-                {label: i18n('ok'), value: true, type: 'primary'}
-            ]
+            switch (options.type) {
+                case 'question':
+                    options.buttons = [
+                        { label: i18n('yes'), value: 'yes', type: 'primary' },
+                        { label: i18n('no'), value: 'no', type: 'default' }
+                    ];
+                    break;
+                case 'warning':
+                    options.buttons = [
+                        { label: i18n('ok'), value: true, type: 'primary' },
+                        { label: i18n('cancel'), value: false, type: 'default' }
+                    ];
+                    break;
+                case 'error':
+                case 'info':
+                case 'success':
+                default:
+                    options.buttons = [
+                        { label: i18n('ok'), value: true, type: 'primary' }
+                    ];
+                    break;
+            }
         }
 
-        // set body icon
-        options.body_icon = options.body_icon ?? window.icons['warning-sign.svg'];
-        if(options.type === 'success')
-            options.body_icon = window.icons['c-check.svg'];
+        // Convert string array to button objects
+        if (options.buttons && options.buttons.length > 0 && 
+            typeof options.buttons[0] === 'string') {
+            options.buttons = options.buttons.map((label, index) => ({
+                label: label,
+                value: label,
+                type: index === 0 ? 'primary' : 'default'
+            }));
+        }
 
-        let santized_message = html_encode(options.message);
+        // Icon mapping for all alert types
+        const iconMap = {
+            'warning': window.icons['warning-sign.svg'],
+            'success': window.icons['c-check.svg'],
+            'error': window.icons['danger.svg'],
+            'info': window.icons['reminder.svg'],
+            'question': window.icons['reminder.svg'],
+        };
+
+        // Set body icon based on type, or use custom override
+        options.body_icon = options.body_icon ?? 
+            (options.type ? iconMap[options.type] : iconMap['warning']);
+        let message = options.message;
+        if (typeof message !== 'string') {
+            message = message != null ? String(message) : '';
+        }
+
+        let sanitized_message = html_encode(message);
 
         // replace sanitized <strong> with <strong>
-        santized_message = santized_message.replace(/&lt;strong&gt;/g, '<strong>');
-        santized_message = santized_message.replace(/&lt;\/strong&gt;/g, '</strong>');
+        sanitized_message = sanitized_message.replace(/&lt;strong&gt;/g, '<strong>');
+        sanitized_message = sanitized_message.replace(/&lt;\/strong&gt;/g, '</strong>');
 
         // replace sanitized <p> with <p>
-        santized_message = santized_message.replace(/&lt;p&gt;/g, '<p>');
-        santized_message = santized_message.replace(/&lt;\/p&gt;/g, '</p>');
+        sanitized_message = sanitized_message.replace(/&lt;p&gt;/g, '<p>');
+        sanitized_message = sanitized_message.replace(/&lt;\/p&gt;/g, '</p>');
 
         let h = '';
         // icon
         h += `<img class="window-alert-icon" src="${html_encode(options.body_icon)}">`;
         // message
-        h += `<div class="window-alert-message">${santized_message}</div>`;
+        h += `<div class="window-alert-message">${sanitized_message}</div>`;
+        
+        // Custom UI content (if provided)
+        if (options.customUI) {
+            let sanitized_custom = html_encode(options.customUI);
+            // Allow safe tags
+            sanitized_custom = sanitized_custom.replace(/&lt;strong&gt;/g, '<strong>');
+            sanitized_custom = sanitized_custom.replace(/&lt;\/strong&gt;/g, '</strong>');
+            sanitized_custom = sanitized_custom.replace(/&lt;p&gt;/g, '<p>');
+            sanitized_custom = sanitized_custom.replace(/&lt;\/p&gt;/g, '</p>');
+            sanitized_custom = sanitized_custom.replace(/&lt;br&gt;/g, '<br>');
+            sanitized_custom = sanitized_custom.replace(/&lt;br\/&gt;/g, '<br/>');
+            
+            h += `<div class="window-alert-custom" style="margin-top: 15px;">${sanitized_custom}</div>`;
+        }
+        
         // buttons
         if(options.buttons && options.buttons.length > 0){
             h += `<div style="overflow:hidden; margin-top:20px;">`;
