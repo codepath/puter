@@ -55,6 +55,21 @@ const new_context_menu_item = function(dirname, append_to_element){
                 window.create_file({dirname: dirname, append_to_element: append_to_element, name: 'New File.html'});
             }
         },
+        // Link Shortcut
+        {
+            html: 'New Link',
+            icon: `<img src="${html_encode(window.icons['file-html.svg'])}" class="ctx-item-icon">`,
+            onClick: async function(){
+                const url = prompt('Enter URL (http:// or https://)', 'https://');
+                if(!url)
+                    return;
+                if(!(url.startsWith('http://') || url.startsWith('https://'))){
+                    alert('Please enter a valid URL starting with http:// or https://.');
+                    return;
+                }
+                await window.create_weblink({ dirname: dirname, append_to_element: append_to_element, url });
+            }
+        },
         // JPG Image
         {
             html: i18n('jpeg_image'),

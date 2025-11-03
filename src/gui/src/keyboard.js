@@ -733,10 +733,6 @@ $(document).bind("keyup keydown", async function(e){
     if((e.ctrlKey || e.metaKey) && e.which === 86 && !$(focused_el).is('input') && !$(focused_el).is('textarea')){
         let target_path, target_el;
 
-        // continue only if there is something in the clipboard
-        if(window.clipboard.length === 0)
-            return;
-
         let parent_container = determine_active_container_parent();
 
         if(parent_container){
@@ -745,11 +741,29 @@ $(document).bind("keyup keydown", async function(e){
             // don't allow pasting in Trash
             if((target_path === window.trash_path || target_path.startsWith(window.trash_path + '/')) && window.clipboard_op !== 'move')
                 return;
-            // execute clipboard operation
-            if(window.clipboard_op === 'copy')
-                window.copy_clipboard_items(target_path);
-            else if(window.clipboard_op === 'move')
-                window.move_clipboard_items(target_el, target_path);
+
+            // If Puter clipboard has items, perform normal paste
+            if(window.clipboard.length > 0){
+                if(window.clipboard_op === 'copy')
+                    window.copy_clipboard_items(target_path);
+                else if(window.clipboard_op === 'move')
+                    window.move_clipboard_items(target_el, target_path);
+                return false;
+            }
+
+            // Otherwise, try system clipboard text as URL
+            try{
+                if(navigator.clipboard && navigator.clipboard.readText){
+                    navigator.clipboard.readText().then(async (clipText)=>{
+                        const text = (clipText ?? '').trim();
+                        if(text && (text.startsWith('http://') || text.startsWith('https://'))){
+                            await window.create_weblink({ dirname: target_path, append_to_element: target_el, url: text });
+                        }
+                    });
+                }
+            }catch(err){
+                // ignored
+            }
         }
         return false;
     }

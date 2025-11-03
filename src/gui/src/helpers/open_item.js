@@ -130,6 +130,30 @@ const open_item = async function(options){
         }
     }
     //----------------------------------------------------------------
+    // Web link shortcut (.weblink): open URL in new tab
+    //----------------------------------------------------------------
+    else if(!is_dir && path.extname(item_path).toLowerCase() === '.weblink'){
+        try{
+            let urlText = await puter.fs.read(item_path);
+            if (typeof urlText === 'object' && urlText?.text) {
+                urlText = await urlText.text();
+            }
+            const urlStr = (typeof urlText === 'string') ? urlText.trim() : String(urlText ?? '').trim();
+            const isHttp = urlStr.startsWith('http://') || urlStr.startsWith('https://');
+            if(!isHttp){
+                await UIAlert({ message: i18n('invalid_url') ?? 'Invalid URL in link shortcut.' });
+                return;
+            }
+            const newWin = window.open(urlStr, '_blank', 'noopener,noreferrer');
+            if(!newWin){
+                await UIAlert({ message: i18n('popup_blocked') ?? 'Popup was blocked. Please allow popups for this site.' });
+            }
+        }catch(e){
+            console.log(e);
+            await UIAlert({ message: i18n('failed_to_open') ?? 'Failed to open link.' });
+        }
+    }
+    //----------------------------------------------------------------
     // Does the user have a preference for this file type?
     //----------------------------------------------------------------
     else if(!associated_app_name && !is_dir && window.user_preferences[`default_apps${path.extname(item_path).toLowerCase()}`]) {

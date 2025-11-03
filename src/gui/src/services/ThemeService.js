@@ -150,3 +150,14 @@ export class ThemeService extends Service {
         ));
     }
 }
+
+function adjustSidebarHeaderTextColor(hue, saturation, transparency, lightness) {
+    // Calculate adjusted brightness based on lightness and transparency
+    const adjustedLightness = lightness * (1 - transparency);
+    return adjustedLightness > 50 ? `hsl(${hue}, ${saturation}%, 10%)` : `hsl(${hue}, ${saturation}%, 90%)`;
+}
+
+export function updateTheme(hue, saturation, transparency, lightness) {
+    const sidebarHeaderTextColor = adjustSidebarHeaderTextColor(hue, saturation, transparency, lightness);
+    document.documentElement.style.setProperty('--sidebar-header-text-color', sidebarHeaderTextColor);
+}

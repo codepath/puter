@@ -870,6 +870,49 @@ window.create_file = async(options)=>{
     }
 }
 
+// Create a .weblink file storing a URL
+window.create_weblink = async (options) => {
+    let dirname = options.dirname;
+    let appendto_element = options.append_to_element;
+    let urlStr = String(options.url ?? '').trim();
+
+    if(!(urlStr.startsWith('http://') || urlStr.startsWith('https://'))){
+        await UIAlert({ message: i18n('enter_valid_url') ?? 'Please enter a valid URL starting with http:// or https://.' });
+        return;
+    }
+
+    let hostname = 'Link';
+    try{
+        const u = new URL(urlStr);
+        hostname = u.hostname.replace(/^www\./i, '');
+    }catch(e){
+        // fallback
+    }
+
+    const filename = `${hostname}.weblink`;
+
+    try{
+        await puter.fs.upload(new File([urlStr], filename, { type: 'text/plain' }), dirname, {
+            overwrite: false,
+            dedupeName: true,
+            success: async function (data){
+                const created_file = $(appendto_element).find('.item[data-path="'+html_encode(dirname)+'/'+html_encode(data.name)+'"]');
+                if(created_file.length > 0){
+                    // Do not immediately rename; keep derived name
+                    // Add action to actions_history for undo ability
+                    window.actions_history.push({
+                        operation: 'create_file',
+                        data: created_file
+                    });
+                }
+            }
+        });
+    }catch(err){
+        console.log(err);
+        await UIAlert({ message: err?.message ?? (i18n('failed_to_create') ?? 'Failed to create link.') });
+    }
+}
+
 window.available_templates = async () => {
     const baseRoute = `/${window.user.username}`
     const keywords = ["template", "templates", i18n('template')]
