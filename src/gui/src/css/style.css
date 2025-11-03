@@ -1751,6 +1751,68 @@ label {
     padding-right: 10px
 }
 
+/* Toolbar auto-hide styles (feature/toolbar-autohide) */
+
+/* Ensure transitions for smooth show/hide */
+.toolbar {
+  float: none;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Hidden (collapsed) toolbar state */
+.toolbar-hidden {
+    position: fixed !important;
+    top: -20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    box-shadow: rgb(255 255 255 / 44%) 0px 0px 0px 0.5px inset,
+              rgba(0, 0, 0, 0.2) 0px 0px 0px 0.5px,
+              rgba(0, 0, 0, 0.2) 0px 2px 14px;
+}
+
+/* Hide child controls visually when collapsed (they're still reachable on hover) */
+.toolbar-hidden .toolbar-btn,
+.toolbar-hidden #clock,
+.toolbar-hidden .user-options-menu-btn {
+  opacity: 0;
+  pointer-events: none; /* prevents accidental clicks while collapsed */
+  transition: opacity 0.05s linear;
+}
+
+/* Show child controls when toolbar is visible */
+.toolbar .toolbar-btn,
+.toolbar #clock,
+.toolbar .user-options-menu-btn {
+  transition: opacity 0.05s linear;
+  opacity: 0.8;
+  pointer-events: auto;
+}
+
+/* Small adjustment for the collapsed "handle" hit-area so users can hover
+   and trigger the toolbar to open without needing a precise thin pixel target */
+.toolbar-hidden::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px; /* extend the hover area slightly */
+  height: 24px;
+  pointer-events: none;
+}
+
+/* Improve visibility of the small collapsed toolbar on light backgrounds */
+body .toolbar-hidden {
+  background-color: rgba(0, 0, 0, 0.28);
+}
+
+/* Optional: when toolbar is focused (keyboard navigation), keep it visible */
+.toolbar:focus,
+.toolbar:focus-within {
+  top: 0 !important;
+  width: max-content !important;
+}
+
 .show-desktop-btn {
     color: white;
     font-size: 11px !important;
