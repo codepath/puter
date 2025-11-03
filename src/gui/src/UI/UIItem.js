@@ -1352,6 +1352,82 @@ function UIItem(options){
                 });
             }
             // -------------------------------------------
+            // Set as Desktop Background
+            // -------------------------------------------
+            if(!is_trashed && !is_trash && !options.is_dir){
+                const file_path = $(el_item).attr('data-path').toLowerCase();
+                const is_image = file_path.endsWith('.jpg') ||
+                                file_path.endsWith('.jpeg') ||
+                                file_path.endsWith('.png') ||
+                                file_path.endsWith('.gif') ||
+                                file_path.endsWith('.bmp') ||
+                                file_path.endsWith('.webp') ||
+                                file_path.endsWith('.svg');
+
+                if(is_image){
+                    menu_items.push({
+                        html: i18n('set_as_desktop_background'),
+                        onClick: async function(){
+                            // Store original background in case we need to revert
+                            const original_bg_url = window.desktop_bg_url;
+                            const original_bg_color = window.desktop_bg_color;
+                            const original_bg_fit = window.desktop_bg_fit;
+
+                            try {
+                                // Construct authenticated URL for reading the file
+                                const read_url = `${window.api_origin}/read?uid=${options.uid}&auth_token=${window.auth_token}`;
+
+                                // Update desktop background immediately
+                                window.set_desktop_background({
+                                    url: read_url,
+                                    fit: 'cover'
+                                });
+
+                                // Persist to backend - save the read URL (authenticated and permanent)
+                                await $.ajax({
+                                    url: window.api_origin + "/set-desktop-bg",
+                                    type: 'POST',
+                                    data: JSON.stringify({
+                                        url: read_url,
+                                        fit: 'cover',
+                                    }),
+                                    async: true,
+                                    contentType: "application/json",
+                                    headers: {
+                                        "Authorization": "Bearer " + window.auth_token
+                                    },
+                                    statusCode: {
+                                        401: function () {
+                                            window.logout();
+                                        },
+                                    },
+                                });
+                            } catch (error) {
+                                console.error('Failed to set desktop background:', error);
+
+                                // Revert the background on error
+                                if(original_bg_url){
+                                    window.set_desktop_background({
+                                        url: original_bg_url,
+                                        fit: original_bg_fit || 'cover'
+                                    });
+                                } else if(original_bg_color){
+                                    window.set_desktop_background({
+                                        color: original_bg_color
+                                    });
+                                }
+
+                                // Show error message to user
+                                UIAlert({
+                                    message: 'Failed to set desktop background. Please try again.',
+                                    type: 'error'
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+            // -------------------------------------------
             // -
             // -------------------------------------------
             menu_items.push('-');
