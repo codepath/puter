@@ -40,19 +40,19 @@ const open_item = async function(options){
     // Is this a shortcut whose source is perma-deleted?
     //----------------------------------------------------------------
     if(is_shortcut && shortcut_to_path === ''){
-        UIAlert(`This shortcut can't be opened because its source has been deleted.`)
+        UIAlert({ type: 'error', message: `This shortcut can't be opened because its source has been deleted.` })
     }
     //----------------------------------------------------------------
     // Is this a shortcut whose source is trashed?
     //----------------------------------------------------------------
     else if(is_shortcut && shortcut_to_path.startsWith(window.trash_path + '/')){
-        UIAlert(`This shortcut can't be opened because its source has been deleted.`)
+        UIAlert({ type: 'error', message: `This shortcut can't be opened because its source has been deleted.` })
     }
     //----------------------------------------------------------------
     // Is this a trashed file?
     //----------------------------------------------------------------
     else if(item_path.startsWith(window.trash_path + '/')){
-        UIAlert(`This item can't be opened because it's in the trash. To use this item, first drag it out of the Trash.`)
+        UIAlert({ type: 'warning', message: `This item can't be opened because it's in the trash. To use this item, first drag it out of the Trash.` })
     }
     //----------------------------------------------------------------
     // Is this a file (no dir) on a SaveFileDialog?

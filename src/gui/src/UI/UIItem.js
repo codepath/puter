@@ -647,10 +647,10 @@ function UIItem(options){
         // or editable was not even active at all
         if(old_name === new_name || !new_name || new_name === '.' || new_name === '..' || !$(el_item_name_editor).hasClass('item-name-editor-active')){
             if(new_name === '.'){
-                UIAlert(`The name "." is not allowed, because it is a reserved name. Please choose another name.`);
+                UIAlert({ type: 'error', message: `The name "." is not allowed, because it is a reserved name. Please choose another name.` });
             }
             else if(new_name === '..'){
-                UIAlert(`The name ".." is not allowed, because it is a reserved name. Please choose another name.`)
+                UIAlert({ type: 'error', message: `The name ".." is not allowed, because it is a reserved name. Please choose another name.` })
             }
 
             $(el_item_name).html(html_encode(truncate_filename(options.name)));

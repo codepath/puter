@@ -164,9 +164,17 @@ const ipc_listener = async (event, handled) => {
             message: event.data.message,
             buttons: event.data.buttons,
             type: event.data.options?.type,
+            icon: event.data.options?.icon,
+            customUI: event.data.options?.customUI,
+            width: event.data.options?.width,
+            backdrop: event.data.options?.backdrop,
+            stay_on_top: event.data.options?.stay_on_top,
+            draggable_body: event.data.options?.draggable_body,
+            customBodyCSS: event.data.options?.customBodyCSS,
             window_options: {
                 parent_uuid: event.data.appInstanceID,
                 disable_parent_window: true,
+                ...event.data.options?.window_options,
             }
         })
 
