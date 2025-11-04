@@ -23,6 +23,7 @@ import UIWindowChangeUsername from '../UIWindowChangeUsername.js';
 import UIWindowConfirmUserDeletion from './UIWindowConfirmUserDeletion.js';
 import UIWindowManageSessions from '../UIWindowManageSessions.js';
 import UIWindow from '../UIWindow.js';
+import UINotification from '../UINotification.js';
 
 // About
 export default {
@@ -37,6 +38,10 @@ export default {
         h += `<div style="overflow: hidden; display: flex; margin-bottom: 20px; flex-direction: column; align-items: center;">`;
             h += `<div class="profile-picture change-profile-picture" style="background-image: url('${html_encode(window.user?.profile?.picture ?? window.icons['profile.svg'])}');">`;
             h += `</div>`;
+            // Remove profile picture button (only show if picture exists)
+            if(window.user?.profile?.picture){
+                h += `<button class="button remove-profile-picture" style="margin-top: 10px;">${i18n('remove_profile_picture')}</button>`;
+            }
         h += `</div>`;
 
         // change password button
@@ -150,31 +155,184 @@ export default {
             });    
         })
 
+        $el_window.find('.remove-profile-picture').on('click', function (e) {
+            try {
+                // Remove profile picture
+                update_profile(window.user.username, {picture: null});
+                
+                // Update UI elements to show default avatar
+                const defaultAvatar = window.icons['profile.svg'];
+                $el_window.find('.profile-picture').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+                $('.profile-image').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+                $('.profile-image').removeClass('profile-image-has-picture');
+                
+                // Hide the remove button
+                $el_window.find('.remove-profile-picture').hide();
+            } catch (error) {
+                console.error('Error removing profile picture:', error);
+                UINotification({
+                    title: i18n('profile_picture_remove_failed'),
+                    text: error?.message || i18n('error_unknown_cause'),
+                    icon: window.icons['error.svg'] || window.icons['bell.svg']
+                });
+            }
+        })
+
         $el_window.on('file_opened', async function(e){
             let selected_file = Array.isArray(e.detail) ? e.detail[0] : e.detail;
-            // set profile picture
-            const profile_pic = await puter.fs.read(selected_file.path)
-            // blob to base64
-            const reader = new FileReader();
-            reader.readAsDataURL(profile_pic);
-            reader.onloadend = function() {
-                // resizes the image to 150x150
-                const img = new Image();
-                img.src = reader.result;
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 150;
-                    canvas.height = 150;
-                    ctx.drawImage(img, 0, 0, 150, 150);
-                    const base64data = canvas.toDataURL('image/png');
-                    // update profile picture
-                    $el_window.find('.profile-picture').css('background-image', 'url(' + html_encode(base64data) + ')');
-                    $('.profile-image').css('background-image', 'url(' + html_encode(base64data) + ')');
-                    $('.profile-image').addClass('profile-image-has-picture');
-                    // update profile picture
-                    update_profile(window.user.username, {picture: base64data})
+            
+            try {
+                // Optional validation: check file extension if we can detect it
+                // The dialog already filters for .png, .jpg, .jpeg, so we only validate
+                // if we can clearly detect an invalid extension
+                const fileName = selected_file.name || selected_file.fsentry_name || selected_file.path?.split('/').pop() || '';
+                const fileExtension = fileName.toLowerCase().split('.').pop();
+                const allowedExtensions = ['png', 'jpg', 'jpeg'];
+                
+                // Only reject if we have a filename with extension AND it's clearly invalid
+                // If we can't determine the extension, trust the dialog filtering
+                if (fileName && fileExtension && fileName.includes('.')) {
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        console.log('Invalid file extension detected:', fileExtension, 'from file:', selected_file);
+                        UINotification({
+                            title: i18n('profile_picture_invalid_file'),
+                            text: i18n('profile_picture_invalid_file'),
+                            icon: window.icons['error.svg'] || window.icons['bell.svg']
+                        });
+                        return;
+                    }
                 }
+
+                // Read the file
+                const profile_pic = await puter.fs.read(selected_file.path);
+                
+                // Validate file size (e.g., max 10MB for profile pictures)
+                const maxSize = 10 * 1024 * 1024; // 10MB
+                if (profile_pic.size && profile_pic.size > maxSize) {
+                    UINotification({
+                        title: i18n('profile_picture_upload_failed'),
+                        text: i18n('profile_picture_too_large'),
+                        icon: window.icons['error.svg'] || window.icons['bell.svg']
+                    });
+                    return;
+                }
+
+                // blob to base64
+                const reader = new FileReader();
+                
+                reader.onerror = function() {
+                    UINotification({
+                        title: i18n('profile_picture_upload_failed'),
+                        text: i18n('error_unknown_cause'),
+                        icon: window.icons['error.svg'] || window.icons['bell.svg']
+                    });
+                };
+
+                reader.onloadend = function() {
+                    try {
+                        // Validate that we got a data URL
+                        if (!reader.result || typeof reader.result !== 'string' || !reader.result.startsWith('data:')) {
+                            throw new Error('Invalid file data');
+                        }
+
+                        // resizes the image to 150x150
+                        const img = new Image();
+                        
+                        img.onerror = function() {
+                            UINotification({
+                                title: i18n('profile_picture_load_failed'),
+                                text: i18n('profile_picture_load_failed'),
+                                icon: window.icons['error.svg'] || window.icons['bell.svg']
+                            });
+                        };
+
+                        img.onload = function() {
+                            try {
+                                const canvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                
+                                if (!ctx) {
+                                    throw new Error('Canvas context not available');
+                                }
+                                
+                                canvas.width = 150;
+                                canvas.height = 150;
+                                ctx.drawImage(img, 0, 0, 150, 150);
+                                const base64data = canvas.toDataURL('image/png');
+                                
+                                if (!base64data || !base64data.startsWith('data:image')) {
+                                    throw new Error('Failed to convert image to base64');
+                                }
+                                
+                                // update profile picture
+                                $el_window.find('.profile-picture').css('background-image', 'url(' + html_encode(base64data) + ')');
+                                $('.profile-image').css('background-image', 'url(' + html_encode(base64data) + ')');
+                                $('.profile-image').addClass('profile-image-has-picture');
+                                
+                                // update profile picture
+                                update_profile(window.user.username, {picture: base64data});
+                                
+                                // Show or create the remove button
+                                let $removeBtn = $el_window.find('.remove-profile-picture');
+                                if($removeBtn.length === 0){
+                                    // Create the button if it doesn't exist
+                                    $removeBtn = $(`<button class="button remove-profile-picture" style="margin-top: 10px;">${i18n('remove_profile_picture')}</button>`);
+                                    $el_window.find('.profile-picture').parent().append($removeBtn);
+                                    // Add click handler for the newly created button
+                                    $removeBtn.on('click', function (e) {
+                                        try {
+                                            // Remove profile picture
+                                            update_profile(window.user.username, {picture: null});
+                                            
+                                            // Update UI elements to show default avatar
+                                            const defaultAvatar = window.icons['profile.svg'];
+                                            $el_window.find('.profile-picture').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+                                            $('.profile-image').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+                                            $('.profile-image').removeClass('profile-image-has-picture');
+                                            
+                                            // Hide the remove button
+                                            $removeBtn.hide();
+                                        } catch (error) {
+                                            console.error('Error removing profile picture:', error);
+                                            UINotification({
+                                                title: i18n('profile_picture_remove_failed'),
+                                                text: error?.message || i18n('error_unknown_cause'),
+                                                icon: window.icons['error.svg'] || window.icons['bell.svg']
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    $removeBtn.show();
+                                }
+                            } catch (error) {
+                                console.error('Error processing image:', error);
+                                UINotification({
+                                    title: i18n('profile_picture_update_failed'),
+                                    text: error?.message || i18n('error_unknown_cause'),
+                                    icon: window.icons['error.svg'] || window.icons['bell.svg']
+                                });
+                            }
+                        };
+                        
+                        img.src = reader.result;
+                    } catch (error) {
+                        console.error('Error reading file:', error);
+                        UINotification({
+                            title: i18n('profile_picture_upload_failed'),
+                            text: error?.message || i18n('error_unknown_cause'),
+                            icon: window.icons['error.svg'] || window.icons['bell.svg']
+                        });
+                    }
+                };
+
+                reader.readAsDataURL(profile_pic);
+            } catch (error) {
+                console.error('Error reading profile picture file:', error);
+                UINotification({
+                    title: i18n('profile_picture_upload_failed'),
+                    text: error?.message || i18n('error_unknown_cause'),
+                    icon: window.icons['error.svg'] || window.icons['bell.svg']
+                });
             }
         })
     },

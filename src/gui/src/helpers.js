@@ -455,11 +455,21 @@ window.update_auth_data = async (auth_token, user)=>{
             const profile = JSON.parse(text);
             if(profile.picture){
                 window.user.profile.picture = html_encode(profile.picture);
+            } else {
+                // Explicitly clear profile picture if it doesn't exist
+                window.user.profile.picture = undefined;
             }
 
             // update profile picture in GUI
             if(window.user.profile.picture){
                 $('.profile-pic').css('background-image', 'url('+window.user.profile.picture+')');
+                $('.profile-image').css('background-image', 'url('+window.user.profile.picture+')');
+                $('.profile-image').addClass('profile-image-has-picture');
+            } else {
+                // Use default avatar when no profile picture
+                $('.profile-pic').css('background-image', 'url('+window.icons['profile.svg']+')');
+                $('.profile-image').css('background-image', 'url('+window.icons['profile.svg']+')');
+                $('.profile-image').removeClass('profile-image-has-picture');
             }
         })
         .catch(error => {
@@ -469,6 +479,12 @@ window.update_auth_data = async (auth_token, user)=>{
         if(e?.code === "subject_does_not_exist"){
             // create .profile file
             puter.fs.write('/'+user.username+'/Public/.profile', JSON.stringify({}));
+            // Set default avatar when profile doesn't exist
+            window.user.profile = window.user.profile || {};
+            window.user.profile.picture = undefined;
+            $('.profile-pic').css('background-image', 'url('+window.icons['profile.svg']+')');
+            $('.profile-image').css('background-image', 'url('+window.icons['profile.svg']+')');
+            $('.profile-image').removeClass('profile-image-has-picture');
         }
     });
 
@@ -2633,9 +2649,21 @@ window.update_profile = function(username, key_vals){
             const profile = JSON.parse(text);
 
             for (const key in key_vals) {
-                profile[key] = key_vals[key];
-                // update window.user.profile
-                window.user.profile[key] = key_vals[key];
+                // Handle deletion: if value is null, undefined, or empty string, delete the property
+                if (key_vals[key] === null || key_vals[key] === undefined || key_vals[key] === '') {
+                    delete profile[key];
+                    // update window.user.profile
+                    if (window.user.profile) {
+                        delete window.user.profile[key];
+                    }
+                } else {
+                    profile[key] = key_vals[key];
+                    // update window.user.profile
+                    if (!window.user.profile) {
+                        window.user.profile = {};
+                    }
+                    window.user.profile[key] = key_vals[key];
+                }
             }
 
             puter.fs.write('/'+username+'/Public/.profile', JSON.stringify(profile));
