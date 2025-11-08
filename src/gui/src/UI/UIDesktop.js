@@ -708,6 +708,7 @@ async function UIDesktop(options){
     // update local user preferences
     const user_preferences = {
         show_hidden_files: JSON.parse(await puter.kv.get('user_preferences.show_hidden_files')),
+        show_desktop_icons: JSON.parse(await puter.kv.get('user_preferences.show_desktop_icons')) ?? true,
         language: await puter.kv.get('user_preferences.language'),
         clock_visible: await puter.kv.get('user_preferences.clock_visible'),
     };
@@ -719,6 +720,9 @@ async function UIDesktop(options){
         }
 
         window.update_user_preferences(user_preferences);
+
+        // Apply desktop icons visibility preference
+        window.toggle_desktop_icons_visibility?.();
     });
 
     // Append to <body>
@@ -941,6 +945,19 @@ async function UIDesktop(options){
                                 show_hidden_files : !window.user_preferences.show_hidden_files,
                             });
                             window.show_or_hide_files(document.querySelectorAll('.item-container'));
+                        }
+                    },
+                    // -------------------------------------------
+                    // Show/Hide desktop icons
+                    // -------------------------------------------
+                    {
+                        html: window.user_preferences.show_desktop_icons ? i18n('hide_desktop_icons') : i18n('show_desktop_icons'),
+                        icon: '',
+                        onClick: function(){
+                            window.mutate_user_preferences({
+                                show_desktop_icons : !window.user_preferences.show_desktop_icons,
+                            });
+                            window.toggle_desktop_icons_visibility();
                         }
                     },
                     // -------------------------------------------

@@ -409,6 +409,10 @@ input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, sel
     opacity: 0.7
 }
 
+.desktop.icons-hidden .item {
+    display: none !important;
+}
+
 .item-container-list .item {
     height: initial;
     width: max-content;
