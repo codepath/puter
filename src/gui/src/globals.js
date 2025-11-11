@@ -97,6 +97,7 @@ try {
 if (window.user_preferences === null) {
     window.user_preferences = {
         show_hidden_files: false,
+        show_desktop_icons: true,
         language: navigator.language.split("-")[0] || navigator.userLanguage || 'en',
         clock_visible: 'auto',
     }

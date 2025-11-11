@@ -708,6 +708,7 @@ async function UIDesktop(options){
     // update local user preferences
     const user_preferences = {
         show_hidden_files: JSON.parse(await puter.kv.get('user_preferences.show_hidden_files')),
+        show_desktop_icons: JSON.parse(await puter.kv.get('user_preferences.show_desktop_icons')),
         language: await puter.kv.get('user_preferences.language'),
         clock_visible: await puter.kv.get('user_preferences.clock_visible'),
     };
@@ -944,6 +945,19 @@ async function UIDesktop(options){
                         }
                     },
                     // -------------------------------------------
+                    // Show/Hide desktop icons
+                    // -------------------------------------------
+                    {
+                        html: window.user_preferences.show_desktop_icons ? i18n('hide_desktop_icons') : i18n('show_desktop_icons'),
+                        icon: window.user_preferences.show_desktop_icons ? '✓' : '',
+                        onClick: function(){
+                            window.mutate_user_preferences({
+                                show_desktop_icons : !window.user_preferences.show_desktop_icons,
+                            });
+                            window.toggle_desktop_icons();
+                        }
+                    },
+                    // -------------------------------------------
                     // -
                     // -------------------------------------------
                     '-',
@@ -1014,7 +1028,12 @@ async function UIDesktop(options){
     if(!window.is_embedded && !window.is_fullpage_mode){
         refresh_item_container(el_desktop, {fadeInItems: true})
 
-        // Show welcome window if user hasn't already seen it and hasn't directly navigated to an app 
+        // Apply initial desktop icon visibility state
+        setTimeout(() => {
+            window.toggle_desktop_icons();
+        }, 100);
+
+        // Show welcome window if user hasn't already seen it and hasn't directly navigated to an app
         if(!window.url_paths[0]?.toLocaleLowerCase() === 'app' || !window.url_paths[1]){
             if(!isMobile.phone && !isMobile.tablet){
                 setTimeout(() => {
