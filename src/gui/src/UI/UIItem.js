@@ -1207,6 +1207,72 @@ function UIItem(options){
                 })
             }
             // -------------------------------------------
+            // Set as Desktop Background
+            // -------------------------------------------
+            // Check if this is an image file by MIME type or file extension
+            const is_image = !options.is_dir && (
+                (options.type && options.type.startsWith('image/')) ||
+                /\.(jpg|jpeg|png|gif|bmp|webp|svg|ico|tiff?)$/i.test(options.name)
+            );
+
+            if(!is_trash && !is_trashed && is_image){
+                menu_items.push({
+                    html: i18n('set_as_desktop_background'),
+                    onClick: async function(){
+                        try{
+                            const item_uid = $(el_item).attr('data-uid');
+
+                            // Get signed file URL using puter.fs.sign() - same as desktop background settings dialog
+                            let file_signature = await puter.fs.sign(window.app_uuid, {uid: item_uid, action: 'read'});
+                            file_signature = file_signature.items;
+
+                            const read_url = file_signature.read_url;
+
+                            console.log('Setting desktop background:', {
+                                path: options.path,
+                                uid: item_uid,
+                                read_url: read_url
+                            });
+
+                            // Set the image as desktop background - same as line 141 in UIWindowDesktopBGSettings.js
+                            window.set_desktop_background({
+                                url: read_url,
+                                fit: 'cover'
+                            });
+
+                            // Save the setting to the server - same as line 167-185 in UIWindowDesktopBGSettings.js
+                            await $.ajax({
+                                url: window.api_origin + "/set-desktop-bg",
+                                type: 'POST',
+                                data: JSON.stringify({
+                                    url: window.desktop_bg_url,
+                                    color: window.desktop_bg_color,
+                                    fit: window.desktop_bg_fit,
+                                }),
+                                async: true,
+                                contentType: "application/json",
+                                headers: {
+                                    "Authorization": "Bearer "+window.auth_token
+                                },
+                                statusCode: {
+                                    401: function () {
+                                        window.logout();
+                                    },
+                                },
+                                success: function(response){
+                                    console.log('Background saved successfully');
+                                },
+                                error: function(xhr, status, error){
+                                    console.error('Failed to save to server:', {status, error});
+                                }
+                            });
+                        }catch(err){
+                            console.error('Failed to set desktop background:', err);
+                        }
+                    }
+                });
+            }
+            // -------------------------------------------
             // Restore
             // -------------------------------------------
             if(is_trashed){
