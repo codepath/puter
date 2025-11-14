@@ -97,7 +97,7 @@ module.exports = class APIError {
             message: 'Cannot copy an item to the root directory.',
         },
         'cannot_write_to_root': {
-            status: 422,
+            status: 403,
             message: 'Cannot write an item to the root directory.',
         },
         'cannot_overwrite_a_directory': {
