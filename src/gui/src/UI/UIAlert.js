@@ -61,13 +61,19 @@ function UIAlert(options){
         }
 
         // Convert string array to button objects
-        if (options.buttons && options.buttons.length > 0 && 
-            typeof options.buttons[0] === 'string') {
-            options.buttons = options.buttons.map((label, index) => ({
-                label: label,
-                value: label,
-                type: index === 0 ? 'primary' : 'default'
-            }));
+        if (options.buttons && options.buttons.length > 0) {
+            options.buttons = options.buttons.map((button, index) => {
+                // If already an object, keep as-is
+                if (typeof button === 'object' && button !== null) {
+                    return button;
+                }
+                // Convert string to button object
+                return {
+                    label: String(button),
+                    value: String(button),
+                    type: index === 0 ? 'primary' : 'default'
+                };
+            });
         }
 
         // Icon mapping for all alert types
