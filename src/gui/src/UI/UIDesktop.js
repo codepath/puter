@@ -42,6 +42,7 @@ import UIWindowWelcome from "./UIWindowWelcome.js"
 import launch_app from "../helpers/launch_app.js"
 import item_icon from "../helpers/item_icon.js"
 import UIWindowSearch from "./UIWindowSearch.js"
+import toolbar_autohide from "../helpers/toolbar_autohide.js"
 
 async function UIDesktop(options){
     let h = '';
@@ -1105,7 +1106,7 @@ async function UIDesktop(options){
     let ht = '';
     ht += `<div class="toolbar" style="height:${window.toolbar_height}px; min-height:${window.toolbar_height}px; max-height:${window.toolbar_height}px;">`;
         // logo
-        ht += `<div class="toolbar-btn toolbar-puter-logo" title="Puter" style="margin-left: 10px; margin-right: auto;"><img src="${window.icons['logo-white.svg']}" draggable="false" style="display:block; width:17px; height:17px"></div>`;
+        ht += `<div class="toolbar-btn toolbar-puter-logo" title="Puter"><img src="${window.icons['logo-white.svg']}" draggable="false" style="display:block; width:17px; height:17px"></div>`;
 
         // create account button
         ht += `<div class="toolbar-btn user-options-create-account-btn ${window.user.is_temp ? '' : 'hidden' }" style="padding:0; opacity:1;" title="Save Account">`;
@@ -1144,6 +1145,9 @@ async function UIDesktop(options){
 
     // prepend toolbar to desktop
     $(ht).insertBefore(el_desktop);
+
+    // initialize toolbar auto-hide functionality
+    toolbar_autohide.init();
 
     // notification container
     $('body').append(`<div class="notification-container"><div class="notifications-close-all">${i18n('close_all')}</div></div>`);

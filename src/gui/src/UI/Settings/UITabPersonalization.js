@@ -48,6 +48,14 @@ export default {
                     <option value="show">${i18n('clock_visible_show')}</option>
                 </select>
             </div>
+            <div class="settings-card">
+                <strong style="flex-grow:1;">Auto-Hide Toolbar</strong>
+                <label class="switch">
+                    <input type="checkbox" class="toggle-toolbar-autohide">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            
             <div class="settings-card" style="display: block; height: auto;">
                 <strong style="margin: 15px 0 30px; display: block;">${i18n('menubar_style')}</strong>
                 <div style="flex-grow:1; margin-top: 10px;">
@@ -101,6 +109,42 @@ export default {
         });
 
         window.change_clock_visible();
+
+        // ============================================
+        // Toolbar Auto-Hide Toggle Handler
+        // ============================================
+        
+        // Load the current state from KV store and set checkbox
+        puter.kv.get('user_preferences.toolbar_autohide').then(async (val) => {
+            const isEnabled = val === true || val === 'true';
+            $el_window.find('.toggle-toolbar-autohide').prop('checked', isEnabled);
+            
+            // Also sync with the toolbar_autohide state
+            if (window.toolbar_autohide && isEnabled !== window.toolbar_autohide.isEnabled) {
+                if (isEnabled) {
+                    window.toolbar_autohide.enable();
+                } else {
+                    window.toolbar_autohide.disable();
+                }
+            }
+        });
+        
+        // Handle checkbox changes
+        $el_window.find('.toggle-toolbar-autohide').on('change', function(e) {
+            const isEnabled = $(this).is(':checked');
+            if (window.toolbar_autohide) {
+                if (isEnabled) {
+                    window.toolbar_autohide.enable();
+                } else {
+                    window.toolbar_autohide.disable();
+                }
+                // Save preference
+                window.mutate_user_preferences({
+                    toolbar_autohide: isEnabled
+                });
+            }
+        });
+        // ============================================
 
         puter.kv.get('menubar_style').then(async (val) => {
             if(val === 'system' || !val){

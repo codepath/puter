@@ -81,6 +81,14 @@ const update_mouse_position = function(x, y){
     }
     window.mouseover_item_container = active_ic;
 
+    // ============================================
+    // NEW: Toolbar Auto-Hide Integration
+    // ============================================
+    // Update toolbar auto-hide based on mouse position
+    if (window.toolbar_autohide) {
+        window.toolbar_autohide.onMouseMove(y);
+    }
+
 }
 
 export default update_mouse_position;
