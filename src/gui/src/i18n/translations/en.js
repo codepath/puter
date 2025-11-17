@@ -81,6 +81,7 @@ const en = {
         copying: "Copying",
         copying_file: "Copying %%",
         cover: 'Cover',
+        duplicate: 'Duplicate',
         create_account: "Create Account",
         create_free_account: "Create Free Account",
         create_shortcut: "Create Shortcut",
