@@ -142,6 +142,7 @@ const br = {
     get_a_copy_of_on_puter: `Obtenha uma cópia de '%%' em Puter.com!`,
     get_copy_link: 'Obter Link de Cópia',
     hide_all_windows: "Ocultar Todas as Janelas",
+    hide_desktop_icons: "Ocultar Ícones da Área de Trabalho",
     home: 'Início',
     html_document: 'Documento HTML',
     hue: 'Matiz',

@@ -228,6 +228,11 @@ const refresh_item_container = function(el_item_container, options){
                 $(el_item_container).attr('data-sort_order')
             );
 
+            // Apply hide desktop icons preference if this is desktop
+            if($(el_item_container).hasClass('desktop') && window.user_preferences.hide_desktop_icons){
+                window.toggle_desktop_icons_visibility(el_item_container);
+            }
+
             if(options.fadeInItems)
                 $(el_item_container).animate({'opacity': '1'});
 

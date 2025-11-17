@@ -710,6 +710,7 @@ async function UIDesktop(options){
         show_hidden_files: JSON.parse(await puter.kv.get('user_preferences.show_hidden_files')),
         language: await puter.kv.get('user_preferences.language'),
         clock_visible: await puter.kv.get('user_preferences.clock_visible'),
+        hide_desktop_icons: JSON.parse(await puter.kv.get('user_preferences.hide_desktop_icons')) ?? false,
     };
 
     // update default apps
@@ -941,6 +942,18 @@ async function UIDesktop(options){
                                 show_hidden_files : !window.user_preferences.show_hidden_files,
                             });
                             window.show_or_hide_files(document.querySelectorAll('.item-container'));
+                        }
+                    },
+                    // -------------------------------------------
+                    // Hide/Show Desktop Icons
+                    // -------------------------------------------
+                    {
+                        html: window.user_preferences.hide_desktop_icons ? i18n('show_desktop_icons') : i18n('hide_desktop_icons'),
+                        onClick: function(){
+                            window.mutate_user_preferences({
+                                hide_desktop_icons : !window.user_preferences.hide_desktop_icons,
+                            });
+                            window.toggle_desktop_icons_visibility(document.querySelectorAll('.item-container'));
                         }
                     },
                     // -------------------------------------------

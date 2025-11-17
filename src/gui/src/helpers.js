@@ -780,6 +780,20 @@ window.show_or_hide_files = (item_containers) => {
         .removeClass(class_to_remove).addClass(class_to_add);
 }
 
+/**
+ * Toggle desktop icons visibility based on user preference
+ * @param {NodeList|jQuery} item_containers - Container elements to search for items
+ */
+window.toggle_desktop_icons_visibility = (item_containers) => {
+    const hide_icons = window.user_preferences.hide_desktop_icons;
+
+    // Target all desktop items (including Trash)
+    $(item_containers)
+        .filter('.desktop')
+        .find('.item')
+        .toggleClass('item-hidden', hide_icons);
+}
+
 window.create_folder = async(basedir, appendto_element)=>{
 	let dirname = basedir;
     let folder_name = 'New Folder';
