@@ -95,4 +95,31 @@ export default class ContextSwitchingPStratumImpl {
 
         return { done: true, value: 'ran out of parsers' };
     }
+
+    duplicateContext(api) {
+        const currentContextName = this.stack_top.context_name;
+        const newContextName = this.generateUniqueContextName(currentContextName);
+
+        this.contexts[newContextName] = this.contexts[currentContextName].map(parser => {
+            if (parser.hasOwnProperty('transition')) {
+                return {
+                    ...parser,
+                    parser: AcceptParserUtil.adapt(parser.parser),
+                };
+            }
+            return AcceptParserUtil.adapt(parser);
+        });
+
+        return { done: false, value: `Context duplicated as ${newContextName}` };
+    }
+
+    generateUniqueContextName(baseName) {
+        let counter = 1;
+        let newName = `${baseName}_copy`;
+        while (this.contexts.hasOwnProperty(newName)) {
+            newName = `${baseName}_copy_${counter}`;
+            counter++;
+        }
+        return newName;
+    }
 }
