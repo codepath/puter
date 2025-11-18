@@ -25,7 +25,7 @@ const mkdir = function (...args) {
     }
 
     return new Promise(async (resolve, reject) => {
-        // If auth token is not provided and we are in the web environment, 
+        // If auth token is not provided and we are in the web environment,
         // try to authenticate with Puter
         if(!puter.authToken && puter.env === 'web'){
             try{
@@ -43,6 +43,19 @@ const mkdir = function (...args) {
         utils.setupXhrEventHandlers(xhr, options.success, options.error, resolve, reject);
 
         options.path = getAbsolutePathForApp(options.path);
+
+        // Check if trying to create directory in root (after resolving absolute path)
+        if (options.path === '/' || path.dirname(options.path) === '/') {
+            const errorResponse = {
+                status: 403,
+                message: "Cannot write an item to the root directory."
+            };
+            if (options.error) options.error(errorResponse);
+            reject(errorResponse);
+            return;
+        }
+
+
 
         xhr.send(JSON.stringify({
             parent: path.dirname(options.path),
