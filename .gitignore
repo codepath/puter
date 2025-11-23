@@ -35,4 +35,5 @@ memory/
 scratchpad.md
 notes.md
 *.notes
+.cursor/
 
