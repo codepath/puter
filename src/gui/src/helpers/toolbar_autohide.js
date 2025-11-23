@@ -47,7 +47,7 @@ class ToolbarAutoHide {
         
         // Then load from KV store to get the authoritative state
         puter.kv.get('user_preferences.toolbar_autohide').then((val) => {
-            const kvEnabled = val === true || val === 'true';
+            const kvEnabled = !!val;
             
             // If KV store has a different value, use that
             if (kvEnabled !== this.isEnabled) {

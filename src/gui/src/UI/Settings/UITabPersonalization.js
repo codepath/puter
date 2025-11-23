@@ -116,7 +116,7 @@ export default {
         
         // Load the current state from KV store and set checkbox
         puter.kv.get('user_preferences.toolbar_autohide').then(async (val) => {
-            const isEnabled = val === true || val === 'true';
+            const isEnabled = !!val;
             $el_window.find('.toggle-toolbar-autohide').prop('checked', isEnabled);
             
             // Also sync with the toolbar_autohide state
