@@ -3326,9 +3326,20 @@ window.scale_window = (el_window)=>{
 }
 
 window.update_explorer_footer_item_count = function(el_window){
-    //update dir count in explorer footer
-    let item_count = $(el_window).find('.item').length;
-    $(el_window).find('.explorer-footer .explorer-footer-item-count').html(item_count + ` ${i18n('item')}` + (item_count == 0 || item_count > 1 ? `${i18n('plural_suffix')}` : ''));
+    const $window = $(el_window);
+    const items = $window.find('.item');
+    const item_count = items.length;
+    let footer_label = item_count + ` ${i18n('item')}` + (item_count === 0 || item_count > 1 ? `${i18n('plural_suffix')}` : '');
+
+    if(window.user_preferences?.show_hidden_files){
+        const hidden_item_count = items.filter((_, item) => item.dataset?.name?.startsWith('.')).length;
+        if(hidden_item_count > 0){
+            const hidden_label = hidden_item_count + ` ${i18n('hidden')}` + (hidden_item_count === 0 || hidden_item_count > 1 ? `${i18n('plural_suffix')}` : '');
+            footer_label += ` (${hidden_label})`;
+        }
+    }
+
+    $window.find('.explorer-footer .explorer-footer-item-count').html(footer_label);
 }
 
 window.update_explorer_footer_selected_items_count = function(el_window){

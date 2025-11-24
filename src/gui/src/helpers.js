@@ -774,10 +774,18 @@ window.show_or_hide_files = (item_containers) => {
     const show_hidden_files = window.user_preferences.show_hidden_files;
     const class_to_add = show_hidden_files ? 'item-revealed' : 'item-hidden';
     const class_to_remove = show_hidden_files ? 'item-hidden' : 'item-revealed';
-    $(item_containers)
+    const $containers = $(item_containers);
+    $containers
         .find('.item')
         .filter((_, item) => item.dataset.name.startsWith('.'))
         .removeClass(class_to_remove).addClass(class_to_add);
+
+    $containers.each(function(){
+        const $window = $(this).closest('.window');
+        if($window.length){
+            window.update_explorer_footer_item_count($window);
+        }
+    });
 }
 
 window.create_folder = async(basedir, appendto_element)=>{
