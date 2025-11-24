@@ -29,6 +29,7 @@ import path from "../lib/path.js"
 import truncate_filename from '../helpers/truncate_filename.js';
 import launch_app from "../helpers/launch_app.js"
 import open_item from "../helpers/open_item.js"
+import item_icon from '../helpers/item_icon.js';
 
 function UIItem(options){
     const matching_appendto_count = $(options.appendTo).length;
@@ -1244,6 +1245,70 @@ function UIItem(options){
                     onClick: function(){
                         window.clipboard_op= 'copy';
                         window.clipboard= [{path: options.path}];
+                    }
+                });
+            }
+            // -------------------------------------------
+            // Duplicate
+            // -------------------------------------------
+            if(!is_trashed && !is_trash && !options.is_dir){
+                menu_items.push({
+                    html: i18n('duplicate'),
+                    onClick: async function(){
+                        const source_path = options.path;
+                        const dest_dir = path.dirname(source_path);
+                        const item_container = $(el_item).closest('.item-container');
+                        
+                        try {
+                            // Copy the file to the same directory with auto-renaming
+                            const resp = await puter.fs.copy({
+                                source: source_path,
+                                destination: dest_dir,
+                                dedupeName: true,
+                                overwrite: false,
+                            });
+
+                            // Get the copied item information
+                            const copied_item = resp[0].copied;
+                            
+                            // Wait a brief moment to allow socket event to potentially add the item
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                            
+                            // Check if item already exists in the UI (socket event may have added it)
+                            const existing_item = $(`.item[data-uid='${copied_item.uid}']`);
+                            if(existing_item.length === 0){
+                                // Item doesn't exist yet, manually add it (socket event skipped it)
+                                const icon = await item_icon(copied_item);
+                                
+                                UIItem({
+                                    appendTo: item_container,
+                                    uid: copied_item.uid,
+                                    immutable: copied_item.immutable || (copied_item.writable === false ? 1 : 0),
+                                    associated_app_name: copied_item.associated_app?.name || null,
+                                    path: copied_item.path,
+                                    icon: icon,
+                                    name: copied_item.name,
+                                    size: copied_item.size || 0,
+                                    type: copied_item.type || null,
+                                    modified: copied_item.modified || 0,
+                                    is_dir: copied_item.is_dir || false,
+                                    is_shared: copied_item.is_shared || false,
+                                    is_shortcut: copied_item.is_shortcut || 0,
+                                    shortcut_to: copied_item.shortcut_to || '',
+                                    shortcut_to_path: copied_item.shortcut_to_path || '',
+                                    suggested_apps: copied_item.suggested_apps || [],
+                                });
+                            }
+
+                            // Sort the container to show the new item in the correct position
+                            window.sort_items(item_container, $(item_container).attr('data-sort_by'), $(item_container).attr('data-sort_order'));
+                        } catch(err) {
+                            if(err.message){
+                                UIAlert(err.message);
+                            } else {
+                                UIAlert(i18n('something_went_wrong'));
+                            }
+                        }
                     }
                 });
             }
