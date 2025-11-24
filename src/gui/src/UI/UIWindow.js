@@ -3334,8 +3334,7 @@ window.update_explorer_footer_item_count = function(el_window){
     if(window.user_preferences?.show_hidden_files){
         const hidden_item_count = items.filter((_, item) => item.dataset?.name?.startsWith('.')).length;
         if(hidden_item_count > 0){
-            const hidden_label = hidden_item_count + ` ${i18n('hidden')}` + (hidden_item_count === 0 || hidden_item_count > 1 ? `${i18n('plural_suffix')}` : '');
-            footer_label += ` (${hidden_label})`;
+            footer_label += ` (${hidden_item_count} ${i18n('hidden')})`;
         }
     }
 
