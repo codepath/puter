@@ -37,6 +37,7 @@ export default {
         h += `<div style="overflow: hidden; display: flex; margin-bottom: 20px; flex-direction: column; align-items: center;">`;
             h += `<div class="profile-picture change-profile-picture" style="background-image: url('${html_encode(window.user?.profile?.picture ?? window.icons['profile.svg'])}');">`;
             h += `</div>`;
+            h += `<button class="button remove-profile-picture" style="margin-top: 10px;">${i18n('remove') || 'Remove'}</button>`;
         h += `</div>`;
 
         // change password button
@@ -148,6 +149,20 @@ export default {
                 is_openFileDialog: true,
                 selectable_body: false,
             });    
+        })
+
+        $el_window.find('.remove-profile-picture').on('click', function (e) {
+            //TODO: Implement remove profile picture functionality
+            // remove profile picture
+            const defaultAvatar = window.icons['profile.svg'];
+            
+            // update UI elements
+            $el_window.find('.profile-picture').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+            $('.profile-image').css('background-image', 'url(' + html_encode(defaultAvatar) + ')');
+            $('.profile-image').removeClass('profile-image-has-picture');
+            
+            // update profile picture in data (set to null to remove it)
+            update_profile(window.user.username, {picture: null});
         })
 
         $el_window.on('file_opened', async function(e){
