@@ -733,9 +733,32 @@ $(document).bind("keyup keydown", async function(e){
     if((e.ctrlKey || e.metaKey) && e.which === 86 && !$(focused_el).is('input') && !$(focused_el).is('textarea')){
         let target_path, target_el;
 
-        // continue only if there is something in the clipboard
-        if(window.clipboard.length === 0)
-            return;
+        // Check if there's text in clipboard that looks like a URL
+        if (window.clipboard.length === 0) {
+            // Prevent default early to avoid browser handling
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Try to read text from clipboard
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                try {
+                    const clipboardText = await navigator.clipboard.readText();
+                    if (clipboardText && (clipboardText.startsWith('http://') || clipboardText.startsWith('https://'))) {
+                        let parent_container = determine_active_container_parent();
+                        if (parent_container) {
+                            target_path = $(parent_container).attr('data-path');
+                            if (target_path && target_path !== window.trash_path && !target_path.startsWith(window.trash_path + '/')) {
+                                await window.create_weblink_from_url(target_path, parent_container, clipboardText);
+                                return false;
+                            }
+                        }
+                    }
+                } catch (err) {
+                    // Clipboard access denied or failed, continue with normal paste
+                }
+            }
+            return false;
+        }
 
         let parent_container = determine_active_container_parent();
 

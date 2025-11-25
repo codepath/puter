@@ -37,6 +37,48 @@ const open_item = async function(options){
     const file_uid = $(el_item).attr('data-uid');
     
     //----------------------------------------------------------------
+    // Is this a .weblink file?
+    //----------------------------------------------------------------
+    if (!is_dir && path.extname(item_path).toLowerCase() === '.weblink') {
+        try {
+            // Read the URL from the file
+            const fileContent = await puter.fs.read(item_path);
+            const url = await fileContent.text();
+            const trimmedUrl = url.trim();
+            
+            // Validate URL
+            if (trimmedUrl.startsWith('http://') || trimmedUrl.startsWith('https://')) {
+                // Open URL in new tab with security attributes
+                const newWindow = window.open(trimmedUrl, '_blank');
+                if (!newWindow) {
+                    UIAlert(i18n('failed_to_open_url'), [
+                        { label: i18n('ok'), value: 'ok', type: 'primary' }
+                    ]);
+                } else {
+                    // Set opener to null for security (noopener equivalent)
+                    try {
+                        newWindow.opener = null;
+                    } catch (e) {
+                        // Some browsers may throw, ignore
+                    }
+                }
+                return;
+            } else {
+                UIAlert(i18n('invalid_url_in_weblink'), [
+                    { label: i18n('ok'), value: 'ok', type: 'primary' }
+                ]);
+                return;
+            }
+        } catch (err) {
+            console.error('Error reading weblink file:', err);
+            UIAlert(i18n('error_reading_weblink'), [
+                { label: i18n('ok'), value: 'ok', type: 'primary' }
+            ]);
+            return;
+        }
+    }
+    
+    //----------------------------------------------------------------
     // Is this a shortcut whose source is perma-deleted?
     //----------------------------------------------------------------
     if(is_shortcut && shortcut_to_path === ''){
