@@ -264,6 +264,7 @@ const pl = {
         session_saved: "Dziękujemy za stworzenie konta. Ta sesja została zapisana. ",
         settings: "Ustawienia",
         set_new_password: "Ustaw nowe hasło.",
+        set_as_desktop_background: 'Ustaw jako tło pulpitu',
         share: "Udostępnij",
         share_to: "Udostępnij do",
         share_with: "Udostępnij dla:",

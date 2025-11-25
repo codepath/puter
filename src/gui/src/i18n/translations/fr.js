@@ -264,6 +264,7 @@ const fr = {
         session_saved: "Merci d'avoir créé un compte. Cette session a été sauvegardée.",
         settings: "Paramètres",
         set_new_password: "Definir un nouveau mot de passe",
+        set_as_desktop_background: 'Définir comme arrière-plan du bureau',
         share: "Partager",
         share_to: "Partager à",
         share_with: "Partager avec",

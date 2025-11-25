@@ -281,6 +281,7 @@ const en = {
     session_saved: "תודה שיצרת חשבון. הפעלה זו נשמרה",
     settings: "הגדרות",
     set_new_password: "הגדרת סיסמה חדשה",
+    set_as_desktop_background: 'הגדר כרקע שולחן העבודה',
     share: "שיתוף",
     share_to: "שתף אל",
     share_with: "שתף עם:",

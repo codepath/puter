@@ -261,6 +261,7 @@ const th = {
         session_saved: "ขอบคุณสำหรับการสร้างบัญชี เซสชันนี้ได้รับการบันทึกแล้ว",
         settings: "Settings",
         set_new_password: "ตั้งรหัสผ่านใหม่",
+        set_as_desktop_background: 'ตั้งเป็นพื้นหลังเดสก์ท็อป',
         share: "แชร์",
         share_to: "แชร์ไปยัง",
         share_with: "แชร์ไปให้:",

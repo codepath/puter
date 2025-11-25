@@ -265,6 +265,7 @@ const ro = {
         session_saved: "Vă mulțumim pentru crearea unui cont. Această sesiune a fost salvată.",
         settings: "Setări",
         set_new_password: "Setează o parolă Nouă",
+        set_as_desktop_background: 'Setează ca fundal al desktop-ului',
         share: "Distribuie",
         share_to: "Distribuie către",
         share_with: "Distribuie cu",

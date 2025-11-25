@@ -30,6 +30,23 @@ import truncate_filename from '../helpers/truncate_filename.js';
 import launch_app from "../helpers/launch_app.js"
 import open_item from "../helpers/open_item.js"
 
+/**
+ * Checks if a file path represents an image file based on its extension
+ * @param {string} filePath - The file path to check
+ * @returns {boolean} True if the file is an image, false otherwise
+ */
+function isImageFile(filePath) {
+    if (!filePath) return false;
+    
+    const imageExtensions = [
+        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', 
+        '.svg', '.ico', '.tif', '.tiff', '.heic', '.heif'
+    ];
+    
+    const lowerPath = filePath.toLowerCase();
+    return imageExtensions.some(ext => lowerPath.endsWith(ext));
+}
+
 function UIItem(options){
     const matching_appendto_count = $(options.appendTo).length;
     if(matching_appendto_count > 1){
@@ -1182,6 +1199,98 @@ function UIItem(options){
                             window.trigger_download([options.path]);
                     }
                 });                
+            }
+            // -------------------------------------------
+            // Set as Desktop Background
+            // -------------------------------------------
+            if(!is_trash && !is_trashed && !options.is_dir && isImageFile(options.path)){
+                menu_items.push({
+                    html: i18n('set_as_desktop_background'),
+                    onClick: async function(){
+                        try {
+                            // Sign the file to get a URL that works in CSS background-image
+                            // (doesn't require auth headers)
+                            const sign_res = await $.ajax({
+                                url: window.api_origin + "/sign",
+                                type: 'POST',
+                                data: JSON.stringify({ 
+                                    items: [{
+                                        path: options.path,
+                                        action: 'read'
+                                    }]
+                                }),
+                                async: true,
+                                contentType: "application/json",
+                                headers: {
+                                    "Authorization": "Bearer "+window.auth_token
+                                },
+                                statusCode: {
+                                    401: function () {
+                                        window.logout();
+                                    },
+                                },
+                            });
+                            
+                            const read_url = sign_res.signatures[0].read_url;
+                            
+                            // Preload image before setting as background to avoid gray flash
+                            await new Promise((resolve, reject) => {
+                                const img = new Image();
+                                img.onload = () => resolve();
+                                img.onerror = () => reject(new Error('Failed to load image'));
+                                img.src = read_url;
+                            });
+                            
+                            // Add smooth fade transition
+                            $('body').css('transition', 'opacity 0.4s ease-in-out');
+                            
+                            // Fade out
+                            $('body').css('opacity', '0.7');
+                            
+                            // Wait for fade out
+                            await new Promise(resolve => setTimeout(resolve, 200));
+                            
+                            // Set desktop background locally (image is now cached)
+                            window.set_desktop_background({
+                                url: read_url,
+                                fit: 'cover'
+                            });
+                            
+                            // Fade in
+                            $('body').css('opacity', '1');
+                            
+                            // Persist to server
+                            await $.ajax({
+                                url: window.api_origin + "/set-desktop-bg",
+                                type: 'POST',
+                                data: JSON.stringify({ 
+                                    url: read_url,
+                                    fit: 'cover',
+                                    color: null,
+                                }),
+                                async: true,
+                                contentType: "application/json",
+                                headers: {
+                                    "Authorization": "Bearer "+window.auth_token
+                                },
+                                statusCode: {
+                                    401: function () {
+                                        window.logout();
+                                    },
+                                },
+                            });
+                            
+                            // Update user object
+                            if(window.user){
+                                window.user.desktop_bg_url = read_url;
+                                window.user.desktop_bg_fit = 'cover';
+                                window.user.desktop_bg_color = null;
+                            }
+                        } catch (err) {
+                            console.error('Failed to set desktop background:', err);
+                        }
+                    }
+                });
             }
             // -------------------------------------------
             // Zip

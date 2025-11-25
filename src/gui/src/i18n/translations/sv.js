@@ -265,6 +265,7 @@ const sv = {
         session_saved: "Tack för att du skapade ett konto. Denna session är sparad.",
         settings: "Inställningar",
         set_new_password: "Ange nytt lösenord",
+        set_as_desktop_background: 'Ange som skrivbordsbakgrund',
         share: "Dela",
         share_to: "Dela till",
         share_with: "Dela med:",

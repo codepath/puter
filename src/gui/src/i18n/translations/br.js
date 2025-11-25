@@ -265,6 +265,7 @@ const br = {
     "session_saved": "Obrigado por criar uma conta. Esta sessão foi salva.",
     "settings": "Configurações",
     "set_new_password": "Definir Nova Senha",
+    "set_as_desktop_background": "Definir como plano de fundo da área de trabalho",
     "share": "Compartilhar",
     "share_to": "Compartilhar para",
     "share_with": "Compartilhar com:",

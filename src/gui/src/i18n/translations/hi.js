@@ -264,6 +264,7 @@ const hi = {
         session_saved: "खाता बनाने के लिए धन्यवाद. यह सत्र सहेजा गया है",
         settings: "समायोजन",
         set_new_password: "नया पासवर्ड सेट करें",
+        set_as_desktop_background: 'डेस्कटॉप पृष्ठभूमि के रूप में सेट करें',
         share: "आदान-प्रदान",
         share_to: "साझा",
         share_with: "के साथ साझा करें",

@@ -291,6 +291,7 @@ const ku = {
     session_saved: "سوپاس بۆ دروستکردنی هەژمار. ئەم دانیشتنە پاشەکەوتکرا.",
     settings: "ڕێکخستنەکان",
     set_new_password: "وشەی تێپەڕی نوێ دانان",
+    set_as_desktop_background: 'دانان وەک پاشبنەی دێسکتۆپ',
     share: "هاوبەشکردن",
     share_to: "هاوبەشکردن بۆ",
     share_with: "هاوبەشکردن بە:",

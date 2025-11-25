@@ -285,6 +285,7 @@ const ko = {
     session_saved: "계정을 생성해 주셔서 감사합니다. 이 세션이 저장되었습니다.", // Improvement suggestion: "계정을 만들어주셔서 감사합니다. 현재 세션이 저장되었습니다."
     settings: "설정",
     set_new_password: "새 비밀번호 설정",
+    set_as_desktop_background: '바탕 화면 배경으로 설정',
     share: "공유",
     share_to: "공유처",
     share_with: "공유 대상",

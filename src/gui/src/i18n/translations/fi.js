@@ -339,6 +339,7 @@ const fi = {
     session_saved: "Kiitos tilin luomisesta. Tämä istunto on tallennettu.",
     settings: "Asetukset",
     set_new_password: "Aseta uusi salasana",
+    set_as_desktop_background: 'Aseta työpöydän taustakuvaksi',
     share: "Jaa",
 
     share_to: "Jaa", // TODO: Grammatical ambiguity

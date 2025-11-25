@@ -264,6 +264,7 @@ const zhtw = {
         session_saved: "感謝您建立帳戶。此工作階段已儲存。",
         settings: "設定",
         set_new_password: "設定新密碼",
+        set_as_desktop_background: '設為桌面背景',
         share: "分享",
         share_to: "分享到",
         share_with: "分享給：",

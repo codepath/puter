@@ -264,6 +264,7 @@ const da = {
 		session_saved: 'Tak fordi du oprettede en konto. Denne session er blevet gemt.',
 		settings: 'Indstillinger',
 		set_new_password: 'Indstil ny adgangskode',
+		set_as_desktop_background: 'Indstil som skrivebordsbaggrund',
 		share: 'Del',
 		share_to: 'Del til',
 		share_with: 'Del med:',

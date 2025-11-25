@@ -155,6 +155,7 @@ const nb = {
         send_password_recovery_email: "Send e-post for gjenoppretting av passord",
         session_saved: "Takk for at du opprettet en konto. Denne økten er lagret.",
         set_new_password: "Angi nytt passord",
+        set_as_desktop_background: "Angi som skrivebordsbakgrunn",
         share_to: "Del",
         show_all_windows: "Vis alle vinduer",
         show_hidden: "Vis skjulte",

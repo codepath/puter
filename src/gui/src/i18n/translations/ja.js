@@ -265,6 +265,7 @@ const ja = {
         session_saved: "アカウントを作成していただきありがとうございます。このセッションは保存されました。",
         settings: "設定",
         set_new_password: "新しいパスワードを設定",
+        set_as_desktop_background: 'デスクトップの背景として設定',
         share: "共有",
         share_to: "共有先",
         share_with: "共有相手：",
