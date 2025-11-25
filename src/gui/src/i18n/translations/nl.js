@@ -265,6 +265,7 @@ const nl = {
 		session_saved: 'Bedankt voor het aanmaken van een account. Deze sessie is opgeslagen.',
 		settings: 'Instellingen',
 		set_new_password: 'Nieuw wachtwoord instellen',
+		set_as_desktop_background: 'Instellen als bureaubladachtergrond',
 		share: 'Delen',
 		share_to: 'Delen met',
 		share_with: 'Delen met:',

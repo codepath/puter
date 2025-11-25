@@ -287,6 +287,7 @@ const ig = {
     session_saved: "Daalụ maka ịmepụta akaụntụ. Achekwala nnọkọ a.",
     settings: "Ntọala",
     set_new_password: "Tinye paswọọdụ ọhụrụ",
+    set_as_desktop_background: 'Tinye dị ka okirikiri desktọọpụ',
     share: "ike",
     share_to: "ike nye",
     share_with: "ji ike nye:",

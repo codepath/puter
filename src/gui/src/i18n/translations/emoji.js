@@ -155,6 +155,7 @@ const emoji = {
         send_password_recovery_email: "📧🔑🔄",
         session_saved: "👤💾🔄",
         set_new_password: "🔑🆕",
+        set_as_desktop_background: "🖼️🖥️",
         share_to: "🔁➡️",
         show_all_windows: "🔄🆓🖼️🖼️",
         show_hidden: '👁️🔄',

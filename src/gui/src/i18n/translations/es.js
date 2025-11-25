@@ -299,6 +299,7 @@ const es = {
       'Enviar la contraseña al correo de recuperación',
     session_saved: 'Gracias por crear una cuenta. La sesión ha sido guardada.',
     set_new_password: 'Establecer una nueva contraseña',
+    set_as_desktop_background: 'Establecer como fondo de escritorio',
     settings: 'Opciones',
     share: 'Compartir',
     share_to: 'Compartir a',

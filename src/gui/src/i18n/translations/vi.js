@@ -265,6 +265,7 @@ const vi = {
         session_saved: "Cảm ơn bạn đã tạo tài khoản. Phiên này đã được lưu.",
         settings: "Cài đặt",
         set_new_password: "Đặt mật khẩu mới",
+        set_as_desktop_background: 'Đặt làm hình nền màn hình',
         share: "Chia sẻ",
         share_to: "Chia sẻ đến",
         share_with: "Chia sẻ với:",

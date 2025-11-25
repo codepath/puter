@@ -264,6 +264,7 @@ const de = {
         session_saved: "Vielen Dank, dass Sie ein Konto erstellt haben. Diese Sitzung wurde gespeichert.",
         settings: "Einstellungen",
         set_new_password: "Neues Passwort festlegen",
+        set_as_desktop_background: 'Als Desktop-Hintergrund festlegen',
         share: "Teilen",
         share_to: "Teilen mit",
         share_with: "Teilen mit:",

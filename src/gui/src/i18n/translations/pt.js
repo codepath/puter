@@ -268,6 +268,7 @@ const pt = {
         session_saved: "Obrigado por criares uma conta. Esta sessão foi gravada.",
         settings: "Definições",
         set_new_password: "Definir nova Password",
+        set_as_desktop_background: 'Definir como fundo do ambiente de trabalho',
         share: "Partilhar",
         share_to: "Partilhar com",
         share_with: " Partilhar com:",

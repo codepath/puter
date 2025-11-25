@@ -283,6 +283,7 @@ const ar = {
       session_saved: "شكرًا لإنشاء حساب. تم حفظ هذه الجلسة.",
       settings: "الإعدادات",
       set_new_password: "تعيين كلمة مرور جديدة",
+      set_as_desktop_background: 'تعيين كخلفية لسطح المكتب',
       share: "مشاركة",
       share_to: "مشاركة إلى",
       share_with: "مشاركة مع:",

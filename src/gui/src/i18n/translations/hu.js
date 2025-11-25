@@ -260,6 +260,7 @@ const hu = {
         session_saved: "Köszönjük, hogy létrehoztál egy fiókot. Ez a munkamenet mentésre került.",
         settings: "Beállítások",
         set_new_password: "Új jelszó beállítása",
+        set_as_desktop_background: 'Beállítás asztali háttérképként',
         share: "Megosztás",
         share_to: "Megosztás ide:",
         share_with: "Megosztás valakivel:",

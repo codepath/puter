@@ -263,6 +263,7 @@ const ta = {
         session_saved: "கணக்கை உருவாக்கியதற்கு நன்றி. இந்த அமர்வு சேமிக்கப்பட்டது.",
         settings: "அமைப்புகள்",
         set_new_password: "புதிய கடவுச்சொல்லை அமை",
+        set_as_desktop_background: 'டெஸ்க்டாப் பின்னணியாக அமை',
         share: "பகிர்",
         share_to: "பகிரவும்",
         share_with: "இவர்களுடன் பகிரவும்:",

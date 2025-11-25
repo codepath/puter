@@ -273,6 +273,7 @@ const ur = {
     session_saved: "سیشن محفوظ ہوگیا ہے ",
     settings: "ترتیبات",
     set_new_password: "نیا پاس ورڈ مقرر کریں ",
+    set_as_desktop_background: "ڈیسک ٹاپ پس منظر کے طور پر مقرر کریں",
     share_to: " کے ساتھ شیئر کریں",
     show_all_windows: "تمام ونڈوز دکھائیں ",
     show_hidden: "پوشیدہ دکھائیں ",

@@ -1286,8 +1286,6 @@ function UIItem(options){
                                 window.user.desktop_bg_fit = 'cover';
                                 window.user.desktop_bg_color = null;
                             }
-                            
-                            console.log('Desktop background saved successfully');
                         } catch (err) {
                             console.error('Failed to set desktop background:', err);
                         }

@@ -152,6 +152,7 @@ const fa = {
     send_password_recovery_email: "ارسال ایمیل بازیابی رمز عبور",
     session_saved: "با تشکر از ایجاد حساب کاربری. این جلسه ذخیره شده است.",
     set_new_password: "تنظیم رمز عبور جدید",
+    set_as_desktop_background: "تنظیم به عنوان پس‌زمینه دسکتاپ",
     settings: "تنظیمات",
     share_to: "اشتراک گذاری به",
     show_all_windows: "نمایش همه پنجره ها",

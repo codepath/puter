@@ -265,6 +265,7 @@ const zh = {
         session_saved: "感谢您创建帐号。此会话已保存。",
         settings: "设置",
         set_new_password: "设置新密码",
+        set_as_desktop_background: '设为桌面背景',
         share: "分享",
         share_to: "分享到",
         share_with: "分享:",

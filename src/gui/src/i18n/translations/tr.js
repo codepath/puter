@@ -264,6 +264,7 @@ const tr = {
         session_saved: "Hesap oluşturduğunuz için teşekkür ederiz. Oturumunuz kaydedildi.",
         settings: "Ayarlar",
         set_new_password: "Yeni Parola Belirle",
+        set_as_desktop_background: 'Masaüstü arka planı olarak ayarla',
         share: "Paylaş",
         share_to: "Şuna paylaş",
         share_with: "Şununla paylaş",

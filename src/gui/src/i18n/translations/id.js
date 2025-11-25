@@ -282,6 +282,7 @@ const id = {
     session_saved: "Terima kasih telah membuat akun. Sesi ini telah disimpan.",
     settings: "Pengaturan",
     set_new_password: "Tetapkan Kata Sandi Baru",
+    set_as_desktop_background: 'Tetapkan sebagai latar belakang desktop',
     share: "Bagikan",
     share_to: "Bagikan ke",
     share_with: "Bagikan dengan:",
