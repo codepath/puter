@@ -146,6 +146,7 @@ export const buildParserFirstHalf = (sp, profile) => {
                     parserBuilder.def(a => a.literal('|').assign({ $: 'op.pipe' })),
                     parserBuilder.def(a => a.literal('>').assign({ $: 'op.redirect', direction: 'out' })),
                     parserBuilder.def(a => a.literal('<').assign({ $: 'op.redirect', direction: 'in' })),
+                    parserBuilder.def(a => a.literal('&').assign({ $: 'op.background' })),
                     {
                         parser: parserBuilder.def(a => a.literal(')').assign({ $: 'op.close' })),
                         transition: {

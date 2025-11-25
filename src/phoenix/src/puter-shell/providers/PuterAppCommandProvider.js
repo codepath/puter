@@ -58,7 +58,10 @@ export class PuterAppCommandProvider {
                     },
                     env: {...ctx.env},
                 };
-                const child = await puter.ui.launchApp(id, args);
+                // Check if app should be launched in background
+                // The & operator sets BACKGROUND=1 in the environment, or we can check ctx.locals.background
+                const shouldRunInBackground = ctx.env.BACKGROUND === '1' || ctx.env.BACKGROUND === 'true' || ctx.locals.background === true;
+                const child = await puter.ui.launchApp(id, args, undefined, { background: shouldRunInBackground });
 
                 const resize_listener = evt => {
                     child.postMessage({
