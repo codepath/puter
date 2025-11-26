@@ -45,13 +45,12 @@ const mkdir = function (...args) {
         options.path = getAbsolutePathForApp(options.path);
 
         xhr.send(JSON.stringify({
-            parent: path.dirname(options.path),
-            path:	path.basename(options.path), 
+            path: options.path,
             overwrite: options.overwrite ?? false,
             dedupe_name: (options.rename || options.dedupeName) ?? false,
             shortcut_to: options.shortcutTo,
             original_client_socket_id: this.socket.id,
-            create_missing_parents: (options.recursive || options.createMissingParents) ?? false,
+            create_missing_parents: (options.recursive || options.createMissingParents || options.create_missing_parents) ?? false,
         }));
     })
 }

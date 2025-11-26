@@ -270,8 +270,42 @@ class HLMkdir extends HLFilesystemOperation {
         }
 
         let parent_node = values.parent || await fs.node(new RootNodeSelector());
-        console.log('USING PARENT', parent_node.selector.describe());
         let target_basename = _path.basename(values.path);
+
+        // Check if trying to create a directory directly in the root directory
+        // This check applies regardless of create_missing_parents flag
+        const path_dirname = _path.dirname(values.path);
+        if ( parent_node.isRoot && (path_dirname === '/' || path_dirname === '.' || path_dirname === '') ) {
+            throw APIError.create('cannot_create_in_root');
+        }
+
+        // Check if create_missing_parents would cause creation in root
+        // For example: mkdir('/foo/bar', { create_missing_parents: true }) would create /foo in root
+        // Note: User directories are allowed (they already exist), so we check if the first component
+        // would be a user directory before blocking. This check occurs BEFORE any directory creation.
+        if ( values.create_missing_parents && parent_node.isRoot && path_dirname !== '/' && path_dirname !== '.' && path_dirname !== '' ) {
+            // Extract the first component of the path that would be created in root
+            const path_parts = values.path.split('/').filter(Boolean);
+            if ( path_parts.length > 0 ) {
+                const first_component = path_parts[0];
+                // Check if the first component is a user directory (user directories already exist)
+                const first_component_node = await fs.node(new NodePathSelector(`/${first_component}`));
+                await first_component_node.fetchEntry();
+                
+                // If the directory doesn't exist, block creation in root
+                if ( ! await first_component_node.exists() ) {
+                    throw APIError.create('cannot_create_in_root');
+                }
+                
+                // Check if it's a user directory (user directories are allowed)
+                const is_user_dir = await first_component_node.isUserDirectory();
+                
+                // Only block if it's NOT a user directory (user directories are allowed)
+                if ( !is_user_dir) {
+                    throw APIError.create('cannot_create_in_root');
+                }
+            }
+        }
 
         const top_parent = values.create_missing_parents
             ? await this._create_top_parent({ top_parent: parent_node })
@@ -280,10 +314,14 @@ class HLMkdir extends HLFilesystemOperation {
 
         // `parent_node` becomes the parent of the last directory name
         // specified under `path`.
-        parent_node = await this._create_parents({
-            parent_node: top_parent,
-            actor: values.actor,
-        });
+        parent_node = values.create_missing_parents
+            ? await this._create_parents({
+                parent_node: top_parent,
+                actor: values.actor,
+            })
+            : await this._get_existing_parent({
+                parent_node: top_parent,
+            });
 
         const user_id = values.actor.type.user.id;
 
@@ -413,7 +451,6 @@ class HLMkdir extends HLFilesystemOperation {
         const node = await fs.node(current);
 
         if ( ! await node.exists() ) {
-            console.log('HERE FROM', node.selector.describe(), parent_node.selector.describe());
             throw APIError.create('dest_does_not_exist');
         }
 
