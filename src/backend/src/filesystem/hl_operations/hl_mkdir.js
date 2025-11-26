@@ -301,7 +301,7 @@ class HLMkdir extends HLFilesystemOperation {
                 const is_user_dir = await first_component_node.isUserDirectory();
                 
                 // Only block if it's NOT a user directory (user directories are allowed)
-                if ( is_user_dir !== true ) {
+                if ( !is_user_dir) {
                     throw APIError.create('cannot_create_in_root');
                 }
             }
