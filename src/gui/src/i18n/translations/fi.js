@@ -189,6 +189,7 @@ const fi = {
     // 'get a link to the copy' => 'Ota Linkki Kopioon' - More probable, just want to be sure
 
     hide_all_windows: "Piilota kaikki ikkunat",
+    hide_desktop_icons: "Piilota työpöydän kuvakkeet",
     home: "Koti",
     html_document: "HTML-dokumentti",
     hue: "Sävy",
@@ -348,6 +349,7 @@ const fi = {
     share_with: "Jaa:",
     shortcut_to: "Pikakuvake",
     show_all_windows: "Näytä kaikki ikkunat",
+    show_desktop_icons: "Näytä työpöydän kuvakkeet",
     show_hidden: "Näytä piilotetut",
     sign_in_with_puter: "Kirjaudu sisään Puterilla",
     sign_up: "Rekisteröidy",
