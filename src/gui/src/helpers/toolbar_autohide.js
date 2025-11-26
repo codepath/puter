@@ -86,6 +86,57 @@ class ToolbarAutoHide {
             this.clearHideTimer();
             this.show();
         });
+
+        // Listen for context menu open/close events
+        $(document).on('ctxmenu-will-open', () => {
+            // When a context menu is about to open, prevent hiding
+            this.clearHideTimer();
+            this.show();
+        });
+
+        // Monitor for context menu visibility
+        // Check periodically if any context menu is open
+        setInterval(() => {
+            if (this.hasOpenMenu()) {
+                this.clearHideTimer();
+                if (this.isHidden) {
+                    this.show();
+                }
+            }
+        }, 500); // Check every 500ms
+    }
+
+    /**
+     * Check if any context menu is currently open from the toolbar
+     */
+    hasOpenMenu() {
+        // Check if any toolbar button has an open context menu
+        if (this.$toolbar && this.$toolbar.find('.toolbar-btn.has-open-contextmenu').length > 0) {
+            return true;
+        }
+        
+        // Check if any context menu is visible (as a fallback)
+        if ($('.context-menu:visible').length > 0) {
+            // Check if the context menu is related to the toolbar
+            const $openMenus = $('.context-menu:visible');
+            for (let i = 0; i < $openMenus.length; i++) {
+                const menuId = $openMenus.eq(i).attr('data-id');
+                // Check if it's the user-options-menu or any menu with parent from toolbar
+                if (menuId === 'user-options-menu') {
+                    return true;
+                }
+                // Check if parent element is in toolbar
+                const parentId = $openMenus.eq(i).attr('data-parent-id');
+                if (parentId) {
+                    const $parent = $(`[data-element-id="${parentId}"]`);
+                    if ($parent.closest('.toolbar').length > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
     }
 
     enable() {
@@ -117,9 +168,17 @@ class ToolbarAutoHide {
     startHideTimer() {
         if (!this.isEnabled) return;
         
+        // Don't start timer if a menu is open
+        if (this.hasOpenMenu()) {
+            return;
+        }
+        
         this.clearHideTimer();
         this.hideTimeout = setTimeout(() => {
-            this.hide();
+            // Double-check menu is still closed before hiding
+            if (!this.hasOpenMenu()) {
+                this.hide();
+            }
         }, this.hideDelay);
     }
 
@@ -132,6 +191,11 @@ class ToolbarAutoHide {
 
     hide() {
         if (!this.isEnabled || this.isHidden) return;
+        
+        // Don't hide if a menu is open
+        if (this.hasOpenMenu()) {
+            return;
+        }
         
         this.isHidden = true;
         this.$toolbar.removeClass('toolbar-visible toolbar-peek').addClass('toolbar-hidden');
@@ -149,8 +213,8 @@ class ToolbarAutoHide {
         // Adjust layout
         this.updateLayout(false);
         
-        // Restart hide timer
-        if (this.isEnabled) {
+        // Restart hide timer (only if no menu is open)
+        if (this.isEnabled && !this.hasOpenMenu()) {
             this.startHideTimer();
         }
     }
@@ -191,8 +255,10 @@ class ToolbarAutoHide {
                 // Mouse moved away from top, hide the peek
                 this.$toolbar.removeClass('toolbar-peek').addClass('toolbar-hidden');
             } else if (!this.isHidden) {
-                // Restart hide timer when mouse moves away
-                this.startHideTimer();
+                // Restart hide timer when mouse moves away (only if no menu is open)
+                if (!this.hasOpenMenu()) {
+                    this.startHideTimer();
+                }
             }
         }
     }
@@ -207,8 +273,8 @@ class ToolbarAutoHide {
     onMouseLeaveToolbar() {
         if (!this.isEnabled) return;
         
-        // Only start timer if mouse is not near the top
-        if (this.lastMouseY > this.proximityThreshold) {
+        // Only start timer if mouse is not near the top and no menu is open
+        if (this.lastMouseY > this.proximityThreshold && !this.hasOpenMenu()) {
             this.startHideTimer();
         }
     }
