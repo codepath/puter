@@ -83,6 +83,7 @@ const ta = {
         credits: "கடன்கள்",
         current_password: "தற்போதைய கடவுச்சொல்",
         cut: 'வெட்டு',
+        duplicate: 'நகல் எடு',
         clock: "கடிகாரம்",
         clock_visible_hide: 'மறை - எப்போதும் மறைந்திருக்கும்',
         clock_visible_show: 'காட்டு - எப்போதும் தெரியும்',

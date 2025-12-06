@@ -83,6 +83,7 @@ const th = {
         credits: "Credits",
         current_password: "รหัสผ่านปัจจุบัน",
         cut: "ตัด",
+        duplicate: "ทำซ้ำ",
         clock: "นาฬิกา",
         clock_visible_hide: 'ซ่อน - ซ่อนตลอด',
         clock_visible_show: 'แสดง - แสดงตลอด',

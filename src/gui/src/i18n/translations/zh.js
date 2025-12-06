@@ -85,6 +85,7 @@ const zh = {
         credits: "特别鸣谢",
         current_password: "当前密码",
         cut: '剪切',
+        duplicate: '复制副本',
         clock: "时间",
         clock_visible_hide: '隐藏 - 始终隐藏',
         clock_visible_show: '显示 - 始终显示',

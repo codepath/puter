@@ -92,6 +92,7 @@ const ig = {
     credits: "Ebe e si nweta",
     current_password: "paswọọdụ Ugbu a",
     cut: "Bee",
+    duplicate: "Mee oyiri",
     clock: "Elekere",
     clock_visible_hide: "Ezo - ezoro ezo mgbe niile",
     clock_visible_show: "Gosi - A na-ahụ ya mgbe niile",

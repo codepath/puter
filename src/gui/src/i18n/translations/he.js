@@ -90,6 +90,7 @@ const en = {
     credits: "הערכה",
     current_password: "סיסמה נוכחית",
     cut: "גזירה",
+    duplicate: "שכפול",
     clock: "שעון",
     clock_visible_hide: "הסתר - תמיד מוסתר",
     clock_visible_show: "הצג - תמיד מוצג",

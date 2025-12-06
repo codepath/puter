@@ -89,6 +89,7 @@ const ar = {
       credits: "الاعتمادات",
       current_password: "كلمة المرور الحالية",
       cut: "قص",
+      duplicate: "تكرار",
       clock: "ساعة",
       clock_visible_hide: "إخفاء - مخفية دائمًا",
       clock_visible_show: "إظهار - مرئية دائمًا",

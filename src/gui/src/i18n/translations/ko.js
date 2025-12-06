@@ -93,6 +93,7 @@ const ko = {
     credits: "크레딧",
     current_password: "현재 비밀번호",
     cut: "잘라내기",
+    duplicate: "복제",
     clock: "시계",
     clock_visible_hide: "숨기기 - 항상 숨김",
     clock_visible_show: "표시 - 항상 표시",

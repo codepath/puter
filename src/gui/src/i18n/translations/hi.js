@@ -84,6 +84,7 @@ const hi = {
         credits: "क्रेडिट",
         current_password: "वर्तमान पासवर्ड",
         cut: 'काटना',
+        duplicate: 'डुप्लिकेट',
         clock: "घड़ी",
         clock_visible_hide: 'छुपना - हमेशा छिपा रहना',
         clock_visible_show: 'दिखाएँ - सदैव दृश्यमान',

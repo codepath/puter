@@ -101,6 +101,7 @@ const es = {
     credits: 'Creditos',
     current_password: 'Contraseña actual',
     cut: 'Cortar',
+    duplicate: 'Duplicar',
     clock: 'Reloj',
     clock_visible_hide: 'Ocultar - Siempre oculto',
     clock_visible_show: 'Mostrar - Siempre visible',

@@ -85,6 +85,7 @@ const ja = {
         credits: "クレジット",
         current_password: "現在のパスワード",
         cut: 'カット',
+        duplicate: '複製',
         clock: "時計",
         clock_visible_hide: '非表示 - 常に非表示',
         clock_visible_show: '表示 - 常に表示',

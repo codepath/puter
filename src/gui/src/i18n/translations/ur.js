@@ -89,6 +89,7 @@ const ur = {
     credits: "کریڈٹس",
     current_password: "موجودہ پاس ورڈ",
     cut: "کاٹیں",
+    duplicate: "نقل بنائیں",
     clock: "گھڑی",
     clock_visible_hide: "چھپائیں - ہمیشہ پوشیدہ",
     clock_visible_show: "دکھائیں - ہمیشہ دکھائی دیں۔",

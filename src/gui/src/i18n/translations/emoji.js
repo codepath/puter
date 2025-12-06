@@ -56,6 +56,7 @@ const emoji = {
         create_shortcut: "📌🔄",
         current_password: "🔑🔍",
         cut: '✂️',
+        duplicate: '📋➕',
         date_modified: '📅🔄',
         delete: '🗑️',
         delete_permanently: "🗑️🔚",

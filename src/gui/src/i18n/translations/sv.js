@@ -85,6 +85,7 @@ const sv = {
         credits: "Tack",
         current_password: "Nuvarande lösenord",
         cut: "Klipp ut",
+        duplicate: "Duplicera",
         clock: "Klocka",
         clock_visible_hide: "Dölj - Alltid dold",
         clock_visible_show: "Visa - Alltid synlig",

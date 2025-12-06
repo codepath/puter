@@ -85,6 +85,7 @@ const vi = {
         credits: "Tín dụng",
         current_password: "Mật khẩu hiện tại",
         cut: 'Cắt',
+        duplicate: 'Nhân đôi',
         clock: "Đồng hồ",
         clock_visible_hide: 'Ẩn - Luôn ẩn',
         clock_visible_show: 'Hiện - Luôn hiển thị',

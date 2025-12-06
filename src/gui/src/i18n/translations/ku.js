@@ -95,6 +95,7 @@ const ku = {
     credits: "بڕگەکان",
     current_password: "وشەی تێپەڕی ئێستا",
     cut: "برین",
+    duplicate: "دووبارەکردنەوە",
     clock: "کاژێر",
     clock_visible_hide: "شاردنەوە - هەمیشە شاردراوە",
     clock_visible_show: "پیشان - هەمیشە پیشاندراوە",

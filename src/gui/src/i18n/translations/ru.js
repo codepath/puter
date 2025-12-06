@@ -93,6 +93,7 @@ const ru = {
     credits: 'Авторы',
     current_password: 'Текущий пароль',
     cut: 'Вырезать',
+    duplicate: 'Дублировать',
     clock: 'Часы',
     clock_visible_hide: 'Скрыть - Всегда скрыто',
     clock_visible_show: 'Показать - Всегда на виду',

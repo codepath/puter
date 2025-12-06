@@ -86,6 +86,7 @@ const ua = {
         credits: "Титри",
         current_password: "Поточний Пароль",
         cut: "Вирізати",
+        duplicate: "Дублювати",
         clock: "Годинник",
         clock_visible_hide: "Приховати - Завжди приховано",
         clock_visible_show: "Показати - Завжди на виду",

@@ -111,6 +111,7 @@ const fi = {
     credits: "Tekijät",
     current_password: "Nykyinen salasana",
     cut: "Leikkaa",
+    duplicate: "Monista",
     clock: "Kello",
     clock_visible_hide: "Piilota - aina piilossa",
     clock_visible_show: "Näytä - aina näkyvissä",

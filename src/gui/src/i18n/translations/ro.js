@@ -85,6 +85,7 @@ const ro = {
         credits: "Credite",
         current_password: "Parola Curentă",
         cut: 'Decupează',
+        duplicate: 'Duplică',
         clock: "Ora",
         clock_visible_hide: "Ascunde - Întotdeauna ascuns",
         clock_visible_show: "Afișează - Întotdeauna vizibil",

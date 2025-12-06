@@ -84,6 +84,7 @@ const pl = {
         credits: "Licencje",
         current_password: "Aktualne hasło",
         cut: 'Wytnij',
+        duplicate: 'Duplikuj',
         clock: "Zegar",
         clock_visible_hide: 'Ukryj - zawsze ukryty',
         clock_visible_show: 'Pokaż - zawsze widoczny',
