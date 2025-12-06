@@ -778,6 +778,11 @@ window.show_or_hide_files = (item_containers) => {
         .find('.item')
         .filter((_, item) => item.dataset.name.startsWith('.'))
         .removeClass(class_to_remove).addClass(class_to_add);
+    
+    // Update footer counts in all explorer windows
+    document.querySelectorAll('.window[data-app="explorer"]').forEach(el_window => {
+        window.update_explorer_footer_item_count(el_window);
+    });
 }
 
 window.create_folder = async(basedir, appendto_element)=>{
@@ -2351,6 +2356,33 @@ window.rename_file = async(options, new_name, old_name, old_path, el_item, el_it
             // Update `website_url`
             website_url = window.determine_website_url(new_path);
             $(el_item).attr('data-website_url', website_url);
+
+            // Update visibility based on whether the new name starts with '.'
+            const old_is_hidden = old_name.startsWith('.');
+            const new_is_hidden = new_name.startsWith('.');
+            
+            // If hidden status changed, update the visibility classes
+            if(old_is_hidden !== new_is_hidden){
+                const all_matching_items = $(`.item[data-uid='${$(el_item).attr('data-uid')}']`);
+                
+                if(new_is_hidden){
+                    // File is now hidden
+                    all_matching_items.removeClass('item-visible');
+                    if(window.user_preferences.show_hidden_files){
+                        all_matching_items.removeClass('item-hidden').addClass('item-revealed');
+                    }else{
+                        all_matching_items.removeClass('item-revealed').addClass('item-hidden');
+                    }
+                }else{
+                    // File is now visible (not hidden)
+                    all_matching_items.removeClass('item-hidden item-revealed').addClass('item-visible');
+                }
+                
+                // Update footer counts in all explorer windows
+                document.querySelectorAll('.window[data-app="explorer"]').forEach(el_window => {
+                    window.update_explorer_footer_item_count(el_window);
+                });
+            }
 
             // Update all exact-matching windows
             $(`.window-${options.uid}`).each(function(){
