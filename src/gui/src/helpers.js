@@ -20,6 +20,7 @@
 import path from "./lib/path.js"
 import mime from "./lib/mime.js";
 import UIAlert from './UI/UIAlert.js'
+import UIPrompt from './UI/UIPrompt.js'
 import UIItem from './UI/UIItem.js'
 import UIWindowLogin from './UI/UIWindowLogin.js';
 import UIWindowSaveAccount from './UI/UIWindowSaveAccount.js';
@@ -849,26 +850,110 @@ window.create_file = async(options)=>{
     let content = options.content ? [options.content] : [];
 
     // create file
-    try{
-        puter.fs.upload(new File(content, filename),  dirname,
-        {
-            success: async function (data){
-                const created_file = $(appendto_element).find('.item[data-path="'+html_encode(dirname)+'/'+html_encode(data.name)+'"]');
-                if(created_file.length > 0){
-                    window.activate_item_name_editor(created_file);
+    return puter.fs.upload(new File(content, filename), dirname,
+    {
+        success: async function (data){
+            const created_file = $(appendto_element).find('.item[data-path="'+html_encode(dirname)+'/'+html_encode(data.name)+'"]');
+            if(created_file.length > 0){
+                window.activate_item_name_editor(created_file);
 
-                    // Add action to actions_history for undo ability
-                    window.actions_history.push({
-                        operation: 'create_file',
-                        data: created_file
-                    });
-                }
+                // Add action to actions_history for undo ability
+                window.actions_history.push({
+                    operation: 'create_file',
+                    data: created_file
+                });
             }
-        });
-    }catch(err){
-        console.log(err);
-    }
+        },
+        error: function(err){
+            console.error('Error creating file:', err);
+        }
+    });
 }
+
+window.create_weblink = async function(dirname, append_to_element) {
+    // Prompt for URL
+    const url = await UIPrompt({
+        message: i18n('enter_url_for_web_link'),
+        placeholder: 'https://example.com'
+    });
+
+    if (!url) {
+        return; // User cancelled
+    }
+
+    // Validate URL
+    const validUrl = url.trim();
+    if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
+        UIAlert(i18n('url_must_start_with_http'), [
+            { label: i18n('ok'), value: 'ok', type: 'primary' }
+        ]);
+        return;
+    }
+
+    // Generate filename from URL
+    let filename;
+    try {
+        const urlObj = new URL(validUrl);
+        const hostname = urlObj.hostname.replace('www.', '');
+        // Remove protocol and get domain
+        filename = hostname.split('.')[0] || 'link';
+        filename = filename.charAt(0).toUpperCase() + filename.slice(1) + '.weblink';
+    } catch (e) {
+        filename = 'New Link.weblink';
+    }
+
+    // Create file with URL as content
+    const urlBlob = new Blob([validUrl], { type: 'text/plain' });
+    await window.create_file({
+        dirname: dirname,
+        append_to_element: append_to_element,
+        name: filename,
+        content: urlBlob
+    });
+};
+
+// Flag to prevent duplicate weblink creation
+window._creating_weblink = false;
+
+window.create_weblink_from_url = async function(dirname, append_to_element, url) {
+    // Prevent duplicate creation
+    if (window._creating_weblink) {
+        return;
+    }
+    
+    window._creating_weblink = true;
+    
+    try {
+        // Validate URL
+        const validUrl = url.trim();
+        if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
+            return; // Not a valid URL
+        }
+
+        // Generate filename from URL
+        let filename;
+        try {
+            const urlObj = new URL(validUrl);
+            const hostname = urlObj.hostname.replace('www.', '');
+            filename = hostname.split('.')[0] || 'link';
+            filename = filename.charAt(0).toUpperCase() + filename.slice(1) + '.weblink';
+        } catch (e) {
+            filename = 'New Link.weblink';
+        }
+
+        // Create file with URL as content
+        const urlBlob = new Blob([validUrl], { type: 'text/plain' });
+        await window.create_file({
+            dirname: dirname,
+            append_to_element: append_to_element,
+            name: filename,
+            content: urlBlob
+        });
+    } finally {
+        // Reset flag immediately after file creation completes
+        window._creating_weblink = false;
+    }
+};
 
 window.available_templates = async () => {
     const baseRoute = `/${window.user.username}`

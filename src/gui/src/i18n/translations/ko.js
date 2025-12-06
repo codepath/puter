@@ -164,6 +164,12 @@ const ko = {
     items_in_trash_cannot_be_renamed: `이 항목은 휴지통에 있기 때문에 이름을 바꿀 수 없습니다. 이 항목의 이름을 바꾸려면 먼저 휴지통에서 끌어내십시오.`, // Improvement suggestion: "이 항목은 휴지통에 있어 이름을 변경할 수 없습니다. 이름을 변경하려면 먼저 휴지통에서 복원해주세요."
     jpeg_image: "JPEG 이미지",
     keep_in_taskbar: "작업 표시줄에 유지",
+    web_link: "웹 링크",
+    enter_url_for_web_link: "웹 링크의 URL을 입력하세요:",
+    url_must_start_with_http: "URL은 http:// 또는 https://로 시작해야 합니다",
+    failed_to_open_url: "URL을 열 수 없습니다. 브라우저의 팝업 설정을 확인하세요.",
+    invalid_url_in_weblink: "이 웹 링크 파일에 저장된 URL이 유효하지 않습니다.",
+    error_reading_weblink: "웹 링크 파일을 읽는 중 오류가 발생했습니다.",
     language: "언어",
     license: "라이선스",
     lightness: "밝기",
