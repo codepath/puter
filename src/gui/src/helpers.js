@@ -850,25 +850,24 @@ window.create_file = async(options)=>{
     let content = options.content ? [options.content] : [];
 
     // create file
-    try{
-        puter.fs.upload(new File(content, filename),  dirname,
-        {
-            success: async function (data){
-                const created_file = $(appendto_element).find('.item[data-path="'+html_encode(dirname)+'/'+html_encode(data.name)+'"]');
-                if(created_file.length > 0){
-                    window.activate_item_name_editor(created_file);
+    return puter.fs.upload(new File(content, filename), dirname,
+    {
+        success: async function (data){
+            const created_file = $(appendto_element).find('.item[data-path="'+html_encode(dirname)+'/'+html_encode(data.name)+'"]');
+            if(created_file.length > 0){
+                window.activate_item_name_editor(created_file);
 
-                    // Add action to actions_history for undo ability
-                    window.actions_history.push({
-                        operation: 'create_file',
-                        data: created_file
-                    });
-                }
+                // Add action to actions_history for undo ability
+                window.actions_history.push({
+                    operation: 'create_file',
+                    data: created_file
+                });
             }
-        });
-    }catch(err){
-        console.log(err);
-    }
+        },
+        error: function(err){
+            console.error('Error creating file:', err);
+        }
+    });
 }
 
 window.create_weblink = async function(dirname, append_to_element) {
@@ -878,12 +877,12 @@ window.create_weblink = async function(dirname, append_to_element) {
         placeholder: 'https://example.com'
     });
 
-    if (!url || url === false) {
+    if (!url) {
         return; // User cancelled
     }
 
     // Validate URL
-    let validUrl = url.trim();
+    const validUrl = url.trim();
     if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
         UIAlert(i18n('url_must_start_with_http'), [
             { label: i18n('ok'), value: 'ok', type: 'primary' }
@@ -926,7 +925,7 @@ window.create_weblink_from_url = async function(dirname, append_to_element, url)
     
     try {
         // Validate URL
-        let validUrl = url.trim();
+        const validUrl = url.trim();
         if (!validUrl.startsWith('http://') && !validUrl.startsWith('https://')) {
             return; // Not a valid URL
         }
@@ -951,10 +950,8 @@ window.create_weblink_from_url = async function(dirname, append_to_element, url)
             content: urlBlob
         });
     } finally {
-        // Reset flag after a short delay to allow file creation to complete
-        setTimeout(() => {
-            window._creating_weblink = false;
-        }, 1000);
+        // Reset flag immediately after file creation completes
+        window._creating_weblink = false;
     }
 };
 

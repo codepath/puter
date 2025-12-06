@@ -744,7 +744,7 @@ $(document).bind("keyup keydown", async function(e){
                 try {
                     const clipboardText = await navigator.clipboard.readText();
                     if (clipboardText && (clipboardText.startsWith('http://') || clipboardText.startsWith('https://'))) {
-                        let parent_container = determine_active_container_parent();
+                        const parent_container = determine_active_container_parent();
                         if (parent_container) {
                             target_path = $(parent_container).attr('data-path');
                             if (target_path && target_path !== window.trash_path && !target_path.startsWith(window.trash_path + '/')) {
