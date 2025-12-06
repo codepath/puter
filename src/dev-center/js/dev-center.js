@@ -578,6 +578,12 @@ function generate_edit_app_section(app) {
                     <input type="checkbox" id="edit-app-maximize-on-start" name="edit-app-maximize-on-start" value="true" style="margin-top:30px;" ${maximize_on_start ? 'checked' : ''} ${app.background ? 'disabled' : ''}>
                     <label for="edit-app-maximize-on-start" style="display: inline;">Maximize window on start</label>
                 </div>
+
+                <div style="margin-top:30px;">
+                    <input type="checkbox" id="edit-app-use-file-name-as-title" name="edit-app-use-file-name-as-title" value="true" ${app.metadata?.use_file_name_as_window_title ? 'checked' : ''}>
+                    <label for="edit-app-use-file-name-as-title" style="display: inline;">Automatically set window title to opened file's name</label>
+                    <p>When enabled, opening a file will display the file's name in the window title instead of the app name.</p>
+                </div>
                 
                 <div>
                     <label for="edit-app-window-width">Initial window width</label>
@@ -651,7 +657,8 @@ function trackOriginalValues(){
             hideTitleBar: $('#edit-app-hide-titlebar').is(':checked'),
             locked: $('#edit-app-locked').is(':checked'),
             credentialless: $('#edit-app-credentialless').is(':checked'),
-            fullPageOnLanding: $('#edit-app-fullpage-on-landing').is(':checked')
+            fullPageOnLanding: $('#edit-app-fullpage-on-landing').is(':checked'),
+            useFileNameAsTitle: $('#edit-app-use-file-name-as-title').is(':checked')
         }
     };
 }
@@ -688,7 +695,8 @@ function hasChanges() {
         $('#edit-app-hide-titlebar').is(':checked') !== originalValues.checkboxes.hideTitleBar ||
         $('#edit-app-locked').is(':checked') !== originalValues.checkboxes.locked ||
         $('#edit-app-credentialless').is(':checked') !== originalValues.checkboxes.credentialless ||
-        $('#edit-app-fullpage-on-landing').is(':checked') !== originalValues.checkboxes.fullPageOnLanding
+        $('#edit-app-fullpage-on-landing').is(':checked') !== originalValues.checkboxes.fullPageOnLanding ||
+        $('#edit-app-use-file-name-as-title').is(':checked') !== originalValues.checkboxes.useFileNameAsTitle
     );
 }
 
@@ -729,6 +737,7 @@ function resetToOriginalValues() {
     $('#edit-app-locked').prop('checked', originalValues.checkboxes.locked);
     $('#edit-app-credentialless').prop('checked', originalValues.checkboxes.credentialless);
     $('#edit-app-fullpage-on-landing').prop('checked', originalValues.checkboxes.fullPageOnLanding);
+    $('#edit-app-use-file-name-as-title').prop('checked', originalValues.checkboxes.useFileNameAsTitle);
 
     if (originalValues.icon) {
         $('#edit-app-icon').css('background-image', `url(${originalValues.icon})`);
@@ -1237,6 +1246,7 @@ $(document).on('click', '.edit-app-save-btn', async function (e) {
             hide_titlebar: $('#edit-app-hide-titlebar').is(":checked"),
             locked: $(`#edit-app-locked`).is(":checked") ?? false,
             credentialless: $(`#edit-app-credentialless`).is(":checked") ?? true,
+            use_file_name_as_window_title: $('#edit-app-use-file-name-as-title').is(":checked"),
 
         },
         filetypeAssociations: filetype_associations,

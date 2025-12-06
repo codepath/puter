@@ -67,7 +67,10 @@ const launch_app = async (options)=>{
     //-----------------------------------
     // title
     //-----------------------------------
-    if(app_info.title)
+    // If the app setting is enabled and a file is being opened, use the file name as the title
+    if(options.window_title && app_info.metadata?.use_file_name_as_window_title && options.file_path)
+        title = options.window_title;
+    else if(app_info.title)
         title = app_info.title;
     else if(options.window_title)
         title = options.window_title;
