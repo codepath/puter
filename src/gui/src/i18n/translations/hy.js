@@ -84,6 +84,7 @@ const hy = {
         credits: "Կրեդիտներ",
         current_password: "Ընթացիկ գաղտնաբառ",
         cut: "Կտրել",
+        duplicate: "Կրկնօրինակել",
         clock: "Ժամացույց",
         clock_visible_hide: "Թաքցնել - Միշտ թաքնված",
         clock_visible_show: "Ցուցադրել - Միշտ տեսանելի",

@@ -84,6 +84,7 @@ const de = {
         credits: "Credits",
         current_password: "Aktuelles Passwort",
         cut: 'Ausschneiden',
+        duplicate: 'Duplizieren',
         clock: "Uhr",
         clock_visible_hide: 'Ausblenden - Immer ausgeblendet',
         clock_visible_show: 'Sichtbar - Immer sichtbar',

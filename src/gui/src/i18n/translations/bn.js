@@ -84,6 +84,7 @@ const bn = {
     credits: "ক্রেডিট",
     current_password: "বর্তমান পাসওয়ার্ড",
     cut: "কাটুন",
+    duplicate: "নকল",
     clock: "ঘড়ি",
     clock_visible_hide: "ঘড়ি লুকানো",
     clock_visible_show: "ঘড়ি দৃশ্যমান",

@@ -91,6 +91,7 @@ const id = {
     credits: "Kredit",
     current_password: "Kata Sandi Saat Ini",
     cut: "Potong",
+    duplicate: "Duplikat",
     clock: "Jam",
     clock_visible_hide: "Sembunyikan - Selalu tersembunyi",
     clock_visible_show: "Tampilkan - Selalu terlihat",

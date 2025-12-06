@@ -86,6 +86,7 @@ const pt = {
         credits: "Créditos",
         current_password: "Password Atual",
         cut: 'Cortar',
+        duplicate: 'Duplicar',
         clock: 'Relógio',
         clock_visible_hide: 'Esconder - Sempre escondido',
         clock_visible_show: 'Mostrar - Sempre visível',

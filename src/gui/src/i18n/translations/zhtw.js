@@ -84,6 +84,7 @@ const zhtw = {
         credits: "製作群",
         current_password: "目前密碼",
         cut: '剪下',
+        duplicate: '複製副本',
         clock: "時鐘",
         clock_visible_hide: '隱藏 - 始終隱藏',
         clock_visible_show: '顯示 - 始終可見',

@@ -93,6 +93,7 @@ const it = {
     credits: "Crediti",
     current_password: "Password attuale",
     cut: "Taglia",
+    duplicate: "Duplica",
     clock: "Orologio",
     clock_visible_hide: "Nascondi - Sempre nascosto",
     clock_visible_show: "Mostra - Sempre visibile",

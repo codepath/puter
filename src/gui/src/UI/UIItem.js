@@ -1248,6 +1248,28 @@ function UIItem(options){
                 });
             }
             // -------------------------------------------
+            // Duplicate
+            // -------------------------------------------
+            if(!is_trashed && !is_trash && !options.is_dir){
+                menu_items.push({
+                    html: i18n('duplicate'),
+                    onClick: async function(){
+                        const source_path = $(el_item).attr('data-path');
+                        const dest_path = path.dirname(source_path);
+                        
+                        try {
+                            await puter.fs.copy({
+                                source: source_path,
+                                destination: dest_path,
+                                dedupeName: true,
+                            });
+                        } catch (err) {
+                            console.error('Duplicate failed:', err);
+                        }
+                    }
+                });
+            }
+            // -------------------------------------------
             // Paste Into Folder
             // -------------------------------------------
             if($(el_item).attr('data-is_dir') === '1' && !is_trashed && !is_trash){

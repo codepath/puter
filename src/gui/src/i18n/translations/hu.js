@@ -80,6 +80,7 @@ const hu = {
         credits: "Kreditek",
         current_password: "Jelenlegi jelszó",
         cut: "Kivágás",
+        duplicate: "Másolat készítése",
         clock: "Óra",
         clock_visible_hide: "Elrejt - Mindig rejtett",
         clock_visible_show: "Megjelenít - Mindig látható",

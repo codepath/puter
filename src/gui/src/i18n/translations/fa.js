@@ -56,6 +56,7 @@ const fa = {
     create_shortcut: "ایجاد میانبر",
     current_password: "رمز عبور فعلی",
     cut: "برش",
+    duplicate: "تکثیر",
     date_modified: "تاریخ تغییر",
     delete: "حذف",
     delete_permanently: "حذف دائمی",

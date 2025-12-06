@@ -84,6 +84,7 @@ const nl = {
 		credits: 'Credits',
 		current_password: 'Huidig Wachtwoord',
 		cut: 'Knippen',
+		duplicate: 'Dupliceren',
 		clock: 'Klok',
 		clock_visible_hide: 'Verbergen - Altijd verborgen',
 		clock_visible_show: 'Weergeven - Altijd zichtbaar',

@@ -56,6 +56,7 @@ const nb = {
         create_shortcut: "Opprett snarvei",
         current_password: "Nåværende passord",
         cut: "Klipp ut",
+        duplicate: "Dupliser",
         date_modified: "Endret dato",
         delete: "Slett",
         delete_permanently: "Slett permanent",

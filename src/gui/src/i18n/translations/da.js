@@ -84,6 +84,7 @@ const da = {
 		credits: 'Kreditter',
 		current_password: 'Nuværende adgangskode',
 		cut: 'Klip',
+		duplicate: 'Duplikér',
 		clock: 'Uret',
 		clock_visible_hide: 'Skjul - Altid skjult',
 		clock_visible_show: 'Vis - Altid synlig',

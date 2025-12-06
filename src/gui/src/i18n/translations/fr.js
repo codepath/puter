@@ -84,6 +84,7 @@ const fr = {
         credits: "Crédits",
         current_password: "Mot de passe actuel",
         cut: 'Couper',
+        duplicate: 'Dupliquer',
         clock: "Horloge",
         clock_visible_hide: 'Cacher - Toujours cachée',
         clock_visible_show: 'Afficher - Toujours visible',

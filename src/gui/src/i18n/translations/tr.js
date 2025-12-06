@@ -84,6 +84,7 @@ const tr = {
         credits: "Katkıda Bulunanlar",
         current_password: "Mevcut Parola",
         cut: "Kes",
+        duplicate: "Çoğalt",
         clock: "Saat",
         clock_visible_hide: "Gizle - Daima gizli",
         clock_visible_show: "Göster - Daima görünür",

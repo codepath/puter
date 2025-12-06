@@ -85,6 +85,7 @@ const br = {
     credits: "Créditos",
     current_password: "Senha Atual",
     cut: 'Recortar',
+    duplicate: 'Duplicar',
     clock: "Relógio",
     clock_visible_hide: 'Ocultar - Sempre oculto',
     clock_visible_show: 'Mostrar - Sempre visível',

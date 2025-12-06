@@ -87,6 +87,7 @@ const en = {
         credits: "Credits",
         current_password: "Current Password",
         cut: 'Cut',
+        duplicate: 'Duplicate',
         clock: "Clock",
         clock_visible_hide: 'Hide - Always hidden',
         clock_visible_show: 'Show - Always visible',
