@@ -351,6 +351,7 @@ const launch_app = async (options)=>{
             is_visible: ! app_info.background,
             is_maximized: options.maximized,
             is_fullpage: options.is_fullpage,
+            background: app_info.background, // Pass background flag to UIWindow
             ...(options.pseudonym ? {pseudonym: options.pseudonym} : {}),
             ...window_options,
             is_resizable: window_resizable,

@@ -120,6 +120,7 @@ async function UIWindow(options) {
     options.window_class = (options.window_class !== undefined ? ' ' + options.window_class : '');
 
     options.is_visible = options.is_visible ?? true;
+    options.background = options.background ?? false;
 
     // if only one instance is allowed, bring focus to the window that is already open
     if(options.single_instance && options.app !== ''){
@@ -579,7 +580,8 @@ async function UIWindow(options) {
         $(el_window_head_icon).attr('src', window.icons['shared.svg']);
     }
     // focus on this window and deactivate other windows
-    if ( options.is_visible ) {
+    // BUT: Don't focus if this is a background app - background apps should not steal focus
+    if ( options.is_visible && !options.background ) {
         $(el_window).focusWindow();
     }
 
@@ -1410,7 +1412,10 @@ async function UIWindow(options) {
                 el_window_app_iframe.contentWindow.postMessage({msg: "drop", x: (window.mouseX - rect.left), y: (window.mouseY - rect.top), items: items}, '*');
 
                 // bring focus to this window
-                $(el_window).focusWindow();
+                // BUT: Don't focus if this is a background app - background apps should not steal focus
+                if ( !options.background ) {
+                    $(el_window).focusWindow();
+                }
             }
 
             // if this window is not a directory, cancel drop.
@@ -1552,10 +1557,13 @@ async function UIWindow(options) {
             // make sure to cancel any previous timeouts otherwise the window will be brought to front multiple times
             clearTimeout(drag_enter_timeout);
             // If items are dragged over this window long enough, bring it to front
-            drag_enter_timeout = setTimeout(function(){
-                // focus window
-                $(el_window).focusWindow();
-            }, 1400);
+            // BUT: Don't focus if this is a background app - background apps should not steal focus
+            if ( !options.background ) {
+                drag_enter_timeout = setTimeout(function(){
+                    // focus window
+                    $(el_window).focusWindow();
+                }, 1400);
+            }
         },
         leave: function (dragsterEvent, event) {
             // cancel the timeout for 'bringing window to front'
