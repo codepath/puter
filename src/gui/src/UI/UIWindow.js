@@ -1414,7 +1414,7 @@ async function UIWindow(options) {
                 // bring focus to this window
                 // BUT: Don't focus if this is a background app - background apps should not steal focus
                 if ( !options.background ) {
-                    $(el_window).focusWindow();
+                $(el_window).focusWindow();
                 }
             }
 
@@ -1559,10 +1559,10 @@ async function UIWindow(options) {
             // If items are dragged over this window long enough, bring it to front
             // BUT: Don't focus if this is a background app - background apps should not steal focus
             if ( !options.background ) {
-                drag_enter_timeout = setTimeout(function(){
-                    // focus window
-                    $(el_window).focusWindow();
-                }, 1400);
+            drag_enter_timeout = setTimeout(function(){
+                // focus window
+                $(el_window).focusWindow();
+            }, 1400);
             }
         },
         leave: function (dragsterEvent, event) {
