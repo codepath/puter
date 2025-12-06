@@ -25,6 +25,9 @@ let config = {};
 // Static defaults
 config.servers = [];
 
+// Will disable new user signups. Users will not be able to create new permanent accounts.
+config.disable_user_signup = false;
+
 // Will disable the auto-generated temp users. If a user lands on the site, they will be required to sign up or log in.
 config.disable_temp_users = false;
 

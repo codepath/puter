@@ -408,6 +408,14 @@ module.exports = class APIError {
             status: 403,
             message: 'Password does not match.',
         },
+        'temp_users_disabled': {
+            status: 403,
+            message: 'Temporary user creation is disabled.',
+        },
+        'user_signup_disabled': {
+            status: 403,
+            message: 'New user signups are disabled.',
+        },
 
         // Object Mapping
         'field_not_allowed_for_create': {

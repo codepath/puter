@@ -22,6 +22,7 @@ const router = new express.Router();
 const {get_taskbar_items, username_exists, send_email_verification_code, send_email_verification_token, invalidate_cached_user, get_user } = require('../helpers');
 const auth = require('../middleware/auth.js');
 const config = require('../config');
+const APIError = require('../api/APIError');
 const { DB_WRITE } = require('../services/database/consts');
 
 // -----------------------------------------------------------------------//
@@ -31,6 +32,11 @@ router.post('/save_account', auth, express.json(), async (req, res, next)=>{
     // either api. subdomain or no subdomain
     if(require('../helpers').subdomain(req) !== 'api' && require('../helpers').subdomain(req) !== '')
         next();
+
+    // check if regular user signup is disabled
+    if(config.disable_user_signup){
+        return APIError.create('user_signup_disabled').write(res);
+    }
 
     // modules
     const db = req.services.get('database').get(DB_WRITE, 'auth');
