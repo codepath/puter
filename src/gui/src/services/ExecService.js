@@ -29,7 +29,7 @@ export class ExecService extends Service {
     }
     
     // This method is exposed to apps via IPCService.
-    async launchApp ({ app_name, args, pseudonym }, { ipc_context, msg_id } = {}) {
+    async launchApp ({ app_name, args, pseudonym, background }, { ipc_context, msg_id } = {}) {
         const app = ipc_context?.caller?.app;
         const process = ipc_context?.caller?.process;
 
@@ -44,6 +44,14 @@ export class ExecService extends Service {
 
         this.log.info('launchApp connection', connection);
 
+        // Fetch app info to check if it's a background app
+        let app_info;
+        if (app_name !== 'explorer') {
+            app_info = await puter.apps.get(app_name);
+        } else {
+            app_info = [];
+        }
+
         const params = {};
         for ( const provider of this.param_providers ) {
             Object.assign(params, provider());
@@ -55,6 +63,7 @@ export class ExecService extends Service {
             name: app_name,
             pseudonym,
             args: args ?? {},
+            background: background,
             parent_instance_id: app?.appInstanceID,
             uuid: child_instance_id,
             params,
@@ -87,7 +96,8 @@ export class ExecService extends Service {
 
             // If `window-active` is set (meanign the window is focused), focus the window one more time
             // this is to ensure that the iframe is `definitely` focused and can receive keyboard events (e.g. keydown)
-            if($(child_process.references.el_win).hasClass('window-active')){
+            // BUT: Don't focus if this is a background app - background apps should not steal focus
+            if($(child_process.references.el_win).hasClass('window-active') && !app_info.background){
                 $(child_process.references.el_win).focusWindow();
             }
         });

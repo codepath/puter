@@ -135,14 +135,16 @@ export class PreparedCommand {
             // args: ast.args.map(node => node.text),
             inputRedirect,
             outputRedirects,
+            background: ast.background || false,
         });
     }
 
-    constructor ({ command, args, inputRedirect, outputRedirects }) {
+    constructor ({ command, args, inputRedirect, outputRedirects, background }) {
         this.command = command;
         this.args = args;
         this.inputRedirect = inputRedirect;
         this.outputRedirects = outputRedirects;
+        this.background = background || false;
     }
 
     setContext (ctx) {
@@ -234,6 +236,12 @@ export class PreparedCommand {
                 command,
                 args,
                 outputIsRedirected: this.outputRedirects.length > 0,
+                background: this.background,
+            },
+            env: {
+                ...this.ctx.env,
+                // Set BACKGROUND environment variable if command is run in background
+                ...(this.background ? { BACKGROUND: '1' } : {}),
             }
         });
 

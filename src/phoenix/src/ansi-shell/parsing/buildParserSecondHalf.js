@@ -119,6 +119,7 @@ class ShellConstructsPStratumImpl {
                 node.tokens = [];
                 node.inputRedirects = [];
                 node.outputRedirects = [];
+                node.background = false;
             },
             next ({ value, lexer }) {
                 if ( value.$ === 'op.line-terminator' ) {
@@ -135,6 +136,12 @@ class ShellConstructsPStratumImpl {
                 }
                 if ( value.$ === 'op.pipe' ) {
                     this.pop();
+                    return;
+                }
+                if ( value.$ === 'op.background' ) {
+                    // Mark this command as background and consume the operator
+                    this.stack_top.node.background = true;
+                    lexer.next();
                     return;
                 }
                 if ( value.$ === 'op.redirect' ) {

@@ -1009,7 +1009,7 @@ class UI extends EventListener {
     }
 
     // Returns a Promise<AppConnection>
-    launchApp = async function launchApp(app_name, args, callback) {
+    launchApp = async function launchApp(app_name, args, callback, options) {
         let pseudonym = undefined;
         if ( app_name.includes('#(as)') ) {
             [app_name, pseudonym] = app_name.split('#(as)');
@@ -1021,6 +1021,7 @@ class UI extends EventListener {
                 app_name,
                 pseudonym,
                 args,
+                background: options?.background,
             },
         });
         

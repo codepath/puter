@@ -51,6 +51,11 @@ const launch_app = async (options)=>{
     app_info.uuid = app_info.uuid ?? app_info.uid;
     app_info.uid = app_info.uid ?? app_info.uuid;
 
+    // Allow callers to override background setting (e.g., when launched from terminal with & operator)
+    if (options.background !== undefined) {
+        app_info.background = options.background;
+    }
+
     // If no `options.name` is provided, use the app name from the app_info
     options.name = options.name ?? app_info.name;
 
@@ -346,6 +351,7 @@ const launch_app = async (options)=>{
             is_visible: ! app_info.background,
             is_maximized: options.maximized,
             is_fullpage: options.is_fullpage,
+            background: app_info.background, // Pass background flag to UIWindow
             ...(options.pseudonym ? {pseudonym: options.pseudonym} : {}),
             ...window_options,
             is_resizable: window_resizable,
@@ -400,7 +406,8 @@ const launch_app = async (options)=>{
 
             // If `window-active` is set (meanign the window is focused), focus the window one more time
             // this is to ensure that the iframe is `definitely` focused and can receive keyboard events (e.g. keydown)
-            if($(process.references.el_win).hasClass('window-active')){
+            // BUT: Don't focus if this is a background app - background apps should not steal focus
+            if($(process.references.el_win).hasClass('window-active') && !app_info.background){
                 $(process.references.el_win).focusWindow();
             }
         });
