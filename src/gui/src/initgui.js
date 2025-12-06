@@ -1225,6 +1225,10 @@ window.initgui = async function(options){
         if($(e.target).hasClass('taskbar') || $(e.target).closest('.taskbar').length > 0)
             return;
 
+        // if close or minimize button clicked, don't activate window
+        if($(e.target).closest('.window-close-btn, .window-minimize-btn').length > 0)
+            return;
+
         // if mouse is clicked on a window, activate it
         if(window.mouseover_window !== undefined){
             // if popover clicked on, don't activate window. This is because if an app 
