@@ -458,8 +458,26 @@ window.initgui = async function(options){
             try{
                 whoami = await puter.os.user();
             }catch(e){
+                // Check for 401 or forbidden status
                 if(e.status === 401){
                     bad_session_logout();
+                    return;
+                }
+                // If temp users are disabled (check the error code)
+                if(e.code === 'temp_users_disabled'){
+                    bad_session_logout();
+                    if(window.logged_in_users.length > 0){
+                        UIWindowSessionList();
+                    }
+                    else{
+                        await UIWindowLogin({
+                            reload_on_success: true,
+                            send_confirmation_code: false,
+                            window_options:{
+                                has_head: false
+                            }
+                        });
+                    }
                     return;
                 }
             }

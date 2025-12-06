@@ -32,6 +32,8 @@ const auth = require('../middleware/auth.js');
 const fs = require('../middleware/fs.js');
 const _path = require('path');
 const eggspress = require('../api/eggspress');
+const APIError = require('../api/APIError');
+const config = require('../config');
 const { Context } = require('../util/context');
 const { UserActorType, AppUnderUserActorType } = require('../services/auth/Actor');
 
@@ -49,6 +51,12 @@ const WHOAMI_GET = eggspress('/whoami', {
     }
 
     const is_user = actor.type instanceof UserActorType;
+
+    // Check if temp users are disabled and this is a temp user
+    const is_temp_user = (req.user.password === null && req.user.email === null);
+    if (is_temp_user && config.disable_temp_users) {
+        return APIError.create('temp_users_disabled').write(res);
+    }
 
     // send user object
     const details = {

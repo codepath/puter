@@ -19,6 +19,7 @@
 "use strict"
 const {get_taskbar_items, send_email_verification_code, send_email_verification_token, username_exists, invalidate_cached_user_by_id, get_user } = require('../helpers');
 const config = require('../config');
+const APIError = require('../api/APIError');
 const eggspress = require('../api/eggspress');
 const { Context } = require('../util/context');
 const { DB_WRITE } = require('../services/database/consts');
@@ -91,6 +92,12 @@ module.exports = eggspress(['/signup'], {
         // const decoded = await jwt.verify(token, config.jwt_secret);
         // const user = await get_user({ uuid: decoded.uuid });
         if ( user ) {
+            // Check if temp users are disabled and this is a temp user
+            const is_temp_user = (user.password === null && user.email === null);
+            if (is_temp_user && config.disable_temp_users) {
+                return APIError.create('temp_users_disabled').write(res);
+            }
+            
             return res.send({
                 token: token,
                 user: {
@@ -111,8 +118,13 @@ module.exports = eggspress(['/signup'], {
         req.body.username = await generate_random_username();
         req.body.email = req.body.username + '@gmail.com';
         req.body.password = 'sadasdfasdfsadfsa';
-    }else if(config.disable_temp_users){
-        return res.status(400).send('Temp users are disabled.');
+    }else if(req.body.is_temp && config.disable_temp_users){
+        return APIError.create('temp_users_disabled').write(res);
+    }
+
+    // check if regular user signup is disabled
+    if(!req.body.is_temp && config.disable_user_signup){
+        return APIError.create('user_signup_disabled').write(res);
     }
 
     // send_confirmation_code

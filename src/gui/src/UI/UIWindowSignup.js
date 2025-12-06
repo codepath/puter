@@ -216,7 +216,9 @@ function UIWindowSignup(options){
                     }
                 },
                 error: function (err){
-                    $(el_window).find('.signup-error-msg').html(err.responseText);
+                    // Parse JSON error response from APIError
+                    const error_obj = JSON.parse(err.responseText);
+                    $(el_window).find('.signup-error-msg').html(error_obj.message);
                     $(el_window).find('.signup-error-msg').fadeIn();
                     // re-enable 'Create Account' button so user can try again
                     $(el_window).find('.signup-btn').prop('disabled', false);
