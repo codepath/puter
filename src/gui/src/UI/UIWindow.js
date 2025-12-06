@@ -3335,8 +3335,25 @@ window.update_explorer_footer_selected_items_count = function(el_window){
     //update dir count in explorer footer
     let item_count = $(el_window).find('.item-selected').length;
     if(item_count > 0){
+        // Calculate total size of selected items
+        let total_size = 0;
+        $(el_window).find('.item-selected').each(function() {
+            const size = parseInt($(this).attr('data-size')) || 0;
+            total_size += size;
+        });
+        
+        // Format the display text
+        let display_text = item_count + ` ${i18n('item')}` + 
+                          (item_count == 0 || item_count > 1 ? `${i18n('plural_suffix')}` : '') + 
+                          ` ${i18n('selected')}`;
+        
+        // Add size if any files have size data
+        if(total_size > 0) {
+            display_text += ` • ` + window.byte_format(total_size);
+        }
+        
         $(el_window).find('.explorer-footer-seperator, .explorer-footer-selected-items-count').show();
-        $(el_window).find('.explorer-footer .explorer-footer-selected-items-count').html(item_count + ` ${i18n('item')}` + (item_count == 0 || item_count > 1 ? `${i18n('plural_suffix')}` : '') + ` ${i18n('selected')}`);
+        $(el_window).find('.explorer-footer .explorer-footer-selected-items-count').html(display_text);
     }else{
         $(el_window).find('.explorer-footer-seperator, .explorer-footer-selected-items-count').hide();
     }
