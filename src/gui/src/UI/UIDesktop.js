@@ -31,6 +31,7 @@ import UIWindowLogin from "./UIWindowLogin.js"
 import UIWindowQR from "./UIWindowQR.js"
 import UIWindowRefer from "./UIWindowRefer.js"
 import UITaskbar from "./UITaskbar.js"
+import UITaskbarItem from "./UITaskbarItem.js"
 import new_context_menu_item from "../helpers/new_context_menu_item.js"
 import refresh_item_container from "../helpers/refresh_item_container.js"
 import changeLanguage from "../i18n/i18nChangeLanguage.js"
@@ -1615,6 +1616,75 @@ $(document).on('click', '.start-app', async function(e){
     });
 })
 
+// Context menu for start menu apps
+$(document).on('contextmenu taphold', '.start-app', async function(e){
+    // dismiss taphold on regular devices
+    if(e.type === 'taphold' && !isMobile.phone && !isMobile.tablet)
+        return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Close any existing context menus first
+    $('.context-menu').remove();
+
+    // Get app information from data attributes
+    const app_name = $(this).attr('data-app-name');
+    const app_title = $(this).attr('data-app-title');
+    const app_icon = $(this).attr('data-app-icon');
+
+    // Check if app is pinned
+    const is_pinned = window.isAppPinned(app_name);
+
+    // Build context menu items
+    const menu_items = [];
+
+    // Open option
+    menu_items.push({
+        html: i18n('open'),
+        onClick: function(){
+            launch_app({
+                name: app_name
+            });
+            // close popovers
+            $(".popover").fadeOut(200, function(){
+                $(".popover").remove();
+            });
+        }
+    });
+
+    // Divider
+    menu_items.push('-');
+
+    // Pin/Unpin option
+    if(is_pinned){
+        menu_items.push({
+            html: i18n('remove_from_taskbar'),
+            onClick: function(){
+                window.unpinAppFromTaskbar(app_name);
+            }
+        });
+    } else {
+        menu_items.push({
+            html: i18n('keep_in_taskbar'),
+            onClick: function(){
+                window.pinAppToTaskbar({
+                    name: app_name,
+                    title: app_title,
+                    icon: app_icon
+                });
+            }
+        });
+    }
+
+    // Show context menu
+    UIContextMenu({
+        items: menu_items
+    });
+
+    return false;
+})
+
 $(document).on('click', '.user-options-login-btn', async function(e){
     const alert_resp = await UIAlert({
         message: `<strong>Save session before exiting!</strong><p>You are in a temporary session and logging into another account will erase all data in your current session.</p>`,
@@ -1747,6 +1817,90 @@ window.set_desktop_background = function(options){
     }
 }
 
+window.isAppPinned = function(appName){
+    // Check if the app exists in the user's pinned taskbar items
+    if(!window.user.taskbar_items || !Array.isArray(window.user.taskbar_items)){
+        return false;
+    }
+    return window.user.taskbar_items.some(item => item.name === appName);
+}
+
+window.pinAppToTaskbar = function(appInfo){
+    const app_name = appInfo.name;
+    
+    // Don't pin if already pinned
+    if(window.isAppPinned(app_name)){
+        return;
+    }
+
+    // Initialize taskbar_items if it doesn't exist
+    if(!window.user.taskbar_items){
+        window.user.taskbar_items = [];
+    }
+
+    // Add to user's taskbar items
+    window.user.taskbar_items.push({
+        name: app_name,
+        type: 'app'
+    });
+
+    // Create taskbar item if it doesn't already exist in the DOM
+    if($(`.taskbar-item[data-app="${app_name}"]`).length === 0){
+        UITaskbarItem({
+            icon: appInfo.icon,
+            app: app_name,
+            name: appInfo.title,
+            keep_in_taskbar: true,
+            before_trash: true,
+            onClick: function(){
+                let open_window_count = parseInt($(`.taskbar-item[data-app="${app_name}"]`).attr('data-open-windows'));
+                if(open_window_count === 0){
+                    launch_app({
+                        name: app_name,
+                    });
+                }else{
+                    return false;
+                }
+            }
+        });
+    } else {
+        // If item already exists in DOM, just mark it as pinned
+        $(`.taskbar-item[data-app="${app_name}"]`).attr('data-keep-in-taskbar', 'true');
+    }
+
+    // Persist to server
+    window.update_taskbar();
+}
+
+window.unpinAppFromTaskbar = function(appName){
+    // Don't unpin if not pinned
+    if(!window.isAppPinned(appName)){
+        return;
+    }
+
+    // Remove from user's taskbar items
+    if(window.user.taskbar_items){
+        window.user.taskbar_items = window.user.taskbar_items.filter(item => item.name !== appName);
+    }
+
+    // Find the taskbar item
+    const $taskbar_item = $(`.taskbar-item[data-app="${appName}"]`);
+    
+    if($taskbar_item.length > 0){
+        // Mark as not pinned
+        $taskbar_item.attr('data-keep-in-taskbar', 'false');
+        
+        // If no windows are open, remove the item from taskbar
+        const open_windows = parseInt($taskbar_item.attr('data-open-windows'));
+        if(open_windows === 0){
+            window.remove_taskbar_item($taskbar_item[0]);
+        }
+    }
+
+    // Persist to server
+    window.update_taskbar();
+}
+
 window.update_taskbar = function(){
     let items = []
     $('.taskbar-item-sortable[data-keep-in-taskbar="true"]').each(function(index){
@@ -1755,6 +1909,9 @@ window.update_taskbar = function(){
             type: 'app',
         })
     })
+
+    // Update the in-memory user taskbar items to match the DOM
+    window.user.taskbar_items = items;
 
     // update taskbar in the server-side
     $.ajax({

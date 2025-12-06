@@ -50,7 +50,7 @@ router.post('/update-taskbar-items', auth, express.json(), async (req, res, next
     await db.write(
         `UPDATE user SET taskbar_items = ? WHERE user.id = ?`,
         [
-            req.body.items ?? null,
+            JSON.stringify(req.body.items),
             req.user.id,
         ]
     )
