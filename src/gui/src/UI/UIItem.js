@@ -49,7 +49,17 @@ function UIItem(options){
 
     // set options defaults
     options.disabled = options.disabled ?? false;
-    options.visible = options.visible ?? 'visible'; // one of 'visible', 'revealed', 'hidden'
+    // Determine visibility based on filename if not explicitly provided
+    if(options.visible === undefined){
+        const is_hidden_file = options.name.startsWith('.');
+        if (!is_hidden_file){
+            options.visible = 'visible';
+        }else if (window.user_preferences.show_hidden_files) {
+            options.visible = 'revealed';
+        }else{
+            options.visible = 'hidden';
+        }
+    }
     options.is_dir = options.is_dir ?? false;
     options.is_selected = options.is_selected ?? false;
     options.is_shared = options.is_shared ?? false;

@@ -144,6 +144,7 @@ const en = {
         get_a_copy_of_on_puter: `Get a copy of '%%' on Puter.com!`,
         get_copy_link: 'Get Copy Link',
         hide_all_windows: "Hide All Windows",
+        hidden: 'hidden',
         home: 'Home',
         html_document: 'HTML document',
         hue: 'Hue',

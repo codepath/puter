@@ -3327,8 +3327,24 @@ window.scale_window = (el_window)=>{
 
 window.update_explorer_footer_item_count = function(el_window){
     //update dir count in explorer footer
-    let item_count = $(el_window).find('.item').length;
-    $(el_window).find('.explorer-footer .explorer-footer-item-count').html(item_count + ` ${i18n('item')}` + (item_count == 0 || item_count > 1 ? `${i18n('plural_suffix')}` : ''));
+    // Count all items (excluding hidden ones)
+    let all_items = $(el_window).find('.item');
+    let visible_items = all_items.filter(':not(.item-hidden)');
+    let item_count = visible_items.length;
+    
+    // Count hidden files that are currently revealed
+    let hidden_items = all_items.filter('.item-revealed');
+    let hidden_count = hidden_items.length;
+    
+    // Build the display text
+    let display_text = item_count + ` ${i18n('item')}` + (item_count == 0 || item_count > 1 ? `${i18n('plural_suffix')}` : '');
+    
+    // Add hidden count if hidden files are shown and there are hidden files
+    if(window.user_preferences.show_hidden_files && hidden_count > 0){
+        display_text += ` (${hidden_count} ${i18n('hidden')})`;
+    }
+    
+    $(el_window).find('.explorer-footer .explorer-footer-item-count').html(display_text);
 }
 
 window.update_explorer_footer_selected_items_count = function(el_window){
