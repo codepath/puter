@@ -172,8 +172,8 @@ class PuterHomepageService extends BaseService {
             short_description,
             company,
             canonical_url,
-            social_media_image,
         } = meta;
+        let social_media_image = meta.social_media_image;
 
         gui_params = {
             ...meta,
