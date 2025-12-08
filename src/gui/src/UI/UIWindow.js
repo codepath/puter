@@ -1620,7 +1620,9 @@ async function UIWindow(options) {
     // --------------------------------------------------------
     // Minimize button
     // --------------------------------------------------------
-    $(`#window-${win_id} > .window-head > .window-minimize-btn`).click(function () {
+    $(`#window-${win_id} > .window-head > .window-minimize-btn`).click(function (event) {
+        event.stopPropagation();
+        event.preventDefault();
         $(el_window).hideWindow();
     })
 
