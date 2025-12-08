@@ -48,6 +48,15 @@ export default {
                     <option value="show">${i18n('clock_visible_show')}</option>
                 </select>
             </div>
+            <div class="settings-card">
+                <label style="display: flex; align-items: center;">
+                    <input type="checkbox" class="toolbar-auto-hide-toggle" style="margin-right: 10px;">
+                    <div style="flex-grow: 1;">
+                        <strong>${i18n('toolbar_auto_hide')}</strong>
+                        <p style="margin-top: 5px; margin-bottom: 0; font-size: 12px; opacity: 0.8;">${i18n('toolbar_auto_hide_description')}</p>
+                    </div>
+                </label>
+            </div>
             <div class="settings-card" style="display: block; height: auto;">
                 <strong style="margin: 15px 0 30px; display: block;">${i18n('menubar_style')}</strong>
                 <div style="flex-grow:1; margin-top: 10px;">
@@ -101,6 +110,20 @@ export default {
         });
 
         window.change_clock_visible();
+
+        // Load and set toolbar auto-hide preference
+        const currentValue = window.user_preferences?.toolbar_auto_hide || false;
+        $el_window.find('.toolbar-auto-hide-toggle').prop('checked', currentValue);
+
+        // Handle toolbar auto-hide toggle change
+        $el_window.find('.toolbar-auto-hide-toggle').on('change', function(e) {
+            const isEnabled = $(this).prop('checked');
+            window.mutate_user_preferences({
+                toolbar_auto_hide: isEnabled
+            });
+            // Reload page to apply changes (since auto-hide is initialized on page load)
+            window.location.reload();
+        });
 
         puter.kv.get('menubar_style').then(async (val) => {
             if(val === 'system' || !val){

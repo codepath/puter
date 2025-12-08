@@ -723,6 +723,52 @@ async function UIDesktop(options){
         }
 
         window.update_user_preferences(user_preferences);
+        
+        // Initialize toolbar auto-hide after preferences are loaded
+        if (user_preferences.toolbar_auto_hide) {
+            const toolbar = $('.toolbar');
+            let hideTimeout;
+            const HIDE_DELAY = 2000; // 2 seconds of inactivity
+            const SHOW_THRESHOLD = 50; // 50px from top to show toolbar
+            
+            function hideToolbar() {
+                toolbar.addClass('toolbar-auto-hide-hidden');
+            }
+            
+            function showToolbar() {
+                toolbar.removeClass('toolbar-auto-hide-hidden');
+                clearTimeout(hideTimeout);
+            }
+            
+            function resetHideTimeout() {
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+            }
+            
+            // Show toolbar when mouse enters toolbar area
+            toolbar.on('mouseenter', function() {
+                showToolbar();
+            });
+            
+            // Track ALL mouse movement for inactivity detection
+            $(document).on('mousemove', function(e) {
+                // Always show toolbar when mouse is near top edge
+                if (e.clientY <= SHOW_THRESHOLD) {
+                    showToolbar();
+                } else {
+                    // Reset timeout on any mouse movement (inactivity detection)
+                    resetHideTimeout();
+                }
+            });
+            
+            // Reset timeout on mouse click anywhere
+            $(document).on('mousedown click', function() {
+                resetHideTimeout();
+            });
+            
+            // Initial hide after 2 seconds of inactivity
+            hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+        }
     });
 
     // Append to <body>
@@ -1148,42 +1194,6 @@ async function UIDesktop(options){
 
     // prepend toolbar to desktop
     $(ht).insertBefore(el_desktop);
-
-    // Initialize toolbar auto-hide if enabled
-    if (window.user_preferences.toolbar_auto_hide) {
-        const toolbar = $('.toolbar');
-        let hideTimeout;
-        const SHOW_THRESHOLD = 50; // 50px from top to show toolbar
-        
-        function hideToolbar() {
-            toolbar.addClass('toolbar-auto-hide-hidden');
-        }
-        
-        function showToolbar() {
-            toolbar.removeClass('toolbar-auto-hide-hidden');
-            clearTimeout(hideTimeout);
-        }
-        
-        // Hide toolbar when mouse leaves toolbar area
-        toolbar.on('mouseleave', function() {
-            hideTimeout = setTimeout(hideToolbar, 2000); // 2 second delay after leaving
-        });
-        
-        // Show toolbar when mouse enters toolbar area
-        toolbar.on('mouseenter', function() {
-            showToolbar();
-        });
-        
-        // Show toolbar when mouse moves near top edge of screen
-        $(document).on('mousemove', function(e) {
-            if (e.clientY <= SHOW_THRESHOLD) {
-                showToolbar();
-            }
-        });
-        
-        // Initial hide after 2 seconds if mouse is not on toolbar
-        hideTimeout = setTimeout(hideToolbar, 2000);
-    }
 
     // notification container
     $('body').append(`<div class="notification-container"><div class="notifications-close-all">${i18n('close_all')}</div></div>`);
