@@ -223,3 +223,234 @@ function getOptimalTextColor(backgroundColor) {
 - **High**: This is an accessibility issue affecting user experience
 - **Impact**: Affects all users who customize theme lightness
 - **Risk**: Low - isolated change to theme service and CSS
+
+## 2025-12-07: Add "Set as Desktop Background" Context Menu Item to Images
+
+### Feature Description
+Add a "Set as Desktop Background" context menu option that appears when users right-click on image files. This option should:
+- Only appear for image file types (PNG, JPG, etc.)
+- Not appear for folders, text files, or other non-image files
+- Not appear for items in trash or trashed items
+- Immediately update the desktop background when clicked
+- Persist the preference to user settings
+
+### Current Behavior
+- Users can set desktop background via Settings window
+- Context menus on image files show standard options (Open, Download, Copy, etc.)
+- No quick way to set an image as desktop background directly from file system
+
+### Expected Behavior
+- Context menu on image files includes "Set as Desktop Background" option
+- Clicking it immediately applies the image as desktop background
+- Preference is saved to user account and persists across sessions
+
+### Step-by-Step Plan
+
+#### Step 1: Add Helper Function to Detect Image Files
+- **Location**: `src/gui/src/UI/UIItem.js` (or create helper file)
+- **Action**: Create or use existing utility to check if a file is an image
+  - Check if `options.type` starts with `'image/'` 
+  - Alternatively, check file extension if MIME type not available
+  - Handle common image extensions: jpg, jpeg, png, gif, webp, bmp, svg, etc.
+
+#### Step 2: Add Helper Function to Get File Read URL
+- **Location**: `src/gui/src/UI/UIItem.js` 
+- **Action**: Create async function to get read_url for a file
+  - Use `puter.fs.stat()` to get file information
+  - Extract `read_url` from the response
+  - Handle errors appropriately
+
+#### Step 3: Add Helper Function to Set Desktop Background from File
+- **Location**: `src/gui/src/UI/UIItem.js` or `src/gui/src/helpers.js`
+- **Action**: Create function that:
+  - Takes file path/uid as parameter
+  - Gets read_url for the file
+  - Calls `window.set_desktop_background()` with the URL
+  - Makes POST request to `/set-desktop-bg` API endpoint to persist
+  - Handles authentication (similar to UIWindowDesktopBGSettings.js)
+  - Uses default fit mode 'cover' (consistent with existing behavior)
+
+#### Step 4: Add Context Menu Item in Single Item Context Menu
+- **Location**: `src/gui/src/UI/UIItem.js` - Single item context menu section (around line 964-1384)
+- **Action**: 
+  - Add conditional check: only show if file is an image AND not trashed AND not trash item
+  - Insert menu item after "Share With…" or in appropriate location (likely after "Download" or before "Properties")
+  - Use appropriate icon (could use existing desktop background or image icon)
+  - Call helper function when clicked
+
+#### Step 5: Add Internationalization String
+- **Location**: Internationalization files
+- **Action**: 
+  - Add translation key for "Set as Desktop Background"
+  - Use `i18n('set_as_desktop_background')` in menu item
+
+#### Step 6: Add Icon for Menu Item (if needed)
+- **Location**: Check if suitable icon exists in `src/gui/src/images/`
+- **Action**: 
+  - Use existing icon (e.g., 'desktop-bg.svg' or similar)
+  - Or use generic image icon if no specific desktop background icon exists
+
+### Files That Will Be Modified
+
+1. **`src/gui/src/UI/UIItem.js`**
+   - **Purpose**: Add context menu item and helper functions
+   - **Lines**: ~740-1390 (context menu section)
+   - **Changes**:
+     - Add image detection logic
+     - Add function to get file read_url
+     - Add function to set desktop background from file
+     - Add menu item in single-item context menu section
+     - Conditional rendering based on file type and trash status
+
+2. **Internationalization Files** (if applicable)
+   - **Location**: `src/gui/src/i18n/` or similar
+   - **Purpose**: Add translation for "Set as Desktop Background"
+   - **Changes**: Add new translation key
+
+### Functions That Will Be Modified
+
+1. **Context Menu Handler in `UIItem.js`**
+   - **Function**: Anonymous function in `$(el_item).bind("contextmenu taphold", ...)` handler
+   - **Location**: Line ~740-1393
+   - **Changes**:
+     - Add conditional check for image files
+     - Add menu item to `menu_items` array when conditions are met
+     - Place menu item in appropriate position (likely after "Download" or in logical grouping)
+
+2. **New Helper Functions to Add**:
+
+   a. **`is_image_file(options)` or similar**
+      - **Purpose**: Check if a file is an image type
+      - **Logic**:
+        ```javascript
+        function is_image_file(options) {
+            if (options.is_dir) return false;
+            if (options.type && options.type.startsWith('image/')) return true;
+            // Fallback: check extension
+            const ext = path.extname(options.name || '').toLowerCase();
+            const image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.tiff', '.ico'];
+            return image_extensions.includes(ext);
+        }
+        ```
+
+   b. **`get_file_read_url(file_path_or_uid)` or similar**
+      - **Purpose**: Get read_url for a file
+      - **Logic**:
+        ```javascript
+        async function get_file_read_url(file_path_or_uid) {
+            return new Promise((resolve, reject) => {
+                puter.fs.stat(file_path_or_uid, {
+                    success: (fsentry) => {
+                        // Get read_url - might need to call puter.fs.sign() or check fsentry structure
+                        // Check how UIWindowDesktopBGSettings.js does it (line 136-138)
+                        resolve(fsentry.read_url);
+                    },
+                    error: reject
+                });
+            });
+        }
+        ```
+
+   c. **`set_desktop_background_from_file(file_path, file_uid)` or similar**
+      - **Purpose**: Set desktop background from file and persist to server
+      - **Logic**:
+        ```javascript
+        async function set_desktop_background_from_file(file_path, file_uid) {
+            try {
+                // Get read_url
+                const fsentry = await new Promise((resolve, reject) => {
+                    puter.fs.stat(file_path, {
+                        success: resolve,
+                        error: reject
+                    });
+                });
+                
+                const read_url = fsentry.read_url;
+                if (!read_url) {
+                    // Fallback: might need to sign the file
+                    // Check how other parts of codebase get read_url
+                    throw new Error('Could not get read URL for file');
+                }
+                
+                // Set desktop background immediately
+                window.set_desktop_background({
+                    url: read_url,
+                    fit: 'cover'
+                });
+                
+                // Persist to server (similar to UIWindowDesktopBGSettings.js lines 164-186)
+                await $.ajax({
+                    url: window.api_origin + "/set-desktop-bg",
+                    type: 'POST',
+                    data: JSON.stringify({
+                        url: read_url,
+                        fit: 'cover',
+                        color: null
+                    }),
+                    async: true,
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": "Bearer " + window.auth_token
+                    },
+                    statusCode: {
+                        401: function () {
+                            window.logout();
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('Failed to set desktop background:', err);
+                UIAlert('Failed to set desktop background. Please try again.');
+            }
+        }
+        ```
+
+### Detailed Implementation Notes
+
+#### Context Menu Item Placement
+- **Best Position**: After "Download" and before "Zip" (around line 1185-1189)
+- **Alternative**: After "Share With…" (around line 1109) or before "Properties" (around line 1357)
+- **Consideration**: Group with other file operations, not with sharing/publishing options
+
+#### Image Detection Logic
+- Primary: Check `options.type` starts with `'image/'`
+- Fallback: Check file extension (`.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`, `.bmp`, `.svg`, etc.)
+- Edge cases: 
+  - Handle files without MIME type
+  - Handle case-insensitive extensions
+  - Exclude directories
+
+#### Trash Item Exclusion
+- Check `is_trashed` variable (line 182, 764)
+- Check if path starts with `window.trash_path` (line 965)
+- Check if item is the trash folder itself: `is_trash` (line 965)
+
+#### Read URL Acquisition
+- Research needed: Check how `UIWindowDesktopBGSettings.js` gets `read_url` from `selected_file.read_url` (line 138)
+- May need to call `puter.fs.sign()` or similar API
+- Check `open_item.js` or `launch_app.js` for examples of getting read_url
+
+#### Error Handling
+- Handle cases where file cannot be read
+- Handle authentication failures
+- Handle API errors gracefully
+- Show user-friendly error messages
+
+#### Testing Checklist
+1. ✅ Right-click on PNG image → "Set as Desktop Background" appears
+2. ✅ Right-click on JPG image → "Set as Desktop Background" appears
+3. ✅ Right-click on non-image file → "Set as Desktop Background" does NOT appear
+4. ✅ Right-click on folder → "Set as Desktop Background" does NOT appear
+5. ✅ Right-click on image in trash → "Set as Desktop Background" does NOT appear
+6. ✅ Click "Set as Desktop Background" → Background changes immediately
+7. ✅ Background persists after page refresh
+8. ✅ Background persists across sessions (after logout/login)
+9. ✅ Menu item appears in correct position
+10. ✅ Icon displays correctly (if added)
+11. ✅ Internationalization works for non-English languages
+
+### Implementation Priority
+- **Medium-High**: User experience enhancement
+- **Impact**: Improves convenience for users who want to customize desktop
+- **Risk**: Low - isolated change to context menu, reuses existing desktop background functionality
+- **Dependencies**: None - uses existing APIs and functions

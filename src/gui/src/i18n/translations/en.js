@@ -272,6 +272,7 @@ const en = {
         share: "Share",
         share_to: "Share to",
         share_with: "Share with:",
+        set_as_desktop_background: "Set as Desktop Background",
         shortcut_to: "Shortcut to",
         show_all_windows: "Show All Windows",
         show_hidden: 'Show hidden',
