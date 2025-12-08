@@ -10,6 +10,7 @@ const gui_cache_keys = [
     'user_preferences.show_hidden_files',
     'user_preferences.language',
     'user_preferences.clock_visible',
+    'user_preferences.toolbar_auto_hide',
     'has_seen_welcome_window',
 ];
 

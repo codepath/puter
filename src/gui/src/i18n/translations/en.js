@@ -270,6 +270,8 @@ const en = {
         settings: "Settings",
         set_new_password: "Set New Password",
         share: "Share",
+        toolbar_auto_hide: "Auto-hide Toolbar",
+        toolbar_auto_hide_description: "Automatically hide the toolbar after 2 seconds of inactivity. Move mouse near top edge to show it again.",
         share_to: "Share to",
         share_with: "Share with:",
         set_as_desktop_background: "Set as Desktop Background",

@@ -454,3 +454,178 @@ Add a "Set as Desktop Background" context menu option that appears when users ri
 - **Impact**: Improves convenience for users who want to customize desktop
 - **Risk**: Low - isolated change to context menu, reuses existing desktop background functionality
 - **Dependencies**: None - uses existing APIs and functions
+
+## 2025--XX: Auto-Hide Top Toolbar Feature
+
+### Feature Description
+Implement an auto-hide feature for the top toolbar that hides it after 2 seconds of inactivity and shows it again when the mouse moves near the top edge of the screen (within 50px).
+
+### Current Behavior
+- Top toolbar is always visible
+- Toolbar occupies screen space continuously (30px height)
+- No option to hide or minimize toolbar
+
+### Expected Behavior
+- Toolbar automatically hides after 2 seconds of mouse inactivity
+- Toolbar reappears when mouse moves within 50px of top screen edge
+- Smooth fade/slide animation for hiding and showing
+- Optional setting to toggle auto-hide on/off (default: off for backwards compatibility)
+- Maintains full functionality when visible
+
+### Step-by-Step Implementation Plan
+
+#### Step 1: Add CSS Classes for Auto-Hide Animation
+- **File**: `src/gui/src/css/style.css`
+- **Location**: After `.toolbar` class definition (around line 1752)
+- **Action**: Add CSS classes for hidden state and transitions
+  - `.toolbar-auto-hide-hidden` - class to hide toolbar
+  - CSS transition for smooth animation (opacity and transform)
+  - Ensure toolbar maintains functionality when transitioning
+
+#### Step 2: Add User Preference for Auto-Hide
+- **File**: `src/gui/src/globals.js`
+- **Location**: In `window.user_preferences` defaults (around line 98-102)
+- **Action**: Add default preference: `toolbar_auto_hide: false`
+- **File**: `src/gui/src/UI/UIDesktop.js`
+- **Location**: In user preferences loading section (around line 709-713)
+- **Action**: Load `toolbar_auto_hide` preference from KV store
+
+#### Step 3: Add Auto-Hide Logic to UIDesktop
+- **File**: `src/gui/src/UI/UIDesktop.js`
+- **Location**: After toolbar HTML insertion (around line 1146)
+- **Action**: 
+  - Initialize auto-hide state variables
+  - Set up mouse move tracking
+  - Set up inactivity timeout (2 seconds)
+  - Implement show/hide functions with smooth animations
+  - Check mouse proximity to top edge (50px threshold)
+
+#### Step 4: Add Settings UI Toggle (Optional but Recommended)
+- **File**: `src/gui/src/UI/Settings/UITabPersonalization.js` or appropriate settings tab
+- **Action**: Add checkbox/toggle to enable/disable auto-hide feature
+- **Action**: Save preference using `window.mutate_user_preferences()`
+
+### Files That Will Be Modified
+
+1. **`src/gui/src/css/style.css`**
+   - **Purpose**: Add CSS for auto-hide animation
+   - **Changes**: 
+     - Add `.toolbar-auto-hide-hidden` class with transform/opacity
+     - Add transition properties for smooth animation
+     - Ensure z-index and positioning work correctly when hidden
+
+2. **`src/gui/src/globals.js`**
+   - **Purpose**: Add default preference value
+   - **Changes**: Add `toolbar_auto_hide: false` to default preferences
+
+3. **`src/gui/src/UI/UIDesktop.js`**
+   - **Purpose**: Implement auto-hide logic
+   - **Changes**:
+     - Load `toolbar_auto_hide` preference
+     - Add mouse tracking event listeners
+     - Add timeout management for inactivity
+     - Add show/hide functions
+     - Conditional logic to only activate if preference is enabled
+
+4. **`src/gui/src/UI/Settings/UITabPersonalization.js`** (Optional)
+   - **Purpose**: Add UI toggle for feature
+   - **Changes**: Add checkbox/toggle control
+
+5. **`src/gui/src/helpers/update_mouse_position.js`** (May need to check)
+   - **Purpose**: Verify mouse position tracking is available
+   - **Action**: Check if `window.mouseY` is already being tracked
+
+### Functions That Will Be Modified/Created
+
+1. **New Functions in `UIDesktop.js`**:
+
+   a. **`init_toolbar_auto_hide()`**
+      - **Purpose**: Initialize auto-hide functionality
+      - **Logic**:
+        ```javascript
+        function init_toolbar_auto_hide() {
+            if (!window.user_preferences.toolbar_auto_hide) return;
+            
+            let hideTimeout;
+            let isHidden = false;
+            const toolbar = $('.toolbar');
+            const HIDE_DELAY = 2000; // 2 seconds
+            const SHOW_THRESHOLD = 50; // 50px from top
+            
+            function hideToolbar() {
+                if (!isHidden) {
+                    toolbar.addClass('toolbar-auto-hide-hidden');
+                    isHidden = true;
+                }
+            }
+            
+            function showToolbar() {
+                if (isHidden) {
+                    toolbar.removeClass('toolbar-auto-hide-hidden');
+                    isHidden = false;
+                }
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+            }
+            
+            // Track mouse movement
+            $(document).on('mousemove', function(e) {
+                if (e.clientY <= SHOW_THRESHOLD) {
+                    showToolbar();
+                } else {
+                    // Reset hide timeout if toolbar is visible
+                    if (!isHidden) {
+                        clearTimeout(hideTimeout);
+                        hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+                    }
+                }
+            });
+            
+            // Initial timeout
+            hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+        }
+        ```
+
+   b. **Toolbar event handlers**
+      - When toolbar buttons are hovered/clicked, keep toolbar visible
+      - Reset timeout on toolbar interaction
+
+### Implementation Details
+
+#### CSS Animation Approach
+- Use `transform: translateY(-100%)` to slide up
+- Use `opacity: 0` for fade effect
+- Transition duration: ~300ms for smooth animation
+- Use `pointer-events: none` when hidden to prevent interaction issues
+
+#### Mouse Tracking
+- Use existing `window.mouseY` if available from `update_mouse_position.js`
+- Or use `$(document).mousemove()` event with `e.clientY`
+- Check `e.clientY <= 50` to show toolbar
+
+#### Timeout Management
+- Clear existing timeout before setting new one
+- Handle edge cases (window focus, mouse leaving window, etc.)
+
+#### Backwards Compatibility
+- Default to `toolbar_auto_hide: false` so existing users are not affected
+- Feature only activates if explicitly enabled
+
+### Testing Checklist
+1. ✅ Toolbar remains visible by default (backwards compatibility)
+2. ✅ Enable auto-hide in settings (if implemented)
+3. ✅ Toolbar hides after 2 seconds of inactivity
+4. ✅ Toolbar shows when mouse moves near top edge (within 50px)
+5. ✅ Smooth animation when hiding/showing
+6. ✅ Toolbar buttons remain functional when visible
+7. ✅ Toolbar stays visible when hovering over it
+8. ✅ Toolbar stays visible when clicking toolbar buttons
+9. ✅ Preference persists across page refresh
+10. ✅ Works on different screen sizes
+11. ✅ Works when window loses focus and regains focus
+
+### Implementation Priority
+- **Medium**: User experience enhancement
+- **Impact**: Improves screen space utilization
+- **Risk**: Low - isolated change, backwards compatible (default off)
+- **Dependencies**: None - uses existing mouse tracking and preferences system
