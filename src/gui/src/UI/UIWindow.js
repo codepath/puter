@@ -1609,7 +1609,9 @@ async function UIWindow(options) {
     // --------------------------------------------------------
     // Close button
     // --------------------------------------------------------
-    $(`#window-${win_id} > .window-head > .window-close-btn`).click(function () {
+    $(`#window-${win_id} > .window-head > .window-close-btn`).click(function (event) {
+        event.stopPropagation();
+        event.preventDefault();
         $(el_window).close({
             shrink_to_target: options.on_close_shrink_to_target
         });
@@ -1618,7 +1620,9 @@ async function UIWindow(options) {
     // --------------------------------------------------------
     // Minimize button
     // --------------------------------------------------------
-    $(`#window-${win_id} > .window-head > .window-minimize-btn`).click(function () {
+    $(`#window-${win_id} > .window-head > .window-minimize-btn`).click(function (event) {
+        event.stopPropagation();
+        event.preventDefault();
         $(el_window).hideWindow();
     })
 

@@ -706,10 +706,14 @@ async function UIDesktop(options){
     }
 
     // update local user preferences
+    const toolbar_auto_hide_value = await puter.kv.get('user_preferences.toolbar_auto_hide');
     const user_preferences = {
         show_hidden_files: JSON.parse(await puter.kv.get('user_preferences.show_hidden_files')),
         language: await puter.kv.get('user_preferences.language'),
         clock_visible: await puter.kv.get('user_preferences.clock_visible'),
+        toolbar_auto_hide: toolbar_auto_hide_value !== null && toolbar_auto_hide_value !== undefined 
+            ? JSON.parse(toolbar_auto_hide_value) 
+            : false,
     };
 
     // update default apps
@@ -719,6 +723,52 @@ async function UIDesktop(options){
         }
 
         window.update_user_preferences(user_preferences);
+        
+        // Initialize toolbar auto-hide after preferences are loaded
+        if (user_preferences.toolbar_auto_hide) {
+            const toolbar = $('.toolbar');
+            let hideTimeout;
+            const HIDE_DELAY = 2000; // 2 seconds of inactivity
+            const SHOW_THRESHOLD = 50; // 50px from top to show toolbar
+            
+            function hideToolbar() {
+                toolbar.addClass('toolbar-auto-hide-hidden');
+            }
+            
+            function showToolbar() {
+                toolbar.removeClass('toolbar-auto-hide-hidden');
+                clearTimeout(hideTimeout);
+            }
+            
+            function resetHideTimeout() {
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+            }
+            
+            // Show toolbar when mouse enters toolbar area
+            toolbar.on('mouseenter', function() {
+                showToolbar();
+            });
+            
+            // Track ALL mouse movement for inactivity detection
+            $(document).on('mousemove', function(e) {
+                // Always show toolbar when mouse is near top edge
+                if (e.clientY <= SHOW_THRESHOLD) {
+                    showToolbar();
+                } else {
+                    // Reset timeout on any mouse movement (inactivity detection)
+                    resetHideTimeout();
+                }
+            });
+            
+            // Reset timeout on mouse click anywhere
+            $(document).on('mousedown click', function() {
+                resetHideTimeout();
+            });
+            
+            // Initial hide after 2 seconds of inactivity
+            hideTimeout = setTimeout(hideToolbar, HIDE_DELAY);
+        }
     });
 
     // Append to <body>
