@@ -706,10 +706,14 @@ async function UIDesktop(options){
     }
 
     // update local user preferences
+    const toolbar_auto_hide_value = await puter.kv.get('user_preferences.toolbar_auto_hide');
     const user_preferences = {
         show_hidden_files: JSON.parse(await puter.kv.get('user_preferences.show_hidden_files')),
         language: await puter.kv.get('user_preferences.language'),
         clock_visible: await puter.kv.get('user_preferences.clock_visible'),
+        toolbar_auto_hide: toolbar_auto_hide_value !== null && toolbar_auto_hide_value !== undefined 
+            ? JSON.parse(toolbar_auto_hide_value) 
+            : false,
     };
 
     // update default apps
@@ -1144,6 +1148,42 @@ async function UIDesktop(options){
 
     // prepend toolbar to desktop
     $(ht).insertBefore(el_desktop);
+
+    // Initialize toolbar auto-hide if enabled
+    if (window.user_preferences.toolbar_auto_hide) {
+        const toolbar = $('.toolbar');
+        let hideTimeout;
+        const SHOW_THRESHOLD = 50; // 50px from top to show toolbar
+        
+        function hideToolbar() {
+            toolbar.addClass('toolbar-auto-hide-hidden');
+        }
+        
+        function showToolbar() {
+            toolbar.removeClass('toolbar-auto-hide-hidden');
+            clearTimeout(hideTimeout);
+        }
+        
+        // Hide toolbar when mouse leaves toolbar area
+        toolbar.on('mouseleave', function() {
+            hideTimeout = setTimeout(hideToolbar, 2000); // 2 second delay after leaving
+        });
+        
+        // Show toolbar when mouse enters toolbar area
+        toolbar.on('mouseenter', function() {
+            showToolbar();
+        });
+        
+        // Show toolbar when mouse moves near top edge of screen
+        $(document).on('mousemove', function(e) {
+            if (e.clientY <= SHOW_THRESHOLD) {
+                showToolbar();
+            }
+        });
+        
+        // Initial hide after 2 seconds if mouse is not on toolbar
+        hideTimeout = setTimeout(hideToolbar, 2000);
+    }
 
     // notification container
     $('body').append(`<div class="notification-container"><div class="notifications-close-all">${i18n('close_all')}</div></div>`);
