@@ -30,6 +30,88 @@ import truncate_filename from '../helpers/truncate_filename.js';
 import launch_app from "../helpers/launch_app.js"
 import open_item from "../helpers/open_item.js"
 
+/**
+ * Checks if a file is an image based on MIME type or file extension
+ * @param {Object} options - File options object
+ * @param {boolean} options.is_dir - Whether the item is a directory
+ * @param {string} options.type - MIME type of the file
+ * @param {string} options.name - Name of the file
+ * @returns {boolean} True if the file is an image
+ */
+function is_image_file(options) {
+    // Directories are not images
+    if (options.is_dir) return false;
+    
+    // Check MIME type first (primary method)
+    if (options.type && options.type.startsWith('image/')) {
+        return true;
+    }
+    
+    // Fallback: check file extension
+    const ext = path.extname(options.name || '').toLowerCase();
+    const image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg', '.tiff', '.tif', '.ico'];
+    return image_extensions.includes(ext);
+}
+
+/**
+ * Sets the desktop background from a file and persists it to the server
+ * @param {string} file_path - Path to the file
+ * @param {string} file_uid - UID of the file
+ * @returns {Promise<void>}
+ */
+async function set_desktop_background_from_file(file_path, file_uid) {
+    try {
+        // Get file signature with read_url
+        // Use host_app_uid if available, otherwise undefined (backend handles this)
+        const app_uid = window.host_app_uid || undefined;
+        const file_signature = await puter.fs.sign(app_uid, {
+            uid: file_uid,
+            action: 'read'
+        });
+        
+        // Handle both single item and array response
+        const signature = Array.isArray(file_signature?.items) 
+            ? file_signature.items[0] 
+            : (file_signature?.items || file_signature);
+        
+        const read_url = signature?.read_url;
+        
+        if (!read_url) {
+            throw new Error('Could not get read URL for file');
+        }
+        
+        // Set desktop background immediately
+        window.set_desktop_background({
+            url: read_url,
+            fit: 'cover'
+        });
+        
+        // Persist to server
+        await $.ajax({
+            url: window.api_origin + "/set-desktop-bg",
+            type: 'POST',
+            data: JSON.stringify({
+                url: read_url,
+                fit: 'cover',
+                color: null
+            }),
+            async: true,
+            contentType: "application/json",
+            headers: {
+                "Authorization": "Bearer " + window.auth_token
+            },
+            statusCode: {
+                401: function () {
+                    window.logout();
+                }
+            }
+        });
+    } catch (err) {
+        console.error('Failed to set desktop background:', err);
+        UIAlert('Failed to set desktop background. Please try again.');
+    }
+}
+
 function UIItem(options){
     const matching_appendto_count = $(options.appendTo).length;
     if(matching_appendto_count > 1){
@@ -1182,6 +1264,19 @@ function UIItem(options){
                             window.trigger_download([options.path]);
                     }
                 });                
+            }
+            // -------------------------------------------
+            // Set as Desktop Background
+            // -------------------------------------------
+            if(!is_trash && !is_trashed && !options.is_dir && is_image_file(options)){
+                menu_items.push({
+                    html: i18n('set_as_desktop_background'),
+                    onClick: async function(){
+                        const file_uid = $(el_item).attr('data-uid');
+                        const file_path = $(el_item).attr('data-path');
+                        await set_desktop_background_from_file(file_path, file_uid);
+                    }
+                });
             }
             // -------------------------------------------
             // Zip
